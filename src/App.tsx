@@ -55,8 +55,8 @@ function App() {
             <input placeholder="key" value={ mentionKey } onChange={ event => setMentionKey(event.target.value) }/>
           </form>
           : <form className="note-form" onSubmit={ event => saveNote(title, content, event) }>
-            <input placeholder="title" value={ title } onChange={ event => setTitle(event.target.value) }/>
-            <textarea placeholder="content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
+            <input placeholder="Title" value={ title } onChange={ event => setTitle(event.target.value) }/>
+            <textarea rows={10} placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
             <button type="submit">add</button>
           </form>
         }
