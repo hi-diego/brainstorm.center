@@ -3,6 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
+import Note from 'brainstorm/Note';
+import Notebook from 'brainstorm/Notebook';
+
+const note = new Note('First Note', 'content');
+const note2 = new Note('First Note', 'new text');
+console.log([Notebook.wordsDiff(note, note2).gone])
 
 ReactDOM.render(
   <React.StrictMode>
