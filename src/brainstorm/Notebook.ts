@@ -9,11 +9,11 @@ import Words from 'types/Words';
 class Notebook {
 
   public notes: Immutable.Map<string, Note>;
-  public onNoteAdded: (notes: Immutable.Set<Note>) => void;
+  public onUpdate: (notes: Immutable.Set<Note>) => void;
 
   constructor (notes: Immutable.Map<string, Note>) {
     this.notes = notes;
-    this.onNoteAdded = () => null;
+    this.onUpdate = () => null;
   }
 
   /**
@@ -22,7 +22,7 @@ class Notebook {
    */
   update(note: Note) {
     this.notes = this.notes.set(note.title, note)
-    this.onNoteAdded(this.notes.toSet())
+    this.onUpdate(this.notes.toSet())
   }
 }
 

@@ -18,7 +18,7 @@ function App() {
   const [notes, setNotes] = useState<Immutable.Set<NoteType>>(Immutable.Set<NoteType>());
   const labels: JSX.Element[] = [];
   const hub = <div className="hub"><p>Notes: {notes.size}</p></div>
-  Notebook.onNoteAdded = (notes: Immutable.Set<NoteType>) => setNotes(notes)
+  Notebook.onUpdate = (notes: Immutable.Set<NoteType>) => setNotes(notes)
   notes.forEach(note => {
     labels.push(<label onClick={() => setNote(note.title)} key={note.uuid} id={note.title}>{note.title}</label>)
   });
