@@ -1,4 +1,3 @@
-import Mention from 'brainstorm/Mention';
 import Directory from 'brainstorm/Directory';
 import Notebook from 'brainstorm/Notebook';
 import uuid from 'common/uuid';
