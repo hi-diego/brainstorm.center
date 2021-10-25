@@ -5,10 +5,26 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import Note from 'brainstorm/Note';
 import Notebook from 'brainstorm/Notebook';
+import Directory from 'brainstorm/Directory';
 
 const note = new Note('First Note', 'content');
-const note2 = new Note('First Note', 'new text');
-console.log([Notebook.wordsDiff(note, note2).gone])
+const handler = {
+  construct(target, args) {
+    Notebook.update(target);
+    return new target(...args);
+  },
+  set(target: any, prop: any, value: any, receiver: any) {
+    if (prop === 'content') {
+      Directory.update(target, value);
+      Notebook.update(target);
+      target[prop] = value;
+    }
+    return true;
+  }
+}
+const proxyNote = new Proxy(note, handler);
+proxyNote.content = 'new better'
+proxyNote.content = 'foo bar baz'
 
 ReactDOM.render(
   <React.StrictMode>
