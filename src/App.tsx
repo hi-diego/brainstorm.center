@@ -9,13 +9,14 @@ import { init, drawDot } from "three/index";
 import './App.css';
 
 init()
+Notebook.start()
 
 function App() {
   const [mentionKey, setMentionKey] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selecting, setSelecting] = useState(false);
-  const [notes, setNotes] = useState<Immutable.Set<NoteType>>(Immutable.Set<NoteType>());
+  const [notes, setNotes] = useState<Immutable.Set<NoteType>>(Notebook.notes.toSet());
   const labels: JSX.Element[] = [];
   const hub = <div className="hub"><p>Notes: {notes.size}</p></div>
   Notebook.onUpdate = (notes: Immutable.Set<NoteType>) => setNotes(notes)
@@ -38,8 +39,8 @@ function App() {
     setTitle(note.title);
     setContent(note.content);
   }
-  function saveNote(title: string, content: string, event: any) {
-    event.preventDefault()
+  function saveNote(title: string, content: string, event: any = null) {
+    if (event) event.preventDefault();
     const note = new Note(title, content);
     drawDot(note);
     return note;

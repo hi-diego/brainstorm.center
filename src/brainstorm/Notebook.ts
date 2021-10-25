@@ -1,3 +1,5 @@
+import { default as NoteProxy } from 'brainstorm/proxy/Note';
+import { drawDot } from "three/index";
 import Note from 'brainstorm/Note';
 import Immutable from 'immutable';
 
@@ -22,6 +24,16 @@ class Notebook {
   update(note: Note) {
     this.notes = this.notes.set(note.title, note)
     this.onUpdate(this.notes.toSet())
+    window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()))
+  }
+
+  start() {
+    const storedNotes = JSON.parse(window.localStorage.getItem('brainstorm.center.notes') || '{}')
+    for (const key in storedNotes) {
+      const storedNote = storedNotes[key];
+      const note = new NoteProxy(storedNote.title, storedNote.content, storedNote.uuid, storedNote.created_at);
+      drawDot(note);
+    }
   }
 }
 
