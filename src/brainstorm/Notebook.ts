@@ -23,7 +23,7 @@ class Notebook {
    * this will recalculate all the mentionses as well.
    */
   update(note: Note) {
-    this.notes = this.notes.set(note.uuid, note) 
+    this.notes = this.notes.set(note.title, note) 
   }
 }
 

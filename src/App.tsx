@@ -12,19 +12,20 @@ function App() {
   const [title, setTitle] = useState('')
   const [content, setContent] = useState('')
   var notesjsx: JSX.Element[] = [];
-  Notebook.notes.forEach((value, key, map) => {
+  Notebook.notes.forEach((note, key, map) => {
     notesjsx.push(
       <li key={key}>
-        <p><strong> {value.title}: </strong> {value.content} </p>
+        <h3>{note.title}</h3>  
+        <p>{note.content}</p>
+        <p><strong>mentions: {note.mentions()}</strong></p>
+        <p><strong>references: {note.references()}</strong></p>
       </li>
     );
   });
   var dirjsx: JSX.Element[] = [];
   Directory.dir.forEach((value, key, map) => {
     dirjsx.push(
-      <li key={key}>
-        <p><strong> {key}: </strong> </p>
-      </li>
+      <small>{key}, </small>
     );
   });
   function newNote(title, content, event) {
@@ -35,7 +36,7 @@ function App() {
     <div className="App">
       <header className="App-header">
         <ol>{notesjsx}</ol>
-        <ul>{dirjsx}</ul>
+        <p>{dirjsx}</p>
         <form className="note-form" onSubmit={ event => newNote(title, content, event) }>
           <input placeholder="title" value={ title } onChange={ event => setTitle(event.target.value) }/>
           <textarea placeholder="content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>

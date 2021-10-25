@@ -1,5 +1,6 @@
 import Mention from 'brainstorm/Mention';
 import Directory from 'brainstorm/Directory';
+import Notebook from 'brainstorm/Notebook';
 import uuid from 'common/uuid';
 import Immutable from 'immutable';
 
@@ -12,15 +13,15 @@ class Note {
   public title: string;
   public uuid: string;
   public content: string;
-  public mentions: Array<Mention>;
+  // public mentions: Array<Mention>;
   public created_at: Date;
   public modified_at: Date | null;
 
-  constructor (title: string, content: string, _uuid: string | null = null, mentions: Array<Mention> = [], created_at: Date | null = null, modified_at: Date | null = null) {
+  constructor (title: string, content: string, _uuid: string | null = null, created_at: Date | null = null, modified_at: Date | null = null) {
     this.uuid = _uuid || uuid();
     this.title = title;
     this.content = content;
-    this.mentions = mentions
+    // this.mentions = mentions
     this.created_at = created_at || (new Date());
     this.modified_at = modified_at;
   }
@@ -36,7 +37,7 @@ class Note {
    * Return all the title notes that this note mentions in its content.
    */
   public mentions () : Immutable.Set<string> {
-    return Immutable.Set(this.content.split(' '))
+    return Notebook.notes.filter((v, k) => this.words().has(k)).map(n => n.title).toSet()
   }
 
   /**
