@@ -1,4 +1,5 @@
 import Directory from 'brainstorm/Directory';
+import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
 import uuid from 'common/uuid';
 import Immutable from 'immutable';
@@ -35,8 +36,12 @@ class Note {
   /**
    * Return all the title notes that this note mentions in its content.
    */
-  public mentions () : Immutable.Set<Note> {
-    return Notebook.notes.filter((v, k) => this.words().has(k)).toSet().concat(this.userMentions)
+  public mentions () : Immutable.Set<Mention> {
+    return Notebook.notes
+      .filter((v, k) => this.words().has(k))
+      .toSet()
+      .map(n => new Mention(this, n, n.title))
+      //.concat(this.userMentions)
   }
 
   /**

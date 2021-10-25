@@ -1,5 +1,6 @@
-import Note from 'brainstorm/proxy/Note';
+import Note from 'brainstorm/Note';
 import Notebook from 'brainstorm/Notebook';
+import Mention from 'brainstorm/Mention';
 import Immutable from 'immutable';
 import random from 'common/random';
 import * as THREE from 'three';
@@ -57,7 +58,8 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   if (oldGroup) scene.remove(oldGroup);
   const group = new THREE.Group();
   group.name = groupName
-  note.mentions().forEach((to: any) => {
+  note.mentions().forEach((mention: Mention) => {
+    const to = mention.to;
     const toDot = scene.getObjectByName(to.title)
     const smallCurvature = random(-0.25, 0.25)
     const curve = new THREE.CubicBezierCurve3(
