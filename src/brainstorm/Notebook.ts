@@ -1,10 +1,6 @@
 import Note from 'brainstorm/Note';
 import Immutable from 'immutable';
-
-type Words = {
-  gone: Immutable.Set<string>;
-  _new: Immutable.Set<string>;
-};
+import Words from 'types/Words';
 
 /**
  * Notebook.
@@ -23,7 +19,7 @@ class Notebook {
    * this will recalculate all the mentionses as well.
    */
   update(note: Note) {
-    this.notes = this.notes.set(note.title, note) 
+    this.notes = this.notes.set(note.title, note)
   }
 }
 

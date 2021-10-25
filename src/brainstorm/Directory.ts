@@ -17,12 +17,12 @@ class Directory {
 
   update(note: Note, newContent: string) {
     const words = wordsDiff(note.words(), Immutable.Set<string>(newContent.split(' ')));
-    words.gone.forEach(word => {
+    words.gone.forEach((word: string) => {
       const set = (this.dir.get(word, Immutable.Set<string>())).delete(note.title)
       if (set.isEmpty()) this.dir = this.dir.delete(word);
       else this.dir = this.dir.set(word, set);
     })
-    words._new.forEach(word => {
+    words._new.forEach((word: string) => {
       const set = (this.dir.get(word, Immutable.Set<string>())).add(note.title)
       this.dir = this.dir.set(word, set);
     })

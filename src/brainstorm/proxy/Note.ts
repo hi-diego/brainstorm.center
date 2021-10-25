@@ -3,7 +3,7 @@ import Notebook from 'brainstorm/Notebook';
 import Directory from 'brainstorm/Directory';
 
 const Handler = {
-  construct(target, args) {
+  construct(target: any, args: Array<any>) {
     const note = new target(...args);
     Directory.update(new Note(note.title, '', note.uuid), note.content);
     Notebook.update(note);

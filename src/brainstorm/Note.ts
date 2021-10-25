@@ -36,15 +36,15 @@ class Note {
   /**
    * Return all the title notes that this note mentions in its content.
    */
-  public mentions () : Immutable.Set<string> {
-    return Notebook.notes.filter((v, k) => this.words().has(k)).map(n => n.title).toSet()
+  public mentions () : Immutable.Set<Note> {
+    return Notebook.notes.filter((v, k) => this.words().has(k)).toSet()
   }
 
   /**
    * Return all the notes that reference this note by the title.
    */
-  public references () : Immutable.Set<string> {
-    return Directory.dir.get(this.title)
+  public references () : Immutable.Set<Note|undefined> {
+    return Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title))
   }
 }
 

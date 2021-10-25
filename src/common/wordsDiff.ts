@@ -1,3 +1,6 @@
+import Immutable from 'immutable';
+import Words from 'types/Words';
+
 /**
  *
  */
