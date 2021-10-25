@@ -1,6 +1,5 @@
 import Note from 'brainstorm/Note';
 import Immutable from 'immutable';
-import Words from 'types/Words';
 
 /**
  * Notebook.

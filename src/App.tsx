@@ -3,11 +3,8 @@ import { useState } from 'react';
 import Note from 'brainstorm/proxy/Note';
 import NoteType from 'brainstorm/Note';
 import Notebook from 'brainstorm/Notebook';
-import Directory from 'brainstorm/Directory';
 import Immutable from 'immutable';
-import * as THREE from 'three';
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import { init, animate, drawLines, drawDot } from "three/index";
+import { init, drawDot } from "three/index";
 import './App.css';
 
 init()

@@ -1,6 +1,5 @@
 import Note from 'brainstorm/proxy/Note';
 import Notebook from 'brainstorm/Notebook';
-import Directory from 'brainstorm/Directory';
 import Immutable from 'immutable';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -59,13 +58,25 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   group.name = groupName
   note.mentions().forEach((to: any) => {
     const toDot = scene.getObjectByName(to.title) 
-    const points = [];
-    points.push(dot.position);
-    points.push(toDot.position);
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints(points);
-    const line = new THREE.Line(lineGeometry, lineMaterial);
-    line.name = `${note.title}-${to.title}`
-    group.add(line);
+    const curve = new THREE.CubicBezierCurve3(
+      dot.position,
+      new THREE.Vector3(
+        ((dot.position.x + toDot.position.x)/2) + (Math.random() / 2),
+        (dot.position.y + toDot.position.y)/2 + (Math.random() / 2),
+        (dot.position.z + toDot.position.z)/2 + (Math.random() / 2)
+      ),
+      new THREE.Vector3(
+        ((dot.position.x + toDot.position.x)/2) + (Math.random() / 2),
+        (dot.position.y + toDot.position.y)/2 + (Math.random() / 2),
+        (dot.position.z + toDot.position.z)/2 + (Math.random() / 2)
+      ),
+      toDot.position
+    );
+    const curvePoints = curve.getPoints(50);
+    const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
+    const curveLine = new THREE.Line(curveGeometry, lineMaterial);
+    curveLine.name = `${note.title}-${to.title}`
+    group.add(curveLine);
   });
   scene.add(group);
   if (ref) note.references().forEach((from: any) => drawLines(from))
