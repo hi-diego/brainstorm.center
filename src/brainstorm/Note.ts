@@ -1,4 +1,5 @@
 import Mention from 'brainstorm/Mention';
+import Directory from 'brainstorm/Directory';
 import uuid from 'common/uuid';
 import Immutable from 'immutable';
 
@@ -29,6 +30,20 @@ class Note {
    */
   public words () : Immutable.Set<string> {
     return Immutable.Set(this.content.split(' '))
+  }
+
+  /**
+   * Return all the title notes that this note mentions in its content.
+   */
+  public mentions () : Immutable.Set<string> {
+    return Immutable.Set(this.content.split(' '))
+  }
+
+  /**
+   * Return all the notes that reference this note by the title.
+   */
+  public references () : Immutable.Set<string> {
+    return Directory.dir.get(this.title)
   }
 }
 
