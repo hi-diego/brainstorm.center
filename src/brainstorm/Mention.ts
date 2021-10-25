@@ -6,9 +6,9 @@ class Mention {
 
   public from: string;
   public to: string;
-  public key?: string | null;
+  public key: string;
 
-  constructor (from: string, to: string, key: string | null = null) {
+  constructor (from: string, to: string, key: string) {
     this.from = from;
     this.to = to;
     this.key = key;
