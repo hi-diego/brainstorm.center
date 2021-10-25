@@ -13,7 +13,7 @@ class Note {
   public title: string;
   public uuid: string;
   public content: string;
-  public userMentions: Immutable.Set<Note>;
+  public userMentions: Immutable.Set<Mention>;
   public created_at: Date;
   public modified_at: Date | null;
 
@@ -21,7 +21,7 @@ class Note {
     this.uuid = _uuid || uuid();
     this.title = title;
     this.content = content;
-    this.userMentions = Immutable.Set<Note>();
+    this.userMentions = Immutable.Set<Mention>();
     this.created_at = created_at || (new Date());
     this.modified_at = modified_at;
   }
@@ -41,7 +41,7 @@ class Note {
       .filter((v, k) => this.words().has(k))
       .toSet()
       .map(n => new Mention(this, n, n.title))
-      //.concat(this.userMentions)
+      .concat(this.userMentions)
   }
 
   /**

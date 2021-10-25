@@ -39,7 +39,7 @@
 }
 
 
-form.note-form {
+.note-form {
   display: flex;
   flex-direction: column;
   z-index: 1;

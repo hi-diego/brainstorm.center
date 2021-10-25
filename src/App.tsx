@@ -2,6 +2,7 @@ import React from 'react';
 import { useState } from 'react';
 import Note from 'brainstorm/proxy/Note';
 import NoteType from 'brainstorm/Note';
+import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
 import Immutable from 'immutable';
 import { init, drawDot } from "three/index";
@@ -10,6 +11,7 @@ import './App.css';
 init()
 
 function App() {
+  const [mentionKey, setMentionKey] = useState('');
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
   const [selecting, setSelecting] = useState(false);
@@ -23,7 +25,8 @@ function App() {
   function createNexus(to: NoteType) {
     const from = Notebook.notes.get(title);
     if (!from) return setSelecting(false);
-    from.userMentions = from.userMentions.add(to);
+    from.userMentions = from.userMentions.add(new Mention(from, to, mentionKey));
+    setTitle(to.title);
     drawDot(from);
     setSelecting(false);
   }
@@ -37,8 +40,6 @@ function App() {
   }
   function saveNote(title: string, content: string, event: any) {
     event.preventDefault()
-    // const oldNote = Notebook.notes.get(title)
-    // if (oldNote)
     const note = new Note(title, content);
     drawDot(note);
     return note;
@@ -48,11 +49,16 @@ function App() {
       <header className="App-header">
         {hub}
         {labels}
-        <form className="note-form" onSubmit={ event => saveNote(title, content, event) }>
-          <input placeholder="title" value={ title } onChange={ event => setTitle(event.target.value) }/>
-          <textarea placeholder="content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
-          <button type="submit">add</button>
-        </form>
+        {selecting
+          ? <form className="note-form">
+            <input placeholder="key" value={ mentionKey } onChange={ event => setMentionKey(event.target.value) }/>
+          </form>
+          : <form className="note-form" onSubmit={ event => saveNote(title, content, event) }>
+            <input placeholder="title" value={ title } onChange={ event => setTitle(event.target.value) }/>
+            <textarea placeholder="content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
+            <button type="submit">add</button>
+          </form>
+        }
       </header>
     </div>
   );

@@ -3,6 +3,7 @@ import Notebook from 'brainstorm/Notebook';
 import Mention from 'brainstorm/Mention';
 import Immutable from 'immutable';
 import random from 'common/random';
+import stringToColor from 'common/stringToColor';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -60,22 +61,8 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   group.name = groupName
   note.mentions().forEach((mention: Mention) => {
     const to = mention.to;
-    const toDot = scene.getObjectByName(to.title)
-    const smallCurvature = random(-0.25, 0.25)
-    const curve = new THREE.CubicBezierCurve3(
-      dot.position,
-      new THREE.Vector3(
-        ((dot.position.x + toDot.position.x)/2) + smallCurvature,
-        (dot.position.y + toDot.position.y)/2 + smallCurvature,
-        (dot.position.z + toDot.position.z)/2 + smallCurvature
-      ),
-      new THREE.Vector3(
-        ((dot.position.x + toDot.position.x)/2) + smallCurvature,
-        (dot.position.y + toDot.position.y)/2 + smallCurvature,
-        (dot.position.z + toDot.position.z)/2 + smallCurvature
-      ),
-      toDot.position
-    );
+    const toDot = scene.getObjectByName(to.title);
+    const curve = getCubicBezierCurve3(dot, toDot);
     const curvePoints = curve.getPoints(50);
     const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
     const curveLine = new THREE.Line(curveGeometry, lineMaterial);
@@ -96,4 +83,23 @@ export function drawDot(note: any) {
   dot.name = note.title;
   dotsGroup.add(dot);
   return drawLines(note, dot, true);
+}
+
+export function getCubicBezierCurve3(dot: any, toDot: any) {
+  if (dot.position.equals(toDot.position)) return new THREE.CubicBezierCurve3(dot.position, dot.position.clone().setY(dot.position.y+1).setZ(dot.position.z + random(-1, 1)), dot.position.clone().setX(dot.position.x+1).setZ(dot.position.z + random(-1, 1)), dot.position);
+  const smallCurvature = random(-0.25, 0.25);
+  return new THREE.CubicBezierCurve3(
+    dot.position,
+    new THREE.Vector3(
+      ((dot.position.x + toDot.position.x)/2) + smallCurvature,
+      (dot.position.y + toDot.position.y)/2 + smallCurvature,
+      (dot.position.z + toDot.position.z)/2 + smallCurvature
+    ),
+    new THREE.Vector3(
+      ((dot.position.x + toDot.position.x)/2) + smallCurvature,
+      (dot.position.y + toDot.position.y)/2 + smallCurvature,
+      (dot.position.z + toDot.position.z)/2 + smallCurvature
+    ),
+    toDot.position
+  );
 }
