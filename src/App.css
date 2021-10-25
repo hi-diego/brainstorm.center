@@ -50,3 +50,22 @@ canvas {
   z-index: 0;
   top: 0;
 }
+
+label {
+  position: fixed;
+  color: #fff;
+  z-index: 2;
+  background: #000;
+  padding: 3px 6px;
+  border-radius: 10px;
+}
+
+.hub {
+  position: fixed;
+  top: 0;
+  color: #fff;
+  z-index: 2;
+  background: #000;
+  padding: 3px 6px;
+  border-radius: 10px; 
+}
