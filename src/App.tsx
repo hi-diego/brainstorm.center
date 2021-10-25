@@ -12,21 +12,33 @@ init()
 function App() {
   const [title, setTitle] = useState('');
   const [content, setContent] = useState('');
+  const [selecting, setSelecting] = useState(false);
   const [notes, setNotes] = useState<Immutable.Set<NoteType>>(Immutable.Set<NoteType>());
   const labels: JSX.Element[] = [];
   const hub = <div className="hub"><p>Notes: {notes.size}</p></div>
   Notebook.onUpdate = (notes: Immutable.Set<NoteType>) => setNotes(notes)
   notes.forEach(note => {
-    labels.push(<label onClick={() => setNote(note.title)} key={note.uuid} id={note.title}>{note.title}</label>)
+    labels.push(<label className={ title === note.title ? 'selected' : ''} onClick={() => selectNote(note.title)} key={note.uuid} id={note.title}>{note.title}</label>)
   });
-  function setNote(title: string) {
-    const note = Notebook.notes.get(title);
+  function createNexus(to: NoteType) {
+    const from = Notebook.notes.get(title);
+    if (!from) return setSelecting(false);
+    from.userMentions = from.userMentions.add(to);
+    drawDot(from);
+    setSelecting(false);
+  }
+  function selectNote(_title: string) {
+    const note = Notebook.notes.get(_title);
     if (!note) return;
+    if (selecting) return createNexus(note);
+    if (title === _title) return setSelecting(true);
     setTitle(note.title);
     setContent(note.content);
   }
   function saveNote(title: string, content: string, event: any) {
     event.preventDefault()
+    // const oldNote = Notebook.notes.get(title)
+    // if (oldNote)
     const note = new Note(title, content);
     drawDot(note);
     return note;

@@ -12,7 +12,7 @@ class Note {
   public title: string;
   public uuid: string;
   public content: string;
-  // public mentions: Array<Mention>;
+  public userMentions: Immutable.Set<Note>;
   public created_at: Date;
   public modified_at: Date | null;
 
@@ -20,7 +20,7 @@ class Note {
     this.uuid = _uuid || uuid();
     this.title = title;
     this.content = content;
-    // this.mentions = mentions
+    this.userMentions = Immutable.Set<Note>();
     this.created_at = created_at || (new Date());
     this.modified_at = modified_at;
   }
@@ -36,7 +36,7 @@ class Note {
    * Return all the title notes that this note mentions in its content.
    */
   public mentions () : Immutable.Set<Note> {
-    return Notebook.notes.filter((v, k) => this.words().has(k)).toSet()
+    return Notebook.notes.filter((v, k) => this.words().has(k)).toSet().concat(this.userMentions)
   }
 
   /**

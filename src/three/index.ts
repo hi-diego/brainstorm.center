@@ -1,6 +1,7 @@
 import Note from 'brainstorm/proxy/Note';
 import Notebook from 'brainstorm/Notebook';
 import Immutable from 'immutable';
+import random from 'common/random';
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
@@ -57,18 +58,19 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   const group = new THREE.Group();
   group.name = groupName
   note.mentions().forEach((to: any) => {
-    const toDot = scene.getObjectByName(to.title) 
+    const toDot = scene.getObjectByName(to.title)
+    const smallCurvature = random(-0.25, 0.25)
     const curve = new THREE.CubicBezierCurve3(
       dot.position,
       new THREE.Vector3(
-        ((dot.position.x + toDot.position.x)/2) + (Math.random() / 2),
-        (dot.position.y + toDot.position.y)/2 + (Math.random() / 2),
-        (dot.position.z + toDot.position.z)/2 + (Math.random() / 2)
+        ((dot.position.x + toDot.position.x)/2) + smallCurvature,
+        (dot.position.y + toDot.position.y)/2 + smallCurvature,
+        (dot.position.z + toDot.position.z)/2 + smallCurvature
       ),
       new THREE.Vector3(
-        ((dot.position.x + toDot.position.x)/2) + (Math.random() / 2),
-        (dot.position.y + toDot.position.y)/2 + (Math.random() / 2),
-        (dot.position.z + toDot.position.z)/2 + (Math.random() / 2)
+        ((dot.position.x + toDot.position.x)/2) + smallCurvature,
+        (dot.position.y + toDot.position.y)/2 + smallCurvature,
+        (dot.position.z + toDot.position.z)/2 + smallCurvature
       ),
       toDot.position
     );
