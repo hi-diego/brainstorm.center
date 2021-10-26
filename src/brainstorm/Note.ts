@@ -1,29 +1,24 @@
 import Directory from 'brainstorm/Directory';
 import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
-import uuid from 'common/uuid';
+import NotebookItem from 'brainstorm/NotebookItem';
 import Immutable from 'immutable';
 
 /**
  * Note class is the holder of Mentions.
  * @class
  */
-class Note {
+class Note extends NotebookItem {
 
   public title: string;
-  public uuid: string;
   public content: string;
   public userMentions: Immutable.Set<Mention>;
-  public createdAt: Date;
-  public modified_at: Date | null;
 
-  constructor (title: string, content: string, _uuid: string | null = null, userMentions: Immutable.Set<Mention> | null = null, createdAt: Date | null = null, modified_at: Date | null = null) {
-    this.uuid = _uuid || uuid();
+  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
+    super(uuid, createdAt, modifiedAt);
     this.title = title;
     this.content = content;
     this.userMentions = userMentions || Immutable.Set<Mention>();
-    this.createdAt = createdAt || (new Date());
-    this.modified_at = modified_at;
   }
 
   /**
@@ -37,7 +32,7 @@ class Note {
    * Return all the words in the content.
    */
   public clone () : Note {
-    return new Note(this.title, this.content, this.uuid, Immutable.Set(this.userMentions), this.createdAt, this.modified_at);
+    return new Note(this.title, this.content, this.uuid, Immutable.Set(this.userMentions), new Date(this.createdAt), new Date(this.modifiedAt));
   }
 
   /**
