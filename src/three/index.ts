@@ -8,15 +8,21 @@ import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 const dotsGroup = new THREE.Group();
-const lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
+const lineSelectedMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
+const transparentLineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb, opacity: 0, transparent: true });
 const sphereGeometry = new THREE.SphereGeometry( 0.1, 32, 32 );
-const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
+const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
-const renderer = new THREE.WebGLRenderer();
+const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
+var selectedMesh: any = null
 
 export function init () {
+  renderer.setClearColor(0xffffff, 0);
+  scene.background = new THREE.Color(0x000000);
   scene.add(dotsGroup)
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
@@ -58,22 +64,47 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   const oldGroup = scene.getObjectByName(groupName);
   if (oldGroup) scene.remove(oldGroup);
   const group = new THREE.Group();
+  const tubeGroup = new THREE.Group();
+  tubeGroup.name = `${note.title}-mentions-tubes`;
   group.name = groupName
   note.mentions().forEach((mention: Mention) => {
     const to = mention.to;
     const toDot = scene.getObjectByName(to.title);
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([dot.position, toDot.position]);
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    line.name = `${note.title}-${to.title}`
+
+    // Create Tube Geometry
+    const tubeGeometry = new THREE.TubeGeometry(
+      new THREE.CatmullRomCurve3([dot.position, toDot.position]),
+      512,// path segments
+      0.003,// THICKNESS
+      8, //Roundness of Tube
+      false //closed
+    );
+
+    let tube = new THREE.Line(tubeGeometry, transparentLineMaterial);
+    tube.name = `${note.title}-${to.title}-tube`
+
+
     const curve = getCubicBezierCurve3(dot, toDot);
     const curvePoints = curve.getPoints(50);
     const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
     const curveLine = new THREE.Line(curveGeometry, lineMaterial);
     curveLine.name = `${note.title}-${to.title}`
-    group.add(curveLine);
+
+    tubeGroup.add(tube);
+
+    if (mention.createdByUser) group.add(curveLine);
+    else group.add(line);
+
   });
   scene.add(group);
+  scene.add(tubeGroup);
   if (ref) note.references().forEach((from: any) => drawLines(from))
 }
 
-export function drawDot(note: any) {
+export function drawDot(note: any, drawMentions: boolean = true) {
   const oldDot = scene.getObjectByName(note.title);
   if (oldDot) return drawLines(note, oldDot, true);
   const dot = new THREE.Mesh(sphereGeometry, meshMaterial);
@@ -82,7 +113,7 @@ export function drawDot(note: any) {
   dot.translateZ(Math.random() * 2);
   dot.name = note.title;
   dotsGroup.add(dot);
-  return drawLines(note, dot, true);
+  return drawMentions ? drawLines(note, dot, true) : null;
 }
 
 export function getCubicBezierCurve3(dot: any, toDot: any) {
@@ -102,4 +133,24 @@ export function getCubicBezierCurve3(dot: any, toDot: any) {
     ),
     toDot.position
   );
+}
+
+export function highlight(title: string | null = null) {
+  if (!title && selectedMesh) {
+    selectedMesh.material = meshMaterial;
+    const groupName = `${selectedMesh.name}-mentions-tubes`;
+    const tubes = scene.getObjectByName(groupName);
+    if (tubes) tubes.children.forEach((t: any) => (t.material = transparentLineMaterial))
+    selectedMesh = null;
+    return;
+  }
+  const mesh = scene.getObjectByName(title);
+  if (!mesh) return;
+  mesh.material = meshSelectedMaterial;
+  selectedMesh = mesh;
+  const groupName = `${title}-mentions-tubes`;
+  const tubes = scene.getObjectByName(groupName);
+  console.log(groupName, tubes)
+  if (!tubes) return;
+  tubes.children.forEach((t: any) => (t.material = lineSelectedMaterial))
 }

@@ -9,11 +9,13 @@ class Mention {
   public from: Note;
   public to: Note;
   public key: string;
+  public createdByUser: boolean;
 
-  constructor (from: Note, to: Note, key: string) {
+  constructor (from: Note, to: Note, key: string, createdByUser: boolean = false) {
     this.from = from;
     this.to = to;
     this.key = key;
+    this.createdByUser = createdByUser;
   }
 }
 

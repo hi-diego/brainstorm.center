@@ -14,15 +14,15 @@ class Note {
   public uuid: string;
   public content: string;
   public userMentions: Immutable.Set<Mention>;
-  public created_at: Date;
+  public createdAt: Date;
   public modified_at: Date | null;
 
-  constructor (title: string, content: string, _uuid: string | null = null, created_at: Date | null = null, modified_at: Date | null = null) {
+  constructor (title: string, content: string, _uuid: string | null = null, userMentions: Immutable.Set<Mention> | null = null, createdAt: Date | null = null, modified_at: Date | null = null) {
     this.uuid = _uuid || uuid();
     this.title = title;
     this.content = content;
-    this.userMentions = Immutable.Set<Mention>();
-    this.created_at = created_at || (new Date());
+    this.userMentions = userMentions || Immutable.Set<Mention>();
+    this.createdAt = createdAt || (new Date());
     this.modified_at = modified_at;
   }
 
@@ -31,6 +31,13 @@ class Note {
    */
   public words () : Immutable.Set<string> {
     return Immutable.Set(this.content.split(' '))
+  }
+
+  /**
+   * Return all the words in the content.
+   */
+  public clone () : Note {
+    return new Note(this.title, this.content, this.uuid, Immutable.Set(this.userMentions), this.createdAt, this.modified_at);
   }
 
   /**

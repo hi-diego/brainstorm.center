@@ -4,8 +4,9 @@ import Note from 'brainstorm/proxy/Note';
 import NoteType from 'brainstorm/Note';
 import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
+import Directory from 'brainstorm/Directory';
 import Immutable from 'immutable';
-import { init, drawDot } from "three/index";
+import { init, drawDot, highlight } from "three/index";
 import './App.css';
 
 init()
@@ -26,18 +27,32 @@ function App() {
   function createNexus(to: NoteType) {
     const from = Notebook.notes.get(title);
     if (!from) return setSelecting(false);
-    from.userMentions = from.userMentions.add(new Mention(from, to, mentionKey));
+    console.log(from)
+    from.userMentions = from.userMentions.add(new Mention(from.clone(), to.clone(), mentionKey, true));
+    // Directory.update(from, from.content);
+    Notebook.update(from);
     setTitle(to.title);
     drawDot(from);
     setSelecting(false);
   }
+  function unselect() {
+    setTitle('');
+    setContent('');
+    highlight()
+    return setSelecting(false);
+  }
   function selectNote(_title: string) {
     const note = Notebook.notes.get(_title);
     if (!note) return;
-    if (selecting) return createNexus(note);
-    if (title === _title) return setSelecting(true);
-    setTitle(note.title);
+    highlight();
+    highlight(_title);
+    setTitle(_title);
     setContent(note.content);
+    if (title === _title) {
+      if (selecting) return unselect();
+      return setSelecting(true);
+    }
+    if (selecting) return createNexus(note);
   }
   function saveNote(title: string, content: string, event: any = null) {
     if (event) event.preventDefault();
