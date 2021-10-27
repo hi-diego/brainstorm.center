@@ -15,8 +15,8 @@ class Directory {
     this.dir = Map();
   }
 
-  update(note: Note, newContent: string) {
-    const words = wordsDiff(note.words(), Immutable.Set<string>(newContent.split(' ')));
+  update(note: Note) {
+    const words = wordsDiff(note.words(), Immutable.Set<string>(note.prevContent.split(' ')));
     words.gone.forEach((word: string) => {
       const set = (this.dir.get(word, Immutable.Set<string>())).delete(note.title)
       if (set.isEmpty()) this.dir = this.dir.delete(word);

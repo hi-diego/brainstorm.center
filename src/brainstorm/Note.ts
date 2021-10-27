@@ -11,15 +11,15 @@ import Immutable from 'immutable';
 class Note extends NotebookItem {
 
   public title: string;
-  public _content: string;
+  public _content: string = '';
+  public prevContent: string = '';
   public userMentions: Immutable.Set<Mention>;
 
-  constructor (title: string, _content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
+  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
     super(uuid, createdAt, modifiedAt);
     this.userMentions = userMentions || Immutable.Set<Mention>();
     this.title = title;
-    this._content = '';
-    this.content = _content;
+    this.content = content;
   }
 
   public get content(): string {
@@ -27,11 +27,16 @@ class Note extends NotebookItem {
   }
 
   public set content(content: string) {
-    // Directory.update(this, content);
-    Notebook.update(this, content);
+    this.prevContent = this._content;
     this._content = content;
+    Notebook.update(this);
   }
 
+  public update(title: string, content: string): Note {
+    this.title = title;
+    this.content = content;
+    return this;
+  }
 
   /**
    * Return all the words in the content.

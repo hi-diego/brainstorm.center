@@ -1,14 +1,15 @@
 import Graph from 'graph/Graph';
+import Notebook from 'brainstorm/Notebook';
 // import { useState } from 'react';
 // import Edge from 'graph/Edge';
 // import NoteType from 'brainstorm/Note';
 // import Mention from 'brainstorm/Mention';
-// import Notebook from 'brainstorm/Notebook';
 // import Immutable from 'immutable';
 import { init } from "three/index";
 import './App.css';
 
 init();
+Notebook.load();
 
 function App() {
   return (
@@ -18,7 +19,6 @@ function App() {
   );  
 }
 
-// Notebook.start()
 
 // function App() {
 //   // const [mentionKey, setMentionKey] = useState('');

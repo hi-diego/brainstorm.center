@@ -25,10 +25,10 @@ class Notebook {
    * this will recalculate all the mentionses as well.
    */
   public update(note: Note, newContent?: string) {
-    if (newContent) Directory.update(note, newContent);
-    this.notes = this.notes.set(note.title, note)
-    this.onUpdate(this.notes.toSet())
-    window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()))
+    if (newContent) Directory.update(note);
+    this.notes = this.notes.set(note.title, note);
+    this.onUpdate(this.notes.toSet());
+    window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()));
   }
 
   /**
@@ -39,16 +39,12 @@ class Notebook {
 
   // }
 
-  public start() {
-    const storedNotes = JSON.parse(window.localStorage.getItem('brainstorm.center.notes') || '{}')
-    const notes = []
-    for (const key in storedNotes) {
-      const storedNote = storedNotes[key];
-      const note = new Note(storedNote.title, storedNote.content, storedNote.uuid, Immutable.Set<Mention>(storedNote.userMentions), storedNote.createdAt);
-      notes.push(note)
-      // drawDot(note, false);
+  public load() {
+    const notes = JSON.parse(window.localStorage.getItem('brainstorm.center.notes') || '{}')
+    for (const title in notes) {
+      const n = notes[title];
+      const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
     }
-    // notes.forEach(note => drawDot(note));
   }
 }
 
