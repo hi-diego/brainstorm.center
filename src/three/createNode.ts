@@ -12,9 +12,24 @@ export default function createNode(note: Note): any {
   node.translateX(Math.random() * 2);
   node.translateY(Math.random() * 2);
   node.translateZ(Math.random() * 2);
-  node.name = note.title;
+  // node.name = note.title;
+  node.transparent = true;
+  node.material.opacity = 0.9;
   node.userData = { note };
-  groups.nodes.add(node);
+  // groups.nodes.add(node);
+
+  const wireframe = new THREE.WireframeGeometry(geometries.node.default);
+  const line = new THREE.LineSegments(wireframe);
+  line.material.depthTest = false;
+  line.material.opacity = 0.25;
+  line.material.transparent = true;
+  line.translateX(Math.random() * 2);
+  line.translateY(Math.random() * 2);
+  line.translateZ(Math.random() * 2);
+  line.name = note.title;
+  line.userData = { note };
+  groups.nodes.add(line);
+
   return node;
   // return drawMentions ? drawLines(note, node, true) : null;
 }

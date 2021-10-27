@@ -122,7 +122,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
   public componentDidMount() {
     // console.log(this._nodes);
     this._nodes.forEach(node => drawLines(node.props.note, node.mesh));
-    document.getElementById('three-canvas').onclick = () => this.setState({ selected: null });
+    const canvas = document.getElementById('three-canvas');
+    if (canvas) canvas.onclick = () => this.setState({ selected: null });
   }
 }
 

@@ -2,7 +2,7 @@ import * as THREE from 'three';
 
 const geometries = {
   node: {
-    default: new THREE.SphereGeometry( 0.1, 32, 32 )
+    default: new THREE.SphereGeometry(0.2, 12, 12)
   }
 }
 
