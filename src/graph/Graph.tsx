@@ -2,7 +2,7 @@ import React from 'react';
 import Immutable from 'immutable';
 import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
-// import { drawDot } from "three/index";
+import { drawLines } from "three/index";
 import Edge from 'graph/Edge';
 // import Mention from 'brainstorm/Mention';
 
@@ -82,6 +82,14 @@ class Graph extends React.Component<GraphProps, GraphState> {
         { this.form() }
       </header>
     );
+  }
+
+  /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public componentDidMount() {
+    Notebook.notes.toSet().forEach(note => drawLines(note));
   }
 }
 

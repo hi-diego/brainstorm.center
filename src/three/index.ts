@@ -55,6 +55,7 @@ export function animate () {
 }
 
 export function drawLines(note: any, _dot: any = null, ref = false) {
+  console.log('drawLines');
   const dot = _dot || scene.getObjectByName(note.title); 
   const groupName = `${note.title}-mentions`;
   const oldGroup = scene.getObjectByName(groupName);

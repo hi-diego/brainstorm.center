@@ -82,6 +82,15 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
   }
 
   /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public componentDidUpdate() {
+    if (this.props.selected) this.highlight();
+    else this.disparage();
+  }
+
+  /**
    * Highlight the three.js edge mesh by changing the material on the mesh.
    * Materials.line.selected color is pure white.
    */
