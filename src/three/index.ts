@@ -21,6 +21,7 @@ export function init () {
   scene.add(groups.nodes)
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.domElement.setAttribute('id', 'three-canvas');
   document.body.appendChild( renderer.domElement );
   camera.position.z = 5;
   animate();

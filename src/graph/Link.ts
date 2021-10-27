@@ -3,10 +3,10 @@ import Mention from 'brainstorm/Mention';
 import Materials from 'three/materials';
 
 /**
- * Vertex.
+ * Link.
  * @class
  */
-class Vertex extends GraphObject {
+class Link extends GraphObject {
 
   constructor (mention: Mention, mesh: any) {
     super(mention, mesh);
@@ -20,7 +20,7 @@ class Vertex extends GraphObject {
   }
 
   /**
-   * Highlight the three.js edge mesh by changing the material on the mesh.
+   * Highlight the three.js node mesh by changing the material on the mesh.
    * Materials.line.selected color is pure white.
    */
   highlight() {
@@ -28,7 +28,7 @@ class Vertex extends GraphObject {
   }
 
   /**
-   * Disparage the three.js edge mesh by changing the material on the mesh.
+   * Disparage the three.js node mesh by changing the material on the mesh.
    * Materials.line.default color is off white.
    */
   disparage() {
@@ -36,4 +36,4 @@ class Vertex extends GraphObject {
   }
 }
 
-export default Vertex;
+export default Link;

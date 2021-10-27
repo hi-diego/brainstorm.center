@@ -3,21 +3,21 @@ import Materials from 'three/materials';
 import createNode from 'three/createNode';
 import Note from 'brainstorm/Note';
 
-type EdgeProps = {
+type NodeProps = {
   note: Note,
   selected: boolean,
   onSelect: () => void
 };
 
-type EdgeState = {
+type NodeState = {
   note: Note
 };
 
 /**
- * Edge.
+ * Node.
  * @class
  */
-class Edge extends React.Component<EdgeProps, EdgeState> {
+class Node extends React.Component<NodeProps, NodeState> {
   /**
    * Return the notebook item.
    */
@@ -31,9 +31,9 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
   /**
    * Return the notebook item.
    */
-  // public state: EdgeState;
+  // public state: NodeState;
 
-  constructor (props: EdgeProps) {
+  constructor (props: NodeProps) {
     super(props);
     this.state = {
       note: props.note
@@ -52,7 +52,7 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
    * Create the Three.js Object and add it to the scene.
    */
   public getClassName(selected: boolean): string {
-    return `edge${ selected ? ' selected': '' }`;
+    return `node${ selected ? ' selected': '' }`;
   }
 
   /**
@@ -91,7 +91,7 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
   }
 
   /**
-   * Highlight the three.js edge mesh by changing the material on the mesh.
+   * Highlight the three.js node mesh by changing the material on the mesh.
    * Materials.line.selected color is pure white.
    */
   highlight() {
@@ -99,7 +99,7 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
   }
 
   /**
-   * Disparage the three.js edge mesh by changing the material on the mesh.
+   * Disparage the three.js node mesh by changing the material on the mesh.
    * Materials.line.default color is off white.
    */
   disparage() {
@@ -107,4 +107,4 @@ class Edge extends React.Component<EdgeProps, EdgeState> {
   }
 }
 
-export default Edge;
+export default Node;

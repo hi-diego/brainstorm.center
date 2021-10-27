@@ -2,7 +2,7 @@ import React from 'react';
 import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import { drawLines } from "three/index";
-import Edge from 'graph/Edge';
+import Node from 'graph/Node';
 // import Immutable from 'immutable';
 // import Mention from 'brainstorm/Mention';
 
@@ -22,7 +22,7 @@ type GraphState = {
  */
 class Graph extends React.Component<GraphProps, GraphState> {
 
-  public _edges: any[] = [];
+  public _nodes: any[] = [];
 
   public state: GraphState = {
     selected: null,
@@ -36,7 +36,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
     // this.notes = notes;
   }
 
-  public saveEdge(event: React.SyntheticEvent) {
+  public saveNode(event: React.SyntheticEvent) {
     event.preventDefault();
     const note = new Note(this.state._title, this.state._content);
     this.setState({
@@ -54,23 +54,23 @@ class Graph extends React.Component<GraphProps, GraphState> {
     );
   }
 
-  public edges(): JSX.Element[] {
-    this._edges = Notebook.notes.toSet().map((note: Note) => (
-      <Edge
+  public nodes(): JSX.Element[] {
+    this._nodes = Notebook.notes.toSet().map((note: Note) => (
+      <Node
         key={ note.uuid }
         note={ note }
         selected={ note === this.state.selected }
         onSelect={ () => this.setState({ selected: note === this.state.selected ? null : note }) }
       />
     )).toArray();
-    return this._edges;
+    return this._nodes;
   }
 
   public form(): JSX.Element {
      // onKeyDown="{ onKeyDownTitle }" placeholder="Title" onChange={ event => onTitleChange(event) }/>
      // onKeyDown={ onKeyDownContent } placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
     return (
-      <form className="note-form" onSubmit={ this.saveEdge.bind(this) }>
+      <form className="note-form" onSubmit={ this.saveNode.bind(this) }>
         {/*<label className="placeholder">placeholder</label>*/}
         <input autoFocus value={ this.title } onChange={ event => this.updateTitle(event) } />
         <textarea rows={ 10 } value={ this.content } onChange={ event => this.update(event) } ></textarea>
@@ -108,7 +108,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
   public render(): JSX.Element {
     return (
       <header className="App-header">
-        { this.edges() }
+        { this.nodes() }
         { this.hub() }
         { this.form() }
       </header>
@@ -120,8 +120,9 @@ class Graph extends React.Component<GraphProps, GraphState> {
    * this will recalculate all the mentionses as well.
    */
   public componentDidMount() {
-    // console.log(this._edges);
-    this._edges.forEach(edge => drawLines(edge.props.note, edge.mesh));
+    // console.log(this._nodes);
+    this._nodes.forEach(node => drawLines(node.props.note, node.mesh));
+    document.getElementById('three-canvas').onclick = () => this.setState({ selected: null });
   }
 }
 

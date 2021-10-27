@@ -1,7 +1,7 @@
 import Graph from 'graph/Graph';
 import Notebook from 'brainstorm/Notebook';
 // import { useState } from 'react';
-// import Edge from 'graph/Edge';
+// import Node from 'graph/Node';
 // import NoteType from 'brainstorm/Note';
 // import Mention from 'brainstorm/Mention';
 // import Immutable from 'immutable';
@@ -26,20 +26,20 @@ function App() {
 //   // const [title, setTitle] = useState('');
 //   // const [content, setContent] = useState('');
 //   // const [selecting, setSelecting] = useState(false);
-//   // const [edges, setEdges] = useState<Immutable.Map<string, Edge>>(
-//   //   Notebook.notes.mapEntries(([k, v]) => ([k, Edge.fromNote(v)]))
+//   // const [nodes, setNodes] = useState<Immutable.Map<string, Node>>(
+//   //   Notebook.notes.mapEntries(([k, v]) => ([k, Node.fromNote(v)]))
 //   // );
 //   // // var index = 0;
-//   // const labels: JSX.Element[] = edges.map((edge: Edge) => <label
+//   // const labels: JSX.Element[] = nodes.map((node: Node) => <label
 //   //     // tabIndex={index++}
 //   //     // contentEditable={'true'}
-//   //     className={ `edge ${title === edge.note.title ? 'selected' : ''}` }
-//   //     onClick={() => selectNote(edge.note.title)}
-//   //     key={edge.note.uuid}
-//   //     id={edge.note.title}
+//   //     className={ `node ${title === node.note.title ? 'selected' : ''}` }
+//   //     onClick={() => selectNote(node.note.title)}
+//   //     key={node.note.uuid}
+//   //     id={node.note.title}
 //   //   >
-//   //     <input onFocus={() => selectNote(edge.note.title)} className="none"/>
-//   //     {edge.note.title}
+//   //     <input onFocus={() => selectNote(node.note.title)} className="none"/>
+//   //     {node.note.title}
 //   //   </label>
 //   // ).toArray();
 //   // const hub = <div className="hub"><p>Notes: {notes.size}</p></div>
@@ -61,12 +61,12 @@ function App() {
 //   //   return setSelecting(false);
 //   // }
 //   function selectNote(_title: string) {
-//     const edge = edges.get(_title);
-//     if (!edge) return;
-//     edge.highlight();
+//     const node = nodes.get(_title);
+//     if (!node) return;
+//     node.highlight();
 //     // highlight(_title);
-//     setTitle(edge.note.title);
-//     setContent(edge.note.content);
+//     setTitle(node.note.title);
+//     setContent(node.note.content);
 //     setPlaceholder(null);
 //     // if (title === _title) {
 //     //   if (selecting) return unselect();
@@ -74,18 +74,18 @@ function App() {
 //     // }
 //     // if (selecting) return createNexus(note);
 //   }
-//   function saveEdge(title: string, content: string, event: any = null) {
+//   function saveNode(title: string, content: string, event: any = null) {
 //     if (event) event.preventDefault();
-//     const edge = edges.get(title, new Edge(title, content));
-//     setEdges(edges.set(title, edge));
+//     const node = nodes.get(title, new Node(title, content));
+//     setNodes(nodes.set(title, node));
 //     // drawDot(note);
-//     return edge;
+//     return node;
 //   }
 //   //
 //   function onTitleChange(event: any) {
 //     const newTitle = event.target.value;
 //     // if (!newTitle && selected)
-//     const newPlaceholder = searchEdges(newTitle)
+//     const newPlaceholder = searchNodes(newTitle)
 //     setPlaceholder(newPlaceholder);
 //     setTitle(newTitle);
 //   }
@@ -96,11 +96,11 @@ function App() {
 //   }
 //   function onKeyDownContent(event: any) {
 //     if (event.key === 'Enter') {
-//       saveEdge(title, content, event)
+//       saveNode(title, content, event)
 //     }
 //   }
-//   function searchEdges(newTitle: string): Immutable.Map<string, Edge> {
-//     return newTitle && edges.keySeq().filter((k: string) => k.startsWith(newTitle)).toArray()[0];
+//   function searchNodes(newTitle: string): Immutable.Map<string, Node> {
+//     return newTitle && nodes.keySeq().filter((k: string) => k.startsWith(newTitle)).toArray()[0];
 //   }
 //   // const titleRef = React.createRef();
 //   // if (titleRef.current) titleRef.current.focus();
@@ -114,7 +114,7 @@ function App() {
 //     //       ? <form className="note-form">
 //     //         <input placeholder="key" value={ mentionKey } onChange={ event => setMentionKey(event.target.value) }/>
 //     //       </form>
-//     //       : <form className="note-form" onSubmit={ event => saveEdge(title, content, event) }>
+//     //       : <form className="note-form" onSubmit={ event => saveNode(title, content, event) }>
 //     //         <label className="placeholder">{placeholder}</label>
 //     //         <input autoFocus value={ title } onKeyDown={onKeyDownTitle} placeholder="Title" onChange={ event => onTitleChange(event) }/>
 //     //         <textarea  rows={10} onKeyDown={onKeyDownContent} placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>

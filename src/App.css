@@ -78,7 +78,7 @@ canvas {
   top: 0;
 }
 
-label.edge {
+label.node {
   transition: none all;
   transition: box-shadow 0.1s;
   position: fixed;
@@ -90,7 +90,7 @@ label.edge {
   cursor: pointer;
 }
 
-label.edge:hover, label.edge.selected {
+label.node:hover, label.node.selected {
   box-shadow: 2px 2px 20px #fff;
 }
 
