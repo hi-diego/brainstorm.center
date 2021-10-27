@@ -1,20 +1,16 @@
-import Note from 'brainstorm/Note';
-import Notebook from 'brainstorm/Notebook';
 import Mention from 'brainstorm/Mention';
-import Immutable from 'immutable';
 import random from 'common/random';
-import stringToColor from 'common/stringToColor';
+import scene from 'three/scene'
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import groups from 'three/groups';
 
-const dotsGroup = new THREE.Group();
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
 const lineSelectedMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 const transparentLineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb, opacity: 0, transparent: true });
 const sphereGeometry = new THREE.SphereGeometry( 0.1, 32, 32 );
 const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
 const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const scene = new THREE.Scene();
 const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
@@ -22,8 +18,7 @@ var selectedMesh: any = null
 
 export function init () {
   renderer.setClearColor(0xffffff, 0);
-  scene.background = new THREE.Color(0x000000);
-  scene.add(dotsGroup)
+  scene.add(groups.nodes)
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
   document.body.appendChild( renderer.domElement );
@@ -40,7 +35,7 @@ export function init () {
 export function animate () {
   requestAnimationFrame(animate);
   controls.update();
-  dotsGroup.children.forEach((mesh: any) => {
+  groups.nodes.children.forEach((mesh: any) => {
       const temporalVector = new THREE.Vector3()
       // get the position of the center of the cube
       mesh.updateWorldMatrix(true, false)
@@ -53,6 +48,7 @@ export function animate () {
       const x = ((temporalVector.x * 0.5)) * renderer.domElement.clientWidth
       const y = ((temporalVector.y * -0.7)) * renderer.domElement.clientHeight
       var _label =  document.getElementById(mesh.name);
+      // console.log(mesh.name, _label)
       if (_label) _label.style.transform = `translate(-50%, -50%) translate(${x}px,${y}px)`;
     });
   renderer.render( scene, camera );
@@ -112,7 +108,7 @@ export function drawDot(note: any, drawMentions: boolean = true) {
   dot.translateY(Math.random() * 2);
   dot.translateZ(Math.random() * 2);
   dot.name = note.title;
-  dotsGroup.add(dot);
+  groups.nodes.add(dot);
   return drawMentions ? drawLines(note, dot, true) : null;
 }
 
@@ -150,7 +146,6 @@ export function highlight(title: string | null = null) {
   selectedMesh = mesh;
   const groupName = `${title}-mentions-tubes`;
   const tubes = scene.getObjectByName(groupName);
-  console.log(groupName, tubes)
   if (!tubes) return;
   tubes.children.forEach((t: any) => (t.material = lineSelectedMaterial))
 }

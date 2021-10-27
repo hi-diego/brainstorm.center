@@ -35,9 +35,9 @@ class Notebook {
       const storedNote = storedNotes[key];
       const note = new NoteProxy(storedNote.title, storedNote.content, storedNote.uuid, Immutable.Set<Mention>(storedNote.userMentions), storedNote.createdAt);
       notes.push(note)
-      drawDot(note, false);
+      // drawDot(note, false);
     }
-    notes.forEach(note => drawDot(note));
+    // notes.forEach(note => drawDot(note));
   }
 }
 

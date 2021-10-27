@@ -1,22 +1,38 @@
 import GraphObject from 'graph/GraphObject'
-import Note from 'brainstorm/Note';
 import Materials from 'three/materials';
+// import scene from 'three/scene';
+import createNode from 'three/createNode';
+import Note from 'brainstorm/proxy/Note';
 
 /**
  * Edge.
  * @class
  */
 class Edge extends GraphObject {
+  /**
+   * Return the notebook item.
+   */
+  public note: Note;
 
-  constructor (note: Note, mesh: any) {
-    super(note, mesh);
+  constructor (title: string, content: string, _note?: Note) {
+    const note = _note || new Note(title, content);
+    super(note, createNode(note));
+    this.note = note;
   }
 
   /**
    * Return the notebook item.
    */
-  public get note() {
-    return this.item;
+  public static fromNote(note: Note): Edge {
+    return new Edge('', '', note);
+  }
+
+
+  /**
+   * Create the Three.js Object and add it to the scene.
+   */
+  public createMesh(): any {
+    return {};
   }
 
   /**
