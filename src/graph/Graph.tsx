@@ -1,6 +1,7 @@
 import React from 'react';
 import Immutable from 'immutable';
-// import Note from 'brainstorm/Note';
+import Notebook from 'brainstorm/Notebook';
+import Note from 'brainstorm/Note';
 // import { drawDot } from "three/index";
 import Edge from 'graph/Edge';
 // import Mention from 'brainstorm/Mention';
@@ -10,7 +11,8 @@ type GraphProps = {
 };
 
 type GraphState = {
-  edges: Immutable.Map<string, Edge>
+  edges: Immutable.Map<string, Edge>,
+  selected: Note | null
 };
 
 /**
@@ -20,11 +22,14 @@ type GraphState = {
 class Graph extends React.Component<GraphProps, GraphState> {
 
   public state: GraphState = {
-    edges: Immutable.Map<string, Edge>()
+    edges: Immutable.Map<string, Edge>(),
+    selected: null
   };
 
   constructor (props: GraphProps) {
     super(props);
+    new Note('foo', 'bar');
+    new Note('bar', 'goo');
     // this.onUpdate = () => null;
     // this.notes = notes;
   }
@@ -40,6 +45,18 @@ class Graph extends React.Component<GraphProps, GraphState> {
         <p>Notes: 0 dwdw</p>
       </div>
     );
+  }
+
+  public edges(): JSX.Element[] {
+        // onClick={ this.setState({ selected: note }) }
+    return Notebook.notes.toSet().map((note: Note) => (
+      <Edge
+        key={ note.uuid }
+        note={ note }
+        selected={ note === this.state.selected }
+        onSelect={ () => this.setState({ selected: note === this.state.selected ? null : note }) }
+      />
+    )).toArray();
   }
 
   public form(): JSX.Element {
@@ -60,6 +77,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
   public render(): JSX.Element {
     return (
       <header className="App-header">
+        { this.edges() }
         { this.hub() }
         { this.form() }
       </header>

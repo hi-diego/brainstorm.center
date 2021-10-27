@@ -5,8 +5,10 @@ import Graph from 'graph/Graph';
 // import Mention from 'brainstorm/Mention';
 // import Notebook from 'brainstorm/Notebook';
 // import Immutable from 'immutable';
-// import { init } from "three/index";
+import { init } from "three/index";
 import './App.css';
+
+init();
 
 function App() {
   return (
@@ -16,7 +18,6 @@ function App() {
   );  
 }
 
-// init()
 // Notebook.start()
 
 // function App() {

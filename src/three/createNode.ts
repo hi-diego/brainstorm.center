@@ -8,7 +8,7 @@ import groups from 'three/groups';
 export default function createNode(note: Note): any {
   const oldNode = scene.getObjectByName(note.title);
   if (oldNode) return oldNode; // drawLines(note, oldNode, true);
-  const node = new THREE.Mesh(geometries.node.default, materials.mesh.default);
+  const node = ThreeMesh(geometries.node.default, materials.mesh.default);
   node.translateX(Math.random() * 2);
   node.translateY(Math.random() * 2);
   node.translateZ(Math.random() * 2);
@@ -17,4 +17,8 @@ export default function createNode(note: Note): any {
   groups.nodes.add(node);
   return node;
   // return drawMentions ? drawLines(note, node, true) : null;
+}
+
+function ThreeMesh(geometry: any , material: any) {
+  return new THREE.Mesh(geometry, material);
 }

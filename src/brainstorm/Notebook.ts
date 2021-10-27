@@ -1,7 +1,7 @@
-import { default as NoteProxy } from 'brainstorm/proxy/Note';
 import { drawDot } from "three/index";
 import Note from 'brainstorm/Note';
 import Mention from 'brainstorm/Mention';
+import Directory from 'brainstorm/Directory';
 import Immutable from 'immutable';
 
 /**
@@ -15,6 +15,8 @@ class Notebook {
 
   constructor (notes: Immutable.Map<string, Note>) {
     this.notes = notes;
+    // for testing
+    // this.notes = Immutable.Map<string, Note>([ new Note('foo', 'bar'), new Note('bar', 'goo') ]);
     this.onUpdate = () => null;
   }
 
@@ -22,7 +24,8 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  public update(note: Note) {
+  public update(note: Note, newContent?: string) {
+    if (newContent) Directory.update(note, newContent);
     this.notes = this.notes.set(note.title, note)
     this.onUpdate(this.notes.toSet())
     window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()))
@@ -41,7 +44,7 @@ class Notebook {
     const notes = []
     for (const key in storedNotes) {
       const storedNote = storedNotes[key];
-      const note = new NoteProxy(storedNote.title, storedNote.content, storedNote.uuid, Immutable.Set<Mention>(storedNote.userMentions), storedNote.createdAt);
+      const note = new Note(storedNote.title, storedNote.content, storedNote.uuid, Immutable.Set<Mention>(storedNote.userMentions), storedNote.createdAt);
       notes.push(note)
       // drawDot(note, false);
     }

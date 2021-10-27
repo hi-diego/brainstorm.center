@@ -14,25 +14,22 @@ class Note extends NotebookItem {
   public _content: string;
   public userMentions: Immutable.Set<Mention>;
 
-  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
+  constructor (title: string, _content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
     super(uuid, createdAt, modifiedAt);
     this.userMentions = userMentions || Immutable.Set<Mention>();
     this.title = title;
     this._content = '';
-    this.content = content;
-    // todo modify Directory.update to not do this next trick.
-    Directory.update(new Note(this.title, '', this.uuid), note.content);
-    Notebook.update(this);
+    this.content = _content;
   }
 
-  public get content(content: string): string {
+  public get content(): string {
     return this._content;
   }
 
   public set content(content: string) {
-    Directory.update(this, content);
+    // Directory.update(this, content);
+    Notebook.update(this, content);
     this._content = content;
-    Notebook.update(this);
   }
 
 
