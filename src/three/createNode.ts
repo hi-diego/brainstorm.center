@@ -1,6 +1,7 @@
 import scene from 'three/scene';
 import geometries from 'three/geometries';
 import materials from 'three/materials';
+import Note from 'brainstorm/Note';
 import * as THREE from 'three';
 import groups from 'three/groups';
 

@@ -11,15 +11,30 @@ import Immutable from 'immutable';
 class Note extends NotebookItem {
 
   public title: string;
-  public content: string;
+  public _content: string;
   public userMentions: Immutable.Set<Mention>;
 
   constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
     super(uuid, createdAt, modifiedAt);
-    this.title = title;
-    this.content = content;
     this.userMentions = userMentions || Immutable.Set<Mention>();
+    this.title = title;
+    this._content = '';
+    this.content = content;
+    // todo modify Directory.update to not do this next trick.
+    Directory.update(new Note(this.title, '', this.uuid), note.content);
+    Notebook.update(this);
   }
+
+  public get content(content: string): string {
+    return this._content;
+  }
+
+  public set content(content: string) {
+    Directory.update(this, content);
+    this._content = content;
+    Notebook.update(this);
+  }
+
 
   /**
    * Return all the words in the content.

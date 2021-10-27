@@ -22,13 +22,21 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  update(note: Note) {
+  public update(note: Note) {
     this.notes = this.notes.set(note.title, note)
     this.onUpdate(this.notes.toSet())
     window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()))
   }
 
-  start() {
+  /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  // public Note(title: string, content: string, uuid?: string) {
+
+  // }
+
+  public start() {
     const storedNotes = JSON.parse(window.localStorage.getItem('brainstorm.center.notes') || '{}')
     const notes = []
     for (const key in storedNotes) {

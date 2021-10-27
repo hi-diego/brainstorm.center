@@ -1,8 +1,8 @@
 import GraphObject from 'graph/GraphObject'
 import Materials from 'three/materials';
-// import scene from 'three/scene';
 import createNode from 'three/createNode';
-import Note from 'brainstorm/proxy/Note';
+import { default as ProxyNote } from 'brainstorm/proxy/Note';
+import Note from 'brainstorm/Note';
 
 /**
  * Edge.
@@ -15,7 +15,7 @@ class Edge extends GraphObject {
   public note: Note;
 
   constructor (title: string, content: string, _note?: Note) {
-    const note = _note || new Note(title, content);
+    const note = _note || new ProxyNote(title, content);
     super(note, createNode(note));
     this.note = note;
   }
