@@ -12,7 +12,7 @@ export default function createNode(note: Note): any {
   node.translateX(Math.random() * 2);
   node.translateY(Math.random() * 2);
   node.translateZ(Math.random() * 2);
-  // node.name = note.title;
+  node.name = note.title;
   node.transparent = true;
   node.material.opacity = 0.9;
   node.userData = { note };

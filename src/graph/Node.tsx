@@ -1,11 +1,14 @@
 import React from 'react';
 import Materials from 'three/materials';
+import scene from 'three/scene';
 import createNode from 'three/createNode';
 import Note from 'brainstorm/Note';
+import { drawLines } from 'three/index';
 
 type NodeProps = {
   note: Note,
   selected: boolean,
+  drawLines: boolean,
   onSelect: () => void
 };
 
@@ -38,14 +41,15 @@ class Node extends React.Component<NodeProps, NodeState> {
     this.state = {
       note: props.note
     };
-    this.mesh = this.getMesh();
+    this.getMesh();
   }
 
   /**
    * Create the Three.js Object and add it to the scene.
    */
   public getMesh(): any {
-    return createNode(this.state.note);
+    this.mesh = createNode(this.state.note);
+    if (this.props.drawLines) drawLines(this.props.note, this.mesh, true);
   }
 
   /**
@@ -96,6 +100,10 @@ class Node extends React.Component<NodeProps, NodeState> {
    */
   highlight() {
     this.mesh.material = Materials.mesh.selected;
+    const groupName = `${this.state.note.title}-mentions-tubes`;
+    const tubes = scene.getObjectByName(groupName);
+    if (!tubes) return;
+    tubes.children.forEach((t: any) => (t.material = Materials.line.selected));
   }
 
   /**
@@ -104,6 +112,10 @@ class Node extends React.Component<NodeProps, NodeState> {
    */
   disparage() {
     this.mesh.material = Materials.mesh.default;
+    const groupName = `${this.state.note.title}-mentions-tubes`;
+    const tubes = scene.getObjectByName(groupName);
+    if (!tubes) return;
+    tubes.children.forEach((t: any) => (t.material = Materials.transparent));
   }
 }
 

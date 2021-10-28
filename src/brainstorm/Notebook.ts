@@ -24,10 +24,9 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  public update(note: Note, newContent?: string) {
-    if (newContent) Directory.update(note);
+  public update(note: Note) {
+    Directory.update(note);
     this.notes = this.notes.set(note.title, note);
-    this.onUpdate(this.notes.toSet());
     window.localStorage.setItem('brainstorm.center.notes', JSON.stringify(this.notes.toJSON()));
   }
 
@@ -47,5 +46,6 @@ class Notebook {
     }
   }
 }
+
 
 export default new Notebook(Immutable.Map<string, Note>());

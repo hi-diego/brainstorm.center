@@ -3,6 +3,7 @@ import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
 import NotebookItem from 'brainstorm/NotebookItem';
 import Immutable from 'immutable';
+import { drawLines } from 'three/index';
 
 /**
  * Note class is the holder of Mentions.
@@ -41,8 +42,9 @@ class Note extends NotebookItem {
   /**
    * Return all the words in the content.
    */
-  public words () : Immutable.Set<string> {
-    return Immutable.Set(this.content.split(' '))
+  public words (prev: boolean = false) : Immutable.Set<string> {
+    var words = (prev ? this.prevContent : this.content).split(' ').filter(s => !!s);
+    return Immutable.Set<string>(words);
   }
 
   /**
@@ -67,7 +69,9 @@ class Note extends NotebookItem {
    * Return all the notes that reference this note by the title.
    */
   public references () : Immutable.Set<Note|undefined> {
-    return Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title))
+    const ref = Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title))
+    // console.log(ref);
+    return ref;
   }
 }
 

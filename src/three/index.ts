@@ -32,7 +32,6 @@ export function init () {
   }, false);
 }
 
-
 export function animate () {
   requestAnimationFrame(animate);
   controls.update();
@@ -56,7 +55,7 @@ export function animate () {
 }
 
 export function drawLines(note: any, _dot: any = null, ref = false) {
-  const dot = _dot || scene.getObjectByName(note.title); 
+  const dot = _dot || scene.getObjectByName(note.title);
   const groupName = `${note.title}-mentions`;
   const oldGroup = scene.getObjectByName(groupName);
   if (oldGroup) scene.remove(oldGroup);
@@ -81,8 +80,7 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
     );
 
     let tube = new THREE.Line(tubeGeometry, transparentLineMaterial);
-    tube.name = `${note.title}-${to.title}-tube`
-
+    tube.name = `${note.title}-${to.title}-tube`;
 
     const curve = getCubicBezierCurve3(dot, toDot);
     const curvePoints = curve.getPoints(50);
@@ -98,7 +96,8 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   });
   scene.add(group);
   scene.add(tubeGroup);
-  if (ref) note.references().forEach((from: any) => drawLines(from))
+  // console.log('note.references()', note.references())
+  if (ref) note.references().forEach((from: any) => drawLines(from));
 }
 
 export function drawDot(note: any, drawMentions: boolean = true) {
