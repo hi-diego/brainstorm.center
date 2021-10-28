@@ -3,7 +3,7 @@ import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import Node from 'graph/Node';
 import { drawLines } from 'three/index';
-// import Immutable from 'immutable';
+import Immutable from 'immutable';
 // import Mention from 'brainstorm/Mention';
 
 type GraphProps = {
@@ -14,7 +14,8 @@ type GraphState = {
   selected: Note | null,
   _title: string,
   _content: string,
-  componentDidMount: boolean
+  componentDidMount: boolean,
+  placeholder: string
 };
 
 /**
@@ -29,7 +30,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
     selected: null,
     _title: '',
     _content: '',
-    componentDidMount: false
+    componentDidMount: false,
+    placeholder: ''
   };
 
   constructor (props: GraphProps) {
@@ -74,22 +76,38 @@ class Graph extends React.Component<GraphProps, GraphState> {
      // onKeyDown={ onKeyDownContent } placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
     return (
       <form className="note-form" onSubmit={ this.saveNode.bind(this) }>
-        {/*<label className="placeholder">placeholder</label>*/}
-        <input autoFocus value={ this.title } onChange={ event => this.updateTitle(event) } />
-        <textarea onKeyDown={ this.onKeyDown.bind(this) } rows={ 10 } value={ this.content } onChange={ event => this.update(event) } ></textarea>
+        <label className="placeholder">{ this.state.placeholder }</label>
+        <input autoFocus placeholder="Title" onKeyDown={ this.onKeyDownTitle.bind(this) } value={ this.title } onChange={ event => this.updateTitle(event) } />
+        <textarea placeholder="Content" onKeyDown={ this.onKeyDown.bind(this) } rows={ 10 } value={ this.content } onChange={ event => this.update(event) } ></textarea>
         {/*<button type="submit">add</button>*/}
       </form>
     );
   }
 
+  public onKeyDownTitle(event: any) {
+    console.log('onKeyDownTitle');
+    if (event.key === 'Tab' && this.state.placeholder) {
+      this.setState({
+        selected: Notebook.notes.get(this.state.placeholder) || null,
+        // placeholder: ''
+      });
+    }
+  }
+
+  public searchNodes(newTitle: string): string {
+    return newTitle && Notebook.notes.keySeq().filter((k: string) => k.startsWith(newTitle)).toArray()[0];
+  }
+
   public onKeyDown(event: any) {
-    // console.log(event);
-   if (event.key === 'Enter') this.saveNode();
+    if (event.key === 'Enter') this.saveNode();
   }
 
   public updateTitle(event: any) {
-    if (this.state.selected) this.setState({ selected: this.state.selected.update(event.target.value, this.content) });
-    else this.setState({ _title: event.target.value })
+    const newTitle = event.target.value;
+    const newPlaceholder = this.searchNodes(newTitle);
+    this.setState({ placeholder: newPlaceholder });
+    if (this.state.selected) this.setState({ selected: this.state.selected.update(newTitle, this.content) });
+    else this.setState({ _title: newTitle });
   }
 
   public update(event: any) {
