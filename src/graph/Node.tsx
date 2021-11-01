@@ -9,7 +9,7 @@ type NodeProps = {
   note: Note,
   selected: boolean,
   drawLines: boolean,
-  onSelect: () => void
+  onSelect: (node: Node, event: any) => void
 };
 
 type NodeState = {
@@ -62,25 +62,18 @@ class Node extends React.Component<NodeProps, NodeState> {
   /**
    * Create the Three.js Object and add it to the scene.
    */
-  public select() {
-    // this.setState({ selected: true })
-  }
-
-  /**
-   * Create the Three.js Object and add it to the scene.
-   */
   public render(): JSX.Element {
       // tabIndex={index++}
       // contentEditable={'true'}
     return (
       <label
         className={ this.getClassName(this.props.selected) }
-        onClick={ event => this.props.onSelect() }
+        onClick={ event => this.props.onSelect(this, event) }
         key={ this.state.note.uuid }
         id={ this.state.note.title }
       >
         { this.state.note.title }
-        <input onFocus={ event => this.props.onSelect() } className="ghosty"/>
+        <input onFocus={ event => this.props.onSelect(this, event) } className="ghosty"/>
       </label>
     );
   }

@@ -11,12 +11,18 @@ type GraphProps = {
 };
 
 type GraphState = {
-  selected: Note | null,
-  _title: string,
-  _content: string,
+  note: Note | null,
+  title: string,
+  content: string,
   componentDidMount: boolean,
   placeholder: string
 };
+
+const GRAPH = {
+  SAVE_ASYNC: false,
+  SAVE_SYNC: true,
+  SAVE_BOUNCE_TIME: 2000
+}
 
 /**
  * Graph.
@@ -24,73 +30,83 @@ type GraphState = {
  */
 class Graph extends React.Component<GraphProps, GraphState> {
 
-  public _nodes: any[] = [];
+  public nodes: any[] = [];
+  public timer: any; 
 
   public state: GraphState = {
-    selected: null,
-    _title: '',
-    _content: '',
+    note: null,
+    title: '',
+    content: '',
     componentDidMount: false,
     placeholder: ''
   };
 
-  constructor (props: GraphProps) {
-    super(props);
-    // this.onUpdate = () => null;
-    // this.notes = notes;
+  public save(flag: boolean = GRAPH.SAVE_SYNC, event?: React.SyntheticEvent|null) {
+    if (event) event.preventDefault();
+    window.clearTimeout(this.timer);
+    if (flag === GRAPH.SAVE_ASYNC) this.timer = window.setTimeout(this._save.bind(this), GRAPH.SAVE_BOUNCE_TIME);
+    else this._save();
   }
 
-  public saveNode(event?: React.SyntheticEvent) {
-    if (event) event.preventDefault();
-    const note = new Note(this.state._title, this.state._content);
+  public _save() {
+    const note = this.state.note
+      ? this.state.note.update(this.state.title, this.state.content)
+      : new Note(this.state.title, this.state.content);
     this.setState({
-      selected: null,
-      _title: '',
-      _content: ''
+      note: note,
+      title: note.title,
+      content: note.content
     });
+    return note;
   }
 
   public hub(): JSX.Element {
     return (
       <div className="hub">
-        <p>Notes: 0 dwdw</p>
+        <p>Notes: { Notebook.notes.size }</p>
       </div>
     );
   }
 
-  public nodes(): JSX.Element[] {
-    this._nodes = Notebook.notes.toSet().map((note: Note) => (
+  public getNodes(): JSX.Element[] {
+    this.nodes = Notebook.notes.toSet().map((note: Note) => (
       <Node
         key={ note.uuid }
         note={ note }
         drawLines={ this.state.componentDidMount }
-        selected={ note === this.state.selected }
-        onSelect={ () => this.setState({ selected: note === this.state.selected ? null : note }) }
+        selected={ note === this.state.note }
+        onSelect={ event => this.select.bind(this)(note, event) }
       />
     )).toArray();
-    return this._nodes;
+    return this.nodes;
+  }
+
+  public select (note: Note, event: any = null) {
+    this.setState({
+      note: note,
+      title: note.title,
+      content: note.content
+    });
   }
 
   public form(): JSX.Element {
      // onKeyDown="{ onKeyDownTitle }" placeholder="Title" onChange={ event => onTitleChange(event) }/>
      // onKeyDown={ onKeyDownContent } placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
     return (
-      <form className="note-form" onSubmit={ this.saveNode.bind(this) }>
+      <form className="note-form" onSubmit={ event => this.save.bind(this)(GRAPH.SAVE_SYNC, event) }>
         <label className="placeholder">{ this.state.placeholder }</label>
-        <input autoFocus placeholder="Title" onKeyDown={ this.onKeyDownTitle.bind(this) } value={ this.title } onChange={ event => this.updateTitle(event) } />
-        <textarea placeholder="Content" onKeyDown={ this.onKeyDown.bind(this) } rows={ 10 } value={ this.content } onChange={ event => this.update(event) } ></textarea>
+        <input autoFocus placeholder="Title" onKeyDown={ this.onTitleKeyDown.bind(this) } value={ this.state.title } onChange={ event => this.updateTitle(event) } />
+        <textarea placeholder="Content" onKeyDown={ this.onContentKeyDown.bind(this) } rows={ 10 } value={ this.state.content } onChange={ event => this.update(null, event.target.value) } ></textarea>
         {/*<button type="submit">add</button>*/}
       </form>
     );
   }
 
-  public onKeyDownTitle(event: any) {
-    console.log('onKeyDownTitle');
-    if (event.key === 'Tab' && this.state.placeholder) {
-      this.setState({
-        selected: Notebook.notes.get(this.state.placeholder) || null,
-        // placeholder: ''
-      });
+  public onTitleKeyDown(event: any) {
+    if (event.key === 'Enter') return this.save();
+    if (event.key === 'ArrowRight' && this.state.placeholder) {
+      const note = Notebook.notes.get(this.state.placeholder); 
+      if (note) this.select(note);
     }
   }
 
@@ -98,33 +114,22 @@ class Graph extends React.Component<GraphProps, GraphState> {
     return newTitle && Notebook.notes.keySeq().filter((k: string) => k.startsWith(newTitle)).toArray()[0];
   }
 
-  public onKeyDown(event: any) {
-    if (event.key === 'Enter') this.saveNode();
+  public onContentKeyDown(event: any) {
+    if (event.key === 'Enter') return this.save();
   }
 
   public updateTitle(event: any) {
-    const newTitle = event.target.value;
-    const newPlaceholder = this.searchNodes(newTitle);
-    this.setState({ placeholder: newPlaceholder });
-    if (this.state.selected) this.setState({ selected: this.state.selected.update(newTitle, this.content) });
-    else this.setState({ _title: newTitle });
+    const title = event.target.value;
+    const placeholder = this.searchNodes(title);
+    this.update(title);
+    this.setState({ placeholder: placeholder });
+    this.save(GRAPH.SAVE_ASYNC);
   }
 
-  public update(event: any) {
-    if (this.state.selected) this.setState({ selected: this.state.selected.update(this.title, event.target.value) });
-    else this.setState({ _content: event.target.value })
-  }
-
-  public get title(): string {
-    return this.state.selected
-      ? this.state.selected.title
-      : this.state._title;
-  }
-
-  public get content(): string {
-    return this.state.selected
-      ? this.state.selected.content
-      : this.state._content;
+  public update(title?: string|null, content?: string|null) {
+    if (title) this.setState({ title });
+    if (content) this.setState({ content });
+    this.save(GRAPH.SAVE_ASYNC);
   }
 
   /**
@@ -134,7 +139,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
   public render(): JSX.Element {
     return (
       <header className="App-header">
-        { this.nodes() }
+        { this.getNodes() }
         { this.hub() }
         { this.form() }
       </header>
@@ -146,10 +151,10 @@ class Graph extends React.Component<GraphProps, GraphState> {
    * this will recalculate all the mentionses as well.
    */
   public componentDidMount() {
-    this._nodes.forEach(node => drawLines(node.props.note, node.mesh));
+    this.nodes.forEach(node => drawLines(node.props.note, node.mesh));
     this.setState({ componentDidMount: true });
     const canvas = document.getElementById('three-canvas');
-    if (canvas) canvas.onclick = () => this.setState({ selected: null });
+    if (canvas) canvas.onclick = () => this.setState({ note: null, title: '', content: '' });
   }
 }
 

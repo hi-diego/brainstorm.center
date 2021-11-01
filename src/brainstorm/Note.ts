@@ -33,9 +33,10 @@ class Note extends NotebookItem {
     Notebook.update(this);
   }
 
-  public update(title: string, content: string): Note {
-    this.title = title;
-    this.content = content;
+  public update(title?: string|null, content?: string|null): Note {
+    if (title) this.title = title;
+    if (content) this.content = content;
+    console.log(this.title, this.content);
     return this;
   }
 
