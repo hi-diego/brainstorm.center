@@ -55,6 +55,7 @@ export function animate () {
 }
 
 export function drawLines(note: any, _dot: any = null, ref = false) {
+  // console.log(note, _dot, ref);
   const dot = _dot || scene.getObjectByName(note.title);
   const groupName = `${note.title}-mentions`;
   const oldGroup = scene.getObjectByName(groupName);
@@ -64,6 +65,8 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   tubeGroup.name = `${note.title}-mentions-tubes`;
   group.name = groupName
   note.mentions().forEach((mention: Mention) => {
+    // console.log(mention);
+
     const to = mention.to;
     const toDot = scene.getObjectByName(to.title);
     const lineGeometry = new THREE.BufferGeometry().setFromPoints([dot.position, toDot.position]);

@@ -57,6 +57,12 @@ class Graph extends React.Component<GraphProps, GraphState> {
       title: note.title,
       content: note.content
     });
+    drawLines(note, null, true);
+    // const node = this.nodes.find(node => node.props.note === note);
+    // if (node) {
+    //   console.log(node);
+    //   // node.getMesh();
+    // }
     return note;
   }
 

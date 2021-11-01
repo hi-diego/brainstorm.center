@@ -55,6 +55,15 @@ class Node extends React.Component<NodeProps, NodeState> {
   /**
    * Create the Three.js Object and add it to the scene.
    */
+  public update(title?: string|null, content?: string|null): Node {
+    this.state.note.update(title, content);
+    //this.drawLines();
+    return this;
+  }
+
+  /**
+   * Create the Three.js Object and add it to the scene.
+   */
   public getClassName(selected: boolean): string {
     return `node${ selected ? ' selected': '' }`;
   }
