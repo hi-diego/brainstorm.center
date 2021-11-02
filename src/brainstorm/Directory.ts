@@ -15,6 +15,10 @@ class Directory {
     this.dir = Map();
   }
 
+  clear() {
+    this.dir = Immutable.Map<string, Immutable.Set<string>>();
+  }
+
   update(note: Note) {
     const words = wordsDiff(note.words(true), note.words());
     words.gone.forEach((word: string) => {

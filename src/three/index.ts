@@ -16,9 +16,19 @@ const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
 
+export function clear () {
+  while(groups.nodes.children.length > 0) { 
+    groups.nodes.remove(groups.nodes.children[0]);
+  }
+  while(groups.links.children.length > 0) { 
+    groups.links.remove(groups.links.children[0]);
+  }
+}
+
 export function init () {
   renderer.setClearColor(0xffffff, 0);
   scene.add(groups.nodes)
+  scene.add(groups.links)
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.domElement.setAttribute('id', 'three-canvas');
@@ -55,20 +65,21 @@ export function animate () {
 }
 
 export function drawLines(note: any, _dot: any = null, ref = false) {
-  // console.log(note, _dot, ref);
   const dot = _dot || scene.getObjectByName(note.title);
   const groupName = `${note.title}-mentions`;
+  if (!dot) return;
   const oldGroup = scene.getObjectByName(groupName);
+  groups.links.remove(oldGroup);
   if (oldGroup) scene.remove(oldGroup);
   const group = new THREE.Group();
   const tubeGroup = new THREE.Group();
   tubeGroup.name = `${note.title}-mentions-tubes`;
   group.name = groupName
   note.mentions().forEach((mention: Mention) => {
-    // console.log(mention);
-
+    console.log('mentions', mention);
     const to = mention.to;
     const toDot = scene.getObjectByName(to.title);
+    if (!to || !toDot) return;
     const lineGeometry = new THREE.BufferGeometry().setFromPoints([dot.position, toDot.position]);
     const line = new THREE.Line(lineGeometry, lineMaterial);
     line.name = `${note.title}-${to.title}`
@@ -97,8 +108,10 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
     else group.add(line);
 
   });
-  scene.add(group);
-  scene.add(tubeGroup);
+  groups.links.add(group);
+  groups.links.add(tubeGroup);
+  // scene.add(group);
+  // scene.add(tubeGroup);
   // console.log('note.references()', note.references())
   if (ref) note.references().forEach((from: any) => drawLines(from));
 }

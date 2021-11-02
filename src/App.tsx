@@ -1,21 +1,42 @@
 import Graph from 'graph/Graph';
-import Notebook from 'brainstorm/Notebook';
 // import { useState } from 'react';
 // import Node from 'graph/Node';
 // import NoteType from 'brainstorm/Note';
 // import Mention from 'brainstorm/Mention';
 // import Immutable from 'immutable';
-import { init } from "three/index";
 import './App.css';
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  useParams,
+  useRouteMatch,
+  RouteComponentProps
+} from "react-router-dom";
 
-init();
-Notebook.load();
+
+type RouteParams =  {
+  notebook: string
+};
+
+function log (thing: any): any {
+  console.log(thing);
+  return <h1>Foo</h1>;
+}
 
 function App() {
+  // let { notebook } = useParams<RouteParams>();
+  // notebook={ match.params.notebook } /
+  // <Route path="/:notebook" component={ () =>  <Graph notebook={ `${match.params.notebook}` }/> }/>
+       // <Route path="/:notebook" component={ Graph }/>
+       //  notebook={ match.params.notebook } 
   return (
-    <div className="App">
-      <Graph/>
-    </div>
+    <Router>
+      <div className="App">
+        <Route path={ ['/:notebook', '/'] } component={ (props: any) =>  <Graph notebook={ props.match.params.notebook }/> }/>
+      </div>
+    </Router>
   );  
 }
 

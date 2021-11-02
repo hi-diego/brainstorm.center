@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useCallback }from 'react';
+import { useHistory } from 'react-router-dom';
 import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import Node from 'graph/Node';
 import { drawLines } from 'three/index';
 import Immutable from 'immutable';
-// import Mention from 'brainstorm/Mention';
+import { init, clear } from "three/index";
+import { Link } from "react-router-dom";
 
 type GraphProps = {
-
+  notebook?: string
 };
 
 type GraphState = {
@@ -40,6 +42,12 @@ class Graph extends React.Component<GraphProps, GraphState> {
     componentDidMount: false,
     placeholder: ''
   };
+
+  constructor (props: GraphProps) {
+    super(props);
+    init();
+    Notebook.load(props.notebook);
+  }
 
   public save(flag: boolean = GRAPH.SAVE_SYNC, event?: React.SyntheticEvent|null) {
     if (event) event.preventDefault();
@@ -103,7 +111,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
         <label className="placeholder">{ this.state.placeholder }</label>
         <input autoFocus placeholder="Title" onKeyDown={ this.onTitleKeyDown.bind(this) } value={ this.state.title } onChange={ event => this.updateTitle(event) } />
         <textarea placeholder="Content" onKeyDown={ this.onContentKeyDown.bind(this) } rows={ 10 } value={ this.state.content } onChange={ event => this.update(null, event.target.value) } ></textarea>
-        {/*<button type="submit">add</button>*/}
+        {/*<button onClick={ event => useCallback(() => history.push('/sample'), [history]) }>go</button>*/}
+        { this.state.note &&  <Link to={ this.state.note.title }>GO</Link> }
       </form>
     );
   }
@@ -161,6 +170,43 @@ class Graph extends React.Component<GraphProps, GraphState> {
     this.setState({ componentDidMount: true });
     const canvas = document.getElementById('three-canvas');
     if (canvas) canvas.onclick = () => this.setState({ note: null, title: '', content: '' });
+  }
+
+  /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public componentDidUpdate(prevProps: GraphProps) {
+    console.log(this.props.notebook, prevProps.notebook);
+    if (this.props.notebook !== prevProps.notebook) {
+      this.onRouteChanged(this.props.notebook);
+    }
+  }
+
+  /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public onRouteChanged(notebook?: string) {
+    Notebook.reload(notebook);
+    clear();
+    this.initState();
+  }
+
+  /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public initState(notebook?: string) {
+    this.setState({
+      note: null,
+      title: '',
+      content: '',
+      // componentDidMount: false,
+      placeholder: ''
+    });
+    this.getNodes();
+    // window.setTimeout(() => this.setState(({ componentDidMount: true })), 1000)
   }
 }
 
