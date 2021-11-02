@@ -99,7 +99,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
     this.setState({
       note: note,
       title: note.title,
-      content: note.content
+      content: note.content,
+      placeholder: ''
     });
   }
 
@@ -118,6 +119,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
   }
 
   public onTitleKeyDown(event: any) {
+    // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
+    // if (event.key === 'Enter') return this.state.title === this.state.note.title ? window.history.push()  this.save();
     if (event.key === 'Enter') return this.save();
     if (event.key === 'ArrowRight' && this.state.placeholder) {
       const note = Notebook.notes.get(this.state.placeholder); 
