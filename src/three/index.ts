@@ -92,19 +92,28 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
       8, //Roundness of Tube
       false //closed
     );
-
-    let tube = new THREE.Line(tubeGeometry, transparentLineMaterial);
-    tube.name = `${note.title}-${to.title}-tube`;
-
     const curve = getCubicBezierCurve3(dot, toDot);
     const curvePoints = curve.getPoints(50);
     const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
     const curveLine = new THREE.Line(curveGeometry, lineMaterial);
     curveLine.name = `${note.title}-${to.title}`
 
+    // Create Tube Geometry
+    const tubeCurvedGeometry = new THREE.TubeGeometry(
+      curve,
+      512,// path segments
+      0.003,// THICKNESS
+      8, //Roundness of Tube
+      false //closed
+    );
+
+    let tube = new THREE.Line(( mention.createdByUser || mention.to.title === mention.from.title ? tubeCurvedGeometry : tubeGeometry), transparentLineMaterial);
+    tube.name = `${note.title}-${to.title}-tube`;
+
+
     tubeGroup.add(tube);
 
-    if (mention.createdByUser) group.add(curveLine);
+    if (mention.createdByUser || mention.to.title === mention.from.title) group.add(curveLine);
     else group.add(line);
 
   });

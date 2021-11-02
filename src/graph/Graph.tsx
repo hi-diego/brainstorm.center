@@ -155,7 +155,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
     return (
       <header className="App-header">
         { this.getNodes() }
-        { this.hub() }
+        {/*{ this.hub() }*/}
         { this.form() }
       </header>
     );
