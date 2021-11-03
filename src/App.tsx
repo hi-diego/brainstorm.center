@@ -34,7 +34,7 @@ function App() {
   return (
     <Router>
       <div className="App">
-        <Route path={ ['/:notebook', '/'] } component={ (props: any) =>  <Graph notebook={ props.match.params.notebook }/> }/>
+        <Route path={ ['*/:notebook', '/'] } component={ (props: any) =>  <Graph notebook={ props.match.params.notebook }/> }/>
       </div>
     </Router>
   );  

@@ -37,7 +37,10 @@ class Notebook {
    * this will recalculate all the mentionses as well.
    */
   public getLocalStorageName(): string {
-    return `brainstorm.center.${this.name}`;
+    const path = window.location.pathname && window.location.pathname !== '/'
+      ? (window.location.pathname + '/')
+      : '';
+    return `brainstorm.center/${path}`;
   }
 
   /**

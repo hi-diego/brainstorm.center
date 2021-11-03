@@ -17,7 +17,8 @@ type GraphState = {
   title: string,
   content: string,
   componentDidMount: boolean,
-  placeholder: string
+  placeholder: string,
+  showForm: boolean
 };
 
 const GRAPH = {
@@ -40,7 +41,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
     title: '',
     content: '',
     componentDidMount: false,
-    placeholder: ''
+    placeholder: '',
+    showForm: false
   };
 
   constructor (props: GraphProps) {
@@ -97,6 +99,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
 
   public select (note: Note, event: any = null) {
     this.setState({
+      showForm: true,
       note: note,
       title: note.title,
       content: note.content,
@@ -104,16 +107,19 @@ class Graph extends React.Component<GraphProps, GraphState> {
     });
   }
 
-  public form(): JSX.Element {
+  public form(): JSX.Element|null {
      // onKeyDown="{ onKeyDownTitle }" placeholder="Title" onChange={ event => onTitleChange(event) }/>
      // onKeyDown={ onKeyDownContent } placeholder="Content" value={ content } onChange={ event => setContent(event.target.value) }></textarea>
+    const path = window.location.pathname && window.location.pathname !== '/'
+      ? (window.location.pathname + '/')
+      : '';
     return (
       <form className="note-form" onSubmit={ event => this.save.bind(this)(GRAPH.SAVE_SYNC, event) }>
         <label className="placeholder">{ this.state.placeholder }</label>
         <input autoFocus placeholder="Title" onKeyDown={ this.onTitleKeyDown.bind(this) } value={ this.state.title } onChange={ event => this.updateTitle(event) } />
         <textarea placeholder="Content" onKeyDown={ this.onContentKeyDown.bind(this) } rows={ 10 } value={ this.state.content } onChange={ event => this.update(null, event.target.value) } ></textarea>
         {/*<button onClick={ event => useCallback(() => history.push('/sample'), [history]) }>go</button>*/}
-        { this.state.note &&  <Link to={ this.state.note.title }>GO</Link> }
+        { this.state.note &&  <Link to={ path + this.state.note.title }>GO</Link> }
       </form>
     );
   }
@@ -172,7 +178,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
     this.nodes.forEach(node => drawLines(node.props.note, node.mesh));
     this.setState({ componentDidMount: true });
     const canvas = document.getElementById('three-canvas');
-    if (canvas) canvas.onclick = () => this.setState({ note: null, title: '', content: '' });
+    if (canvas) canvas.onclick = () => this.setState({ note: null, title: '', content: '', showForm: !this.state.showForm });
   }
 
   /**
@@ -180,7 +186,6 @@ class Graph extends React.Component<GraphProps, GraphState> {
    * this will recalculate all the mentionses as well.
    */
   public componentDidUpdate(prevProps: GraphProps) {
-    console.log(this.props.notebook, prevProps.notebook);
     if (this.props.notebook !== prevProps.notebook) {
       this.onRouteChanged(this.props.notebook);
     }
