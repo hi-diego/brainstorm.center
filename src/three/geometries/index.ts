@@ -1,9 +1,12 @@
 import * as THREE from 'three';
 
+const def = new THREE.SphereGeometry(1, 12, 12);
+
 const geometries = {
   node: {
-    default: new THREE.SphereGeometry(0.15, 12, 12)
-  }
+    default: def,
+    wireframe: new THREE.WireframeGeometry(def)
+  },
 }
 
 export default geometries;

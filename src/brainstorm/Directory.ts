@@ -26,7 +26,7 @@ class Directory {
       if (set.isEmpty()) this.dir = this.dir.delete(word);
       else this.dir = this.dir.set(word, set);
     })
-    words._new.forEach((word: string) => {
+    words.new.forEach((word: string) => {
       const set = (this.dir.get(word, Immutable.Set<string>())).add(note.title)
       this.dir = this.dir.set(word, set);
     })
