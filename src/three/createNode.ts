@@ -5,30 +5,34 @@ import Note from 'brainstorm/Note';
 import * as THREE from 'three';
 import groups from 'three/groups';
 
+function random(min: number, max: number) { // min and max included 
+  return Math.floor(Math.random() * (max - min + 1) + min)
+}
+
 export default function createNode(note: Note): any {
   const oldNode = scene.getObjectByName(note.title);
   if (oldNode) return oldNode; // drawLines(note, oldNode, true);
   const node = ThreeMesh(geometries.node.default, materials.mesh.default);
-  node.translateX(Math.random() * 2);
-  node.translateY(Math.random() * 2);
-  node.translateZ(Math.random() * 2);
+  node.translateX(random(-0.5, 0.5));
+  node.translateY(random(-0.5, 0.5));
+  node.translateZ(random(-0.5, 0.5));
   node.name = note.title;
   node.transparent = true;
   node.material.opacity = 0.9;
   node.userData = { note };
-  // groups.nodes.add(node);
+  groups.nodes.add(node);
 
-  const wireframe = new THREE.WireframeGeometry(geometries.node.default);
+  const wireframe = new THREE.WireframeGeometry(geometries.node.wireframe);
   const line = new THREE.LineSegments(wireframe);
   line.material.depthTest = false;
   line.material.opacity = 0.25;
   line.material.transparent = true;
-  line.translateX(Math.random() * 2);
-  line.translateY(Math.random() * 2);
-  line.translateZ(Math.random() * 2);
+  line.translateX(random(-0.5, 0.5));
+  line.translateY(random(-0.5, 0.5));
+  line.translateZ(random(-0.5, 0.5));
   line.name = note.title;
   line.userData = { note };
-  groups.nodes.add(line);
+  // groups.nodes.add(line);
 
   return node;
   // return drawMentions ? drawLines(note, node, true) : null;

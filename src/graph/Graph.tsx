@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import Node from 'graph/Node';
-import { drawLines } from 'three/index';
+import { drawLines, focus } from 'three/index';
 import Immutable from 'immutable';
 import { init, clear } from "three/index";
 import { Link } from "react-router-dom";
@@ -98,6 +98,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
   }
 
   public select (note: Note, event: any = null) {
+    focus(note);
     this.setState({
       showForm: true,
       note: note,
@@ -178,7 +179,10 @@ class Graph extends React.Component<GraphProps, GraphState> {
     this.nodes.forEach(node => drawLines(node.props.note, node.mesh));
     this.setState({ componentDidMount: true });
     const canvas = document.getElementById('three-canvas');
-    if (canvas) canvas.onclick = () => this.setState({ note: null, title: '', content: '', showForm: !this.state.showForm });
+    if (canvas) canvas.onclick = () => {
+      this.setState({ note: null, title: '', content: '', showForm: !this.state.showForm });
+      focus();
+    }
   }
 
   /**

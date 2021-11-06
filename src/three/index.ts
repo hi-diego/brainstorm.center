@@ -1,5 +1,6 @@
 import Mention from 'brainstorm/Mention';
 import random from 'common/random';
+import { gsap } from "gsap";
 import scene from 'three/scene'
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
@@ -11,11 +12,20 @@ const transparentLineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb, o
 const sphereGeometry = new THREE.SphereGeometry( 0.1, 32, 32 );
 const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
 const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+export const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
 
+const alight = new THREE.AmbientLight( 0xffffff ); // soft white light
+scene.add( alight );
+// const light = new THREE.PointLight( 0xffffff, 2, 100 );
+// light.position.set( 5, 5, 5 );
+// scene.add( light );
+
+/**
+ *
+ */
 export function clear () {
   while(groups.nodes.children.length > 0) { 
     groups.nodes.remove(groups.nodes.children[0]);
@@ -25,8 +35,68 @@ export function clear () {
   }
 }
 
+var lastNode: any = null;
+
+export function focus(note?: any) {
+  if (lastNode) {
+    // lastNode.scale.set(1, 1, 1);
+    gsap.to(lastNode.scale, 0.25, {
+      x: 1,
+      y: 1,
+      z: 1, 
+      ease: "power4.out",
+      onUpdate: () => camera.updateProjectionMatrix()
+    });
+  }
+  if (!note) {
+    gsap.to(camera, 1, {
+      zoom: 1,
+      onUpdate: () => camera.updateProjectionMatrix()
+    });
+    gsap.to(controls.target, 1, {
+      x: 0,
+      y: 0,
+      z: 0,
+      onUpdate: () => camera.updateProjectionMatrix()
+    });
+    return;
+  }
+  const node = scene.getObjectByName(note.title);
+  console.log(Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10)
+  gsap.to(camera, 1, {
+    zoom: 40, // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))), // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10,
+    ease: "power4.in",
+    onUpdate: () => camera.updateProjectionMatrix()
+  });
+  gsap.to(controls.target, 1, {
+    x: node.position.x,
+    y: node.position.y,
+    z: node.position.z,
+    onUpdate: () => {
+      camera.lookAt(0, 0, 0)
+      camera.updateProjectionMatrix()
+    }
+  });
+  // gsap.to(node.scale, 0.25, {
+  //   x: 5,
+  //   y: 5,
+  //   z: 5, 
+  //   onUpdate: () => camera.updateProjectionMatrix()
+  // });
+  // console.log(node.scale)
+  // node.scale.set(10, 10, 10);
+  lastNode = node;
+  // controls.target.set(node.position.x, node.position.y, node.position.z);
+  // camera.zoom = 8;
+  // controls.zoom = 1;
+  // controls.enablePan = false;
+  // controls.maxPolarAngle = Math.PI / 2;
+  // controls.enableDamping = true;
+}
+
 export function init () {
   renderer.setClearColor(0xffffff, 0);
+  scene.add(new THREE.AxisHelper(1));
   scene.add(groups.nodes)
   scene.add(groups.links)
   camera.zoom = 1;
@@ -88,7 +158,7 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
     const tubeGeometry = new THREE.TubeGeometry(
       new THREE.CatmullRomCurve3([dot.position, toDot.position]),
       512,// path segments
-      0.003,// THICKNESS
+      0.008,// THICKNESS
       8, //Roundness of Tube
       false //closed
     );
@@ -102,12 +172,13 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
     const tubeCurvedGeometry = new THREE.TubeGeometry(
       curve,
       512,// path segments
-      0.003,// THICKNESS
+      0.008,// THICKNESS
       8, //Roundness of Tube
       false //closed
     );
 
-    let tube = new THREE.Line(( mention.createdByUser || mention.to.title === mention.from.title ? tubeCurvedGeometry : tubeGeometry), transparentLineMaterial);
+    // wireframe  -> //let tube = new THREE.Line(( mention.createdByUser || mention.to.title === mention.from.title ? tubeCurvedGeometry : tubeGeometry), transparentLineMaterial);
+    let tube = new THREE.Mesh(( mention.createdByUser || mention.to.title === mention.from.title ? tubeCurvedGeometry : tubeGeometry), transparentLineMaterial);
     tube.name = `${note.title}-${to.title}-tube`;
 
 
