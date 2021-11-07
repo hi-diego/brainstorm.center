@@ -6,7 +6,7 @@ import * as THREE from 'three';
 import groups from 'three/groups';
 
 function random(min: number, max: number) { // min and max included 
-  return Math.floor(Math.random() * (max - min + 1) + min)
+  return Math.random() * (max - min + 1) + min
 }
 
 export default function createNode(note: Note): any {

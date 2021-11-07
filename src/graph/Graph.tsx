@@ -35,6 +35,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
 
   public nodes: any[] = [];
   public timer: any; 
+  public titleRef: any;
 
   public state: GraphState = {
     note: null,
@@ -49,6 +50,7 @@ class Graph extends React.Component<GraphProps, GraphState> {
     super(props);
     init();
     Notebook.load(props.notebook);
+    this.titleRef = React.createRef();
   }
 
   public save(flag: boolean = GRAPH.SAVE_SYNC, event?: React.SyntheticEvent|null) {
@@ -117,10 +119,10 @@ class Graph extends React.Component<GraphProps, GraphState> {
     return (
       <form className="note-form" onSubmit={ event => this.save.bind(this)(GRAPH.SAVE_SYNC, event) }>
         <label className="placeholder">{ this.state.placeholder }</label>
-        <input autoFocus placeholder="Title" onKeyDown={ this.onTitleKeyDown.bind(this) } value={ this.state.title } onChange={ event => this.updateTitle(event) } />
-        <textarea placeholder="Content" onKeyDown={ this.onContentKeyDown.bind(this) } rows={ 10 } value={ this.state.content } onChange={ event => this.update(null, event.target.value) } ></textarea>
+        <input className="title" ref={ this.titleRef } autoFocus placeholder="Title" onKeyDown={ this.onTitleKeyDown.bind(this) } value={ this.state.title } onChange={ event => this.updateTitle(event) } />
+        { this.state.title &&  <textarea placeholder="Click here or press tab to start writing..." onKeyDown={ this.onContentKeyDown.bind(this) } rows={ 10 } value={ this.state.content } onChange={ event => this.update(null, event.target.value) } ></textarea> }
         {/*<button onClick={ event => useCallback(() => history.push('/sample'), [history]) }>go</button>*/}
-        { this.state.note &&  <Link to={ path + this.state.note.title }>GO</Link> }
+        { this.state.note &&  <Link to={ path + this.state.note.title }>{'->'}</Link> }
       </form>
     );
   }
@@ -181,6 +183,8 @@ class Graph extends React.Component<GraphProps, GraphState> {
     const canvas = document.getElementById('three-canvas');
     if (canvas) canvas.onclick = () => {
       this.setState({ note: null, title: '', content: '', showForm: !this.state.showForm });
+      // console.log(this.titleRef)
+      this.titleRef.current.focus();
       focus();
     }
   }

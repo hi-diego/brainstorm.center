@@ -12,7 +12,7 @@ const transparentLineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb, o
 const sphereGeometry = new THREE.SphereGeometry( 0.1, 32, 32 );
 const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
 const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
-export const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
+export const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 200 );
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
@@ -38,65 +38,60 @@ export function clear () {
 var lastNode: any = null;
 
 export function focus(note?: any) {
-  if (lastNode) {
-    // lastNode.scale.set(1, 1, 1);
-    gsap.to(lastNode.scale, 0.25, {
-      x: 1,
-      y: 1,
-      z: 1, 
-      ease: "power4.out",
-      onUpdate: () => camera.updateProjectionMatrix()
-    });
-  }
-  if (!note) {
-    gsap.to(camera, 1, {
-      zoom: 1,
-      onUpdate: () => camera.updateProjectionMatrix()
-    });
-    gsap.to(controls.target, 1, {
-      x: 0,
-      y: 0,
-      z: 0,
-      onUpdate: () => camera.updateProjectionMatrix()
-    });
-    return;
-  }
-  const node = scene.getObjectByName(note.title);
-  console.log(Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10)
-  gsap.to(camera, 1, {
-    zoom: 40, // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))), // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10,
-    ease: "power4.in",
-    onUpdate: () => camera.updateProjectionMatrix()
-  });
-  gsap.to(controls.target, 1, {
-    x: node.position.x,
-    y: node.position.y,
-    z: node.position.z,
-    onUpdate: () => {
-      camera.lookAt(0, 0, 0)
-      camera.updateProjectionMatrix()
-    }
-  });
-  // gsap.to(node.scale, 0.25, {
-  //   x: 5,
-  //   y: 5,
-  //   z: 5, 
+  // if (lastNode) {
+  //   // lastNode.scale.set(1, 1, 1);
+  //   gsap.to(lastNode.scale, 0.25, {
+  //     x: 1,
+  //     y: 1,
+  //     z: 1, 
+  //     ease: "power4.out",
+  //     onUpdate: () => camera.updateProjectionMatrix()
+  //   });
+  // }
+  // if (!note) {
+  //   gsap.to(camera, 1, {
+  //     zoom: 1,
+  //     onUpdate: () => camera.updateProjectionMatrix()
+  //   });
+  //   gsap.to(controls.target, 1, {
+  //     x: 0,
+  //     y: 0,
+  //     z: 0,
+  //     onUpdate: () => camera.updateProjectionMatrix()
+  //   });
+  //   return;
+  // }
+  // const node = scene.getObjectByName(note.title);
+  // console.log(Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10)
+  // gsap.to(camera, 1, {
+  //   zoom: 10, // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))), // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10,
+  //   ease: "power4.in",
   //   onUpdate: () => camera.updateProjectionMatrix()
   // });
-  // console.log(node.scale)
-  // node.scale.set(10, 10, 10);
-  lastNode = node;
-  // controls.target.set(node.position.x, node.position.y, node.position.z);
-  // camera.zoom = 8;
-  // controls.zoom = 1;
-  // controls.enablePan = false;
-  // controls.maxPolarAngle = Math.PI / 2;
-  // controls.enableDamping = true;
+  // gsap.to(controls.target, 1, {
+  //   x: node.position.x,
+  //   y: node.position.y,
+  //   z: node.position.z,
+  //   onUpdate: () => {
+  //     camera.lookAt(0, 0, 0)
+  //     camera.updateProjectionMatrix()
+  //   }
+  // });
+  // // gsap.to(node.scale, 0.5, {
+  // //   x: 100,
+  // //   y: 100,
+  // //   z: 100,
+  // //   ease: "power4.in",
+  // //   onUpdate: () => camera.updateProjectionMatrix()
+  // // });
+  // // console.log(node.scale)
+  // // node.scale.set(10, 10, 10);
+  // lastNode = node;
 }
 
 export function init () {
   renderer.setClearColor(0xffffff, 0);
-  scene.add(new THREE.AxisHelper(1));
+  // scene.add(new THREE.AxisHelper(1));
   scene.add(groups.nodes)
   scene.add(groups.links)
   camera.zoom = 1;
@@ -110,26 +105,72 @@ export function init () {
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
   }, false);
+  camera.zoom = 100
+  camera.position.set(2, 3, 5); // zoom = 100
+  gsap.to(camera, 1, {
+    zoom: 1, // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))), // Math.abs(node.position.distanceTo(new THREE.Vector3(0, 0, 0))) * 10,
+    ease: "power3.out",
+    onUpdate: () => camera.updateProjectionMatrix()
+  });
+  controls.target.set(0, 0, 0);
+  camera.updateProjectionMatrix();
+  // gsap.to(controls.target, 1, {
+  //   x: 1,
+  //   y: 1,
+  //   z: 1,
+  //   onUpdate: () => {
+  //     camera.lookAt(0, 0, 0)
+  //     camera.updateProjectionMatrix()
+  //   }
+  // });
 }
+
+function toScreenPosition(obj: any, camera: any)
+{
+    var vector = new THREE.Vector3();
+
+    var widthHalf = 0.5*renderer.context.canvas.width;
+    var heightHalf = 0.5*renderer.context.canvas.height;
+
+    obj.updateMatrixWorld();
+    vector.setFromMatrixPosition(obj.matrixWorld);
+    vector.project(camera);
+
+    vector.x = ( vector.x * widthHalf ) + widthHalf;
+    vector.y = - ( vector.y * heightHalf ) + heightHalf;
+
+    return { 
+        x: vector.x,
+        y: vector.y
+    };
+
+};
 
 export function animate () {
   requestAnimationFrame(animate);
   controls.update();
   groups.nodes.children.forEach((mesh: any) => {
-      const temporalVector = new THREE.Vector3()
+      // const temporalVector = new THREE.Vector3()
       // get the position of the center of the cube
-      mesh.updateWorldMatrix(true, false)
-      mesh.getWorldPosition(temporalVector)
+      // mesh.updateWorldMatrix(true, false)
+      // mesh.getWorldPosition(temporalVector)
       // get the normalized screen coordinate of that position
       // x and y will be in the -1 to +1 range with x = -1 being
       // on the left and y = -1 being on the bottom
-      temporalVector.project(camera)
+      // temporalVector.project(camera)
       // convert the normalized position to CSS coordinates
-      const x = ((temporalVector.x * 0.5)) * renderer.domElement.clientWidth
-      const y = ((temporalVector.y * -0.7)) * renderer.domElement.clientHeight
+      // const width = renderer.domElement.clientWidth;
+      // const height = renderer.domElement.clientHeight;
+      // const x = (temporalVector.x * ) // ((temporalVector.x * 0.5)) * renderer.domElement.clientWidth
+      // const y =  // ((temporalVector.y * -0.7)) * renderer.domElement.clientHeight
+      var { x, y } = toScreenPosition(mesh, camera);
       var _label =  document.getElementById(mesh.name);
       // console.log(mesh.name, _label)
-      if (_label) _label.style.transform = `translate(-50%, -50%) translate(${x}px,${y}px)`;
+      if (_label) {
+        // _label.style.transform = `translate(-50%, -500%) translate(${x}px,${y}px)`;
+        _label.style.left = (x -20) + 'px';
+        _label.style.top = (y - 50) + 'px';
+      }
     });
   renderer.render( scene, camera );
 }
