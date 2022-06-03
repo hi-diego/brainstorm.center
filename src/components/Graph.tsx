@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import Notebook from 'brainstorm/Notebook';
 import * as ThreeScene from 'three/index';
 import Form from './Form'
+import Tooltip from './Tooltip'
 
 /*
 * The entire three.js graph view and the html form controls.
@@ -10,25 +11,47 @@ interface GraphProps {
   notebook: string
 }
 
+  // public getNodes(): JSX.Element[] {
+  //   this.nodes = Notebook.notes.toSet().map((note: Note) => (
+  //     <Node
+  //       key={ note.uuid }
+  //       note={ note }
+  //       drawLines={ this.state.componentDidMount }
+  //       selected={ note === this.state.note }
+  //       onSelect={ event => this.select.bind(this)(note, event) }
+  //     />
+  //   )).toArray();
+  //   return this.nodes;
+  // }
+
+type Setter = React.Dispatch<React.SetStateAction<string[]>>;
+
 /*
 * The entire three.js graph view and the html form controls.
 */
-function initGraph (notebookName: string) {
+function initGraph (notebookName: string, setTooltips: Setter) {
   // Initialize the three canvas and scene.
   ThreeScene.init();
   // Load the notebook from local storage.
   Notebook.load(notebookName);
+  // Draw dots for each node
+  const tooltips = Notebook.notes.toSet().map(n => n.title).toArray();
+  setTooltips(tooltips);
+  // Notebook.nodes.forEach(node => drawLines(node.props.note, node.mesh));
 }
 
 /*
 * The entire three.js graph view and the html form controls.
 */
 export default function Graph (props: GraphProps) {
+  // Initialize title reactive value.
+  const [tooltips, setTooltips] = useState<string[]>([]);
   // Call initGraph once.
-  useEffect(() => initGraph(props.notebook), []);
+  useEffect(() => initGraph(props.notebook, setTooltips), []);
   // Render the form and controls.
   return <header className="App-header">
     <h1>{props.notebook}</h1>
+    { tooltips.map(t => <Tooltip key={ t } title={ t }/>) }
     <Form notebook={props.notebook}/>
   </header>;
 }
