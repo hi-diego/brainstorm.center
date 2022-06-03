@@ -4,7 +4,7 @@ import scene from 'three/scene'
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import groups from 'three/groups';
-
+ 
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
 const lineSelectedMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
 const transparentLineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb, opacity: 0, transparent: true });
@@ -15,6 +15,7 @@ const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.inner
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
+var INITIALIZED: boolean = false;
 
 export function clear () {
   while(groups.nodes.children.length > 0) { 
@@ -26,6 +27,8 @@ export function clear () {
 }
 
 export function init () {
+  if (INITIALIZED) return;
+  INITIALIZED = true;
   renderer.setClearColor(0xffffff, 0);
   scene.add(groups.nodes)
   scene.add(groups.links)

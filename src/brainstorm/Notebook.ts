@@ -10,8 +10,11 @@ import Immutable from 'immutable';
  */
 class Notebook {
 
+  //
   public name: string;
+  //
   public notes: Immutable.Map<string, Note>;
+  //
   public onUpdate: (notes: Immutable.Set<Note>) => void;
 
   constructor (notes: Immutable.Map<string, Note>) {
@@ -30,6 +33,7 @@ class Notebook {
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);
     window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+    console.log('update', note);
   }
 
   /**

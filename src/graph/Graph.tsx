@@ -5,7 +5,7 @@ import Note from 'brainstorm/Note';
 import Node from 'graph/Node';
 import { drawLines } from 'three/index';
 import Immutable from 'immutable';
-import { init, clear } from "three/index";
+import { init, clear } from 'three/index';
 import { Link } from "react-router-dom";
 
 type GraphProps = {
