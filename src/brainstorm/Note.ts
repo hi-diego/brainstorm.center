@@ -30,13 +30,13 @@ class Note extends NotebookItem {
   public set content(content: string) {
     this.prevContent = this._content;
     this._content = content;
+    // TODO: make this automatic Notebook update Optional 
     Notebook.update(this);
   }
 
   public update(title?: string|null, content?: string|null): Note {
     if (title) this.title = title;
     if (content) this.content = content;
-    console.log(this.title, this.content);
     return this;
   }
 
