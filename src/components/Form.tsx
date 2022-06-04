@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Notebook from 'brainstorm/Notebook';
+import * as Three from 'three/index';
 import Note from 'brainstorm/Note';
 
 /*
 * The entire three.js graph view and the html form controls.
 */
 interface FormProps {
-  notebook: string
+  notebook: string,
+  onCreate: (note: Note) => void
 }
 
 /*
@@ -30,9 +32,11 @@ function initForm(notebook: string, setTitle: Setter, setContent: Setter) {
 /*
 * 
 */
-function save(title: string, content: string) {
+function save(title: string, content: string, onCreate?: (note: Note) => void) {
   // Create new Note.
   const note = new Note(title, content);
+  Three.drawDot(note);
+  if (onCreate) onCreate(note);
   // Update the Notebook.
   // Notebook.update(note);
 }
@@ -54,9 +58,9 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
 /*
 * 
 */
-function onTitleKeyDown(key: string, title: string, content: string) {
+function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void) {
   // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
-  if (key === 'Enter') return save(title, content);
+  if (key === 'Enter') return save(title, content, onCreate);
   // if (event.key === 'ArrowRight' && state.placeholder) {
   //   const note = Notebook.notes.get(state.placeholder); 
   //   if (note) select(note);
@@ -81,14 +85,14 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
-        onKeyDown={ e => onTitleKeyDown(e.key, title, content) }
+        onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
         onChange={ e => updateTitle(e, setTitle) }
       />
       <textarea
         placeholder="Content"
         rows={ 10 }
         value={ content }
-        onKeyDown={ e => onTitleKeyDown(e.key, title, content) }
+        onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
         onChange={ e => updateContent(e, setContent) }
       ></textarea>
       <Link to={ '' }>GO</Link>

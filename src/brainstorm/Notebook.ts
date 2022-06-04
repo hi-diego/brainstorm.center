@@ -33,7 +33,6 @@ class Notebook {
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);
     window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
-    console.log('update', note);
   }
 
   /**

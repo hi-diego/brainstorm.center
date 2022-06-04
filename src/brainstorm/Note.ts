@@ -70,8 +70,7 @@ class Note extends NotebookItem {
    * Return all the notes that reference this note by the title.
    */
   public references () : Immutable.Set<Note|undefined> {
-    const ref = Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title))
-    // console.log(ref);
+    const ref = Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title));
     return ref;
   }
 }

@@ -67,6 +67,6 @@ export default function Graph (props: GraphProps) {
         />
       )
     }
-    <Form notebook={props.notebook}/>
+    <Form notebook={props.notebook} onCreate={ note => setTooltips(tooltips.concat(note)) }/>
   </header>;
 }
