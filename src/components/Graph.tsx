@@ -2,14 +2,24 @@ import { useEffect, useState } from 'react';
 import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import * as ThreeScene from 'three/index';
-import Form from './Form'
-import Tooltip from './Tooltip'
+import * as Three from 'three/index';
+import Tooltip from './Tooltip';
+import Form from './Form';
+
 
 /*
 * The entire three.js graph view and the html form controls.
 */
 interface GraphProps {
   notebook: string
+}
+
+/*
+* The entire three.js graph view and the html form controls.
+*/
+interface Node {
+  note: Note,
+  mesh: any
 }
 
 // public getNodes(): JSX.Element[] {
@@ -56,7 +66,6 @@ export default function Graph (props: GraphProps) {
   useEffect(() => initGraph(props.notebook, setTooltips), []);
   // Render the form and controls.
   return <header className="App-header">
-    <h1>{props.notebook}</h1>
     { 
       tooltips.map(n =>
         <Tooltip
@@ -67,6 +76,6 @@ export default function Graph (props: GraphProps) {
         />
       )
     }
-    <Form notebook={props.notebook} onCreate={ note => setTooltips(tooltips.concat(note)) }/>
+    <Form notebook={selected || props.notebook} onCreate={ note => setTooltips(tooltips.concat(note)) }/>
   </header>;
 }

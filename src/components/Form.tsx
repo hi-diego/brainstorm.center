@@ -76,10 +76,11 @@ export default function Form (props: FormProps) {
   // Initialize content reactive value.
   const [content, setContent] = useState<string>('');
   // Initialize the form with the url selected notebook.
-  useEffect(() => initForm(props.notebook, setTitle, setContent), []);
+  useEffect(() => initForm(props.notebook, setTitle, setContent), [props.notebook]);
   // Render the form.
   return (
     <form className="note-form" onSubmit={ event => event.preventDefault() }>
+      <h1>{ props.notebook }</h1>
       <label className="placeholder">{ null }</label>
       <input
         autoFocus

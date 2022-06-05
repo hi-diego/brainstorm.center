@@ -4,6 +4,7 @@ import scene from 'three/scene'
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import groups from 'three/groups';
+import Materials from 'three/materials';
  
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
 const lineSelectedMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -176,4 +177,29 @@ export function highlight(title: string | null = null) {
   const tubes = scene.getObjectByName(groupName);
   if (!tubes) return;
   tubes.children.forEach((t: any) => (t.material = lineSelectedMaterial))
+}
+
+
+/**
+ * Highlight the three.js node mesh by changing the material on the mesh.
+ * Materials.line.selected color is pure white.
+ */
+export function highlightNode(mesh: any, title: string) {
+  mesh.material = Materials.mesh.selected;
+  const groupName = `${title}-mentions-tubes`;
+  const tubes = scene.getObjectByName(groupName);
+  if (!tubes) return;
+  tubes.children.forEach((t: any) => (t.material = Materials.line.selected));
+}
+
+/**
+ * Disparage the three.js node mesh by changing the material on the mesh.
+ * Materials.line.default color is off white.
+ */
+export function disparageNode(mesh: any, title: string) {
+  mesh.material = Materials.mesh.default;
+  const groupName = `${title}-mentions-tubes`;
+  const tubes = scene.getObjectByName(groupName);
+  if (!tubes) return;
+  tubes.children.forEach((t: any) => (t.material = Materials.transparent));
 }
