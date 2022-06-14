@@ -3,9 +3,10 @@ import geometries from 'three/geometries';
 import materials from 'three/materials';
 import Note from 'brainstorm/Note';
 import * as THREE from 'three';
+import { drawLines } from './index';
 import groups from 'three/groups';
 
-export default function createNode(note: Note): any {
+export default function createNode(note: Note, lines: boolean = true): any {
   const oldNode = scene.getObjectByName(note.title);
   if (oldNode) return oldNode; // drawLines(note, oldNode, true);
   const node = ThreeMesh(geometries.node.default, materials.mesh.default);
@@ -17,7 +18,6 @@ export default function createNode(note: Note): any {
   node.material.opacity = 0.9;
   node.userData = { note };
   // groups.nodes.add(node);
-
   const wireframe = new THREE.WireframeGeometry(geometries.node.default);
   const line = new THREE.LineSegments(wireframe);
   line.material.depthTest = false;
@@ -29,9 +29,9 @@ export default function createNode(note: Note): any {
   line.name = note.title;
   line.userData = { note };
   groups.nodes.add(line);
-
+  // 
+  if (lines) drawLines(note, node, true);
   return node;
-  // return drawMentions ? drawLines(note, node, true) : null;
 }
 
 function ThreeMesh(geometry: any , material: any) {
