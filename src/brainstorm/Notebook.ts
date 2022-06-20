@@ -9,14 +9,13 @@ import Immutable from 'immutable';
  * @class
  */
 class Notebook {
-
   //
   public name: string;
   //
   public notes: Immutable.Map<string, Note>;
   //
   public onUpdate: (notes: Immutable.Set<Note>) => void;
-
+  //
   constructor (notes: Immutable.Map<string, Note>) {
     this.notes = notes;
     this.name = 'root';
@@ -59,7 +58,7 @@ class Notebook {
    *
    */
   public load(notebookName: string = 'root') {
-    this.name = notebookName;
+    this.name = notebookName;w
     const notes = JSON.parse(window.localStorage.getItem(this.getLocalStorageName()) || '{}')
     for (const title in notes) {
       const n = notes[title];

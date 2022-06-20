@@ -39,7 +39,7 @@ function save(title: string, content: string, onCreate?: (note: Note) => void) {
   createNode(note);
   if (onCreate) onCreate(note);
   // Update the Notebook.
-  // Notebook.update(note);
+  Notebook.update(note);
 }
 
 /*

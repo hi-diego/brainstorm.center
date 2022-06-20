@@ -14,13 +14,15 @@ class Note extends NotebookItem {
   public title: string;
   public _content: string = '';
   public prevContent: string = '';
+  public updateNotebook: boolean = false;
   public userMentions: Immutable.Set<Mention>;
 
-  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date) {
+  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date, updateNotebook: boolean = false) {
     super(uuid, createdAt, modifiedAt);
     this.userMentions = userMentions || Immutable.Set<Mention>();
     this.title = title;
     this.content = content;
+    this.updateNotebook = updateNotebook;
   }
 
   public get content(): string {
@@ -31,7 +33,7 @@ class Note extends NotebookItem {
     this.prevContent = this._content;
     this._content = content;
     // TODO: make this automatic Notebook update Optional 
-    Notebook.update(this);
+    if (this.updateNotebook) Notebook.update(this);
   }
 
   public update(title?: string|null, content?: string|null): Note {

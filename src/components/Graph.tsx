@@ -8,6 +8,11 @@ import Form from './Form';
 
 
 /*
+ If title change: must repaint all nodes that mentions old title
+ If content change: must repaint current node and mentions
+*/
+
+/*
 * The entire three.js graph view and the html form controls.
 */
 interface GraphProps {

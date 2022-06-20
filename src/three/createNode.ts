@@ -6,9 +6,15 @@ import * as THREE from 'three';
 import { drawLines } from './index';
 import groups from 'three/groups';
 
+/*
+* It creates a sphere mesh and adds it to the scene
+* it also adds the titte of the note as the Id on the tree scene
+*/
 export default function createNode(note: Note, lines: boolean = true): any {
+  // Get the Mesh Object if already exists.
   const oldNode = scene.getObjectByName(note.title);
-  if (oldNode) return oldNode; // drawLines(note, oldNode, true);
+  // return the object if already exists
+  if (oldNode) return oldNode;
   const node = ThreeMesh(geometries.node.default, materials.mesh.default);
   node.translateX(Math.random() * 2);
   node.translateY(Math.random() * 2);
