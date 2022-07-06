@@ -3,7 +3,7 @@ import Mention from 'brainstorm/Mention';
 import Notebook from 'brainstorm/Notebook';
 import NotebookItem from 'brainstorm/NotebookItem';
 import Immutable from 'immutable';
-import { drawLines } from 'three/index';
+// import { drawLines } from 'three/index';
 
 /**
  * Note class is the holder of Mentions.
@@ -14,10 +14,10 @@ class Note extends NotebookItem {
   public title: string;
   public _content: string = '';
   public prevContent: string = '';
-  public updateNotebook: boolean = false;
+  public updateNotebook: boolean = true;
   public userMentions: Immutable.Set<Mention>;
 
-  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date, updateNotebook: boolean = false) {
+  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date, updateNotebook: boolean = true) {
     super(uuid, createdAt, modifiedAt);
     this.userMentions = userMentions || Immutable.Set<Mention>();
     this.title = title;

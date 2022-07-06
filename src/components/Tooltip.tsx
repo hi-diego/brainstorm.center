@@ -7,7 +7,7 @@ import createNode from 'three/createNode';
 * 
 */
 interface TooltipProps {
-  note: Note,
+  note: string,
   selected: boolean,
   onSelect: (t: string) => void
 }
@@ -15,10 +15,10 @@ interface TooltipProps {
 /*
 * 
 */
-function initTooltip (note: Note) {
+function initTooltip (note: string) {
   // Three.drawDot(note, true);
-  const node = createNode(note);
-  return node;
+  //const node = createNode(note);
+  // return node;
 }
 
 /*
@@ -30,11 +30,11 @@ export default function Tooltip (props: TooltipProps) {
   return (
     <label
       className={ ['node', props.selected ? 'selected' : '' ].join(' ') }
-      onClick={ () => props.onSelect(props.note.title) }
-      key={ props.note.title }
-      id={ props.note.title }
+      onClick={ () => props.onSelect(props.note) }
+      key={ props.note }
+      id={ props.note }
     >
-      { props.note.title }
+      { props.note }
       {/*<input onFocus={ event => this.props.onSelect(this, event) } className="ghosty"/>*/}
     </label>
   );

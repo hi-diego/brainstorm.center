@@ -2,6 +2,7 @@
 import Note from 'brainstorm/Note';
 import Mention from 'brainstorm/Mention';
 import Directory from 'brainstorm/Directory';
+import { Directory as DirectoryClass } from 'brainstorm/Directory';
 import Immutable from 'immutable';
 
 /**
@@ -14,7 +15,7 @@ class Notebook {
   //
   public notes: Immutable.Map<string, Note>;
   //
-  public onUpdate: (notes: Immutable.Set<Note>) => void;
+  public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
   //
   constructor (notes: Immutable.Map<string, Note>) {
     this.notes = notes;
@@ -32,6 +33,7 @@ class Notebook {
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);
     window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+    this.onUpdate(note, this.notes, Directory);
   }
 
   /**
@@ -58,11 +60,12 @@ class Notebook {
    *
    */
   public load(notebookName: string = 'root') {
-    this.name = notebookName;w
+    this.name = notebookName;
     const notes = JSON.parse(window.localStorage.getItem(this.getLocalStorageName()) || '{}')
     for (const title in notes) {
       const n = notes[title];
       const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
+      console.log('Notebook.load', note);
     }
   }
 

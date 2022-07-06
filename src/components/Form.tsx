@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Notebook from 'brainstorm/Notebook';
-import * as Three from 'three/index';
-import createNode from 'three/createNode';
+// import * as Three from 'three/index';
+// import createNode from 'three/createNode  ';
 import Note from 'brainstorm/Note';
 
 /*
@@ -10,7 +10,7 @@ import Note from 'brainstorm/Note';
 */
 interface FormProps {
   notebook: string,
-  onCreate: (note: Note) => void
+  onCreate?: (note: Note) => void
 }
 
 /*
@@ -36,10 +36,11 @@ function initForm(notebook: string, setTitle: Setter, setContent: Setter) {
 function save(title: string, content: string, onCreate?: (note: Note) => void) {
   // Create new Note.
   const note = new Note(title, content);
-  createNode(note);
-  if (onCreate) onCreate(note);
+  console.log(note);
+  // createNode(note);
+  // if (onCreate) onCreate(note);
   // Update the Notebook.
-  Notebook.update(note);
+  // Notebook.update(note);
 }
 
 /*

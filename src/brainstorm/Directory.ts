@@ -7,7 +7,7 @@ import wordsDiff from 'common/wordsDiff';
  * Mention.
  * @class
  */
-class Directory {
+export class Directory {
 
   public dir: Immutable.Map<string, Immutable.Set<string>>;
 
