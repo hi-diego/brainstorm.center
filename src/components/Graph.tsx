@@ -86,7 +86,7 @@ export default function Graph (props: GraphProps) {
   // Call initGraph once.
   useEffect(() => initGraph(props.notebook, setTooltips), []);
   // Render the form and controls.
-  return <header className="App-header">
+  return <header onClick={ () => setSelected(null) } className="App-header">
     { 
       tooltips.map(n =>
         <Tooltip

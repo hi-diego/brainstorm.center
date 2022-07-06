@@ -30,7 +30,7 @@ export default function Tooltip (props: TooltipProps) {
   return (
     <label
       className={ ['node', props.selected ? 'selected' : '' ].join(' ') }
-      onClick={ () => props.onSelect(props.note) }
+      onClick={ event => { event.stopPropagation(); props.onSelect(props.note)} }
       key={ props.note }
       id={ props.note }
     >
