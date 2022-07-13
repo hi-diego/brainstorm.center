@@ -81,7 +81,7 @@ export default function Form (props: FormProps) {
   useEffect(() => initForm(props.notebook, setTitle, setContent), [props.notebook]);
   // Render the form.
   return (
-    <form className="note-form" onSubmit={ event => event.preventDefault() }>
+    <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
       <h1>{ props.notebook }</h1>
       <label className="placeholder">{ null }</label>
       <input

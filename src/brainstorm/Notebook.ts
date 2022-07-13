@@ -17,12 +17,15 @@ class Notebook {
   //
   public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
   //
+  public afterLoad: (notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
+  //
   constructor (notes: Immutable.Map<string, Note>) {
     this.notes = notes;
     this.name = 'root';
     // for testing
     // this.notes = Immutable.Map<string, Note>([ new Note('foo', 'bar'), new Note('bar', 'goo') ]);
     this.onUpdate = () => null;
+    this.afterLoad = () => null;
   }
 
   /**
@@ -65,8 +68,9 @@ class Notebook {
     for (const title in notes) {
       const n = notes[title];
       const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
-      console.log('Notebook.load', note);
+      // console.log('Notebook.load', note);
     }
+    if (this.afterLoad) this.afterLoad(this.notes, Directory);
   }
 
   /**

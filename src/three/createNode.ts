@@ -10,7 +10,7 @@ import groups from 'three/groups';
 * It creates a sphere mesh and adds it to the scene
 * it also adds the titte of the note as the Id on the tree scene
 */
-export default function createNode(note: Note, lines: boolean = true): any {
+export default function createNode(note: Note, lines: boolean = false): any {
   // Get the Mesh Object if already exists.
   const oldNode = scene.getObjectByName(note.title);
   // return the object if already exists

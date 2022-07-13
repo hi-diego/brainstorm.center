@@ -169,6 +169,8 @@ export function highlight(title: string | null = null) {
     selectedMesh = null;
     return;
   }
+  var nodes = scene.children[0]
+  if (nodes) nodes.children.forEach((mesh: any) => disparageNode(mesh, mesh.name));
   const mesh = scene.getObjectByName(title);
   if (!mesh) return;
   mesh.material = meshSelectedMaterial;

@@ -53,11 +53,18 @@ type Setter = React.Dispatch<React.SetStateAction<string[]>>;
 function initGraph (notebookName: string, setTooltips: Setter) {
   // Initialize the three canvas and scene.
   ThreeScene.init();
+  var loaded = false;
   // Recalculate mentions and reDraw Mentions on each new Note.
   Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
-    console.log(note, notes.toArray());
+    console.log(note.title);
+    createNode(note, loaded);
     setTooltips(notes.keySeq().toArray());
-    createNode(note);
+  };
+  Notebook.afterLoad = (notes: Immutable.Map<string, Note>, directory: Directory) => {
+    loaded = true;
+    notes.valueSeq().forEach((note: Note) => {
+      ThreeScene.drawLines(note);
+    });
   };
   // // Recalculate mentions and reDraw Mentions on each new Note.
   // Notebook.onNoteUpdateContent = (note: Note, notes: Immutable.Set<Note>, directory: Directory) => {
@@ -85,6 +92,8 @@ export default function Graph (props: GraphProps) {
   const [selected, setSelected] = useState<string|null>(null);
   // Call initGraph once.
   useEffect(() => initGraph(props.notebook, setTooltips), []);
+  // Call initGraph once.
+  useEffect(() => ThreeScene.highlight(selected), [selected]);
   // Render the form and controls.
   return <header onClick={ () => setSelected(null) } className="App-header">
     { 
