@@ -82,6 +82,12 @@ function initGraph (notebookName: string, setTooltips: Setter) {
   // Notebook.nodes.forEach(node => drawLines(node.props.note, node.mesh));
 }
 
+const styles: { [key: string]: React.CSSProperties } = {
+  AppHeader: {
+    minHeight: window.innerHeight,
+  }
+};
+
 /*
 * The entire three.js graph view and the html form controls.
 */
@@ -95,7 +101,7 @@ export default function Graph (props: GraphProps) {
   // Call initGraph once.
   useEffect(() => ThreeScene.highlight(selected), [selected]);
   // Render the form and controls.
-  return <header onClick={ () => setSelected(null) } className="App-header">
+  return <header onClick={ () => setSelected(null) } className="App-header" style={ styles.AppHeader }>
     { 
       tooltips.map(n =>
         <Tooltip
