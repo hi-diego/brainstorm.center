@@ -5,6 +5,7 @@ import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import groups from 'three/groups';
 import Materials from 'three/materials';
+import { useHistory } from 'react-router-dom';
  
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
 const lineSelectedMaterial = new THREE.LineBasicMaterial({ color: 0xffffff });
@@ -14,6 +15,8 @@ const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
 const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
+// const axesHelper = new THREE.AxesHelper( 5 );
+// scene.add( axesHelper );
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
 var INITIALIZED: boolean = false;
@@ -80,9 +83,9 @@ export function drawLines(note: any, _dot: any = null, ref = false) {
   tubeGroup.name = `${note.title}-mentions-tubes`;
   group.name = groupName
   note.mentions().forEach((mention: Mention) => {
-    // console.log('mentions', mention);
     const to = mention.to;
     const toDot = scene.getObjectByName(to.title);
+    // console.log('mentions', mention, dot, toDot);
     if (!to || !toDot) return;
     const lineGeometry = new THREE.BufferGeometry().setFromPoints([dot.position, toDot.position]);
     const line = new THREE.Line(lineGeometry, lineMaterial);
@@ -161,7 +164,7 @@ export function getCubicBezierCurve3(dot: any, toDot: any) {
 }
 
 export function highlight(title: string | null = null) {
-  if (!title && selectedMesh) {
+  if (selectedMesh) {
     selectedMesh.material = meshMaterial;
     const groupName = `${selectedMesh.name}-mentions-tubes`;
     const tubes = scene.getObjectByName(groupName);

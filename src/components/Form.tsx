@@ -37,9 +37,9 @@ function initForm(notebook: string, setTitle: Setter, setContent: Setter) {
 function save(title: string, content: string, onCreate?: (note: Note) => void) {
   // Create new Note.
   const note = new Note(title, content);
-  console.log(note);
+  // console.log(note);
   // createNode(note);
-  // if (onCreate) onCreate(note);
+  if (onCreate) onCreate(note);
   // Update the Notebook.
   // Notebook.update(note);
 }
@@ -81,9 +81,13 @@ export default function Form (props: FormProps) {
   // Initialize the form with the url selected notebook.
   useEffect(() => initForm(props.notebook, setTitle, setContent), [props.notebook]);
   // Render the form.
+  const path = window.location.pathname && window.location.pathname !== '/'
+      ? (window.location.pathname + '/')
+      : '';
   return (
+    
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
-      {/*<h1>{ props.notebook }</h1>*/}
+      {/* <h1>{ props.notebook }</h1> */}
       <label className="placeholder">{ null }</label>
       <input
         autoFocus
@@ -99,7 +103,7 @@ export default function Form (props: FormProps) {
         onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
         onChange={ e => updateContent(e, setContent) }
       ></textarea>
-      {   props.showGo ? <Link to={ '' }>GO</Link> : null }
+      {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
     </form>
   );
 }

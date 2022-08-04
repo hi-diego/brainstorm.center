@@ -7,6 +7,8 @@ import * as Three from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
 import createNode from 'three/createNode';
+import Auth from '../gun-auth';
+import { useHistory } from 'react-router-dom';
 
 
 /*
@@ -51,14 +53,17 @@ type Setter = React.Dispatch<React.SetStateAction<string[]>>;
 * The entire three.js graph view and the html form controls.
 */
 function initGraph (notebookName: string, setTooltips: Setter) {
+  console.log(notebookName);
   // Initialize the three canvas and scene.
   ThreeScene.init();
   var loaded = false;
+  // var { gun, user } = Auth();
   // Recalculate mentions and reDraw Mentions on each new Note.
   Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
     // console.log(note.title);
     createNode(note, loaded);
     setTooltips(notes.keySeq().toArray());
+    // user.get('notes').put(JSON.stringify(notes));
   };
   Notebook.afterLoad = (notes: Immutable.Map<string, Note>, directory: Directory) => {
     loaded = true;
@@ -98,8 +103,18 @@ export default function Graph (props: GraphProps) {
   const [selected, setSelected] = useState<string|null>(null);
   // Call initGraph once.
   useEffect(() => initGraph(props.notebook, setTooltips), []);
+  // On Url change update the scene
+  const history = useHistory();
+  useEffect(() => {
+    return history.listen((location) => {
+      ThreeScene.clear();
+      setSelected(null);
+      Notebook.reload(location.pathname);
+      initGraph(location.pathname, setTooltips);
+    });
+ },[history]);
   // Call initGraph once.
-  useEffect(() => ThreeScene.highlight(selected), [selected]);
+  useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected); }, [selected]);
   const canvas = document.getElementById('three-canvas');
   if (canvas) canvas.onclick = () => setSelected(null);
   // Render the form and controls.
@@ -114,6 +129,6 @@ export default function Graph (props: GraphProps) {
         />
       )
     }
-    <Form notebook={selected || props.notebook} showGo={ selected !== null }/>
+    <Form onCreate={ (note: Note) => setSelected(note.title) } notebook={selected || props.notebook} showGo={ selected !== null }/>
   </header>;
 }

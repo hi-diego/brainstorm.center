@@ -16,9 +16,12 @@ export default function createNode(note: Note, lines: boolean = false): any {
   // return the object if already exists
   if (oldNode) return oldNode;
   const node = ThreeMesh(geometries.node.default, materials.mesh.default);
-  node.translateX(Math.random() * 2);
-  node.translateY(Math.random() * 2);
-  node.translateZ(Math.random() * 2);
+  const x = Math.random() * 2;
+  const y = Math.random() * 2;
+  const z = Math.random() * 2;
+  node.translateX(x);
+  node.translateY(y);
+  node.translateZ(z);
   node.name = note.title;
   node.transparent = true;
   node.material.opacity = 0.9;
@@ -29,9 +32,9 @@ export default function createNode(note: Note, lines: boolean = false): any {
   line.material.depthTest = false;
   line.material.opacity = 0.25;
   line.material.transparent = true;
-  line.translateX(Math.random() * 2);
-  line.translateY(Math.random() * 2);
-  line.translateZ(Math.random() * 2);
+  line.translateX(x);
+  line.translateY(y);
+  line.translateZ(z);
   line.name = note.title;
   line.userData = { note };
   groups.nodes.add(line);
