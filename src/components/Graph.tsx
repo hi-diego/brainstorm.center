@@ -7,7 +7,6 @@ import * as Three from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
 import createNode from 'three/createNode';
-import Auth from '../gun-auth';
 import { useHistory } from 'react-router-dom';
 
 
