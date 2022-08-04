@@ -39,11 +39,11 @@ export function init () {
   document.body.appendChild( renderer.domElement );
   camera.position.z = 5;
   animate();
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  }, false);
+  // window.addEventListener('resize', () => {
+  //   camera.aspect = window.innerWidth / window.innerHeight;
+  //   camera.updateProjectionMatrix();
+  //   renderer.setSize(window.innerWidth, window.innerHeight);
+  // }, false);
 }
 
 export function animate () {

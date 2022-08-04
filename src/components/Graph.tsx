@@ -56,7 +56,7 @@ function initGraph (notebookName: string, setTooltips: Setter) {
   var loaded = false;
   // Recalculate mentions and reDraw Mentions on each new Note.
   Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
-    console.log(note.title);
+    // console.log(note.title);
     createNode(note, loaded);
     setTooltips(notes.keySeq().toArray());
   };
@@ -100,8 +100,10 @@ export default function Graph (props: GraphProps) {
   useEffect(() => initGraph(props.notebook, setTooltips), []);
   // Call initGraph once.
   useEffect(() => ThreeScene.highlight(selected), [selected]);
+  const canvas = document.getElementById('three-canvas');
+  if (canvas) canvas.onclick = () => setSelected(null);
   // Render the form and controls.
-  return <header onClick={ () => setSelected(null) } className="App-header" style={ styles.AppHeader }>
+  return <header onClick={ () => { setSelected(null); console.log('selecting null') } } className="App-header" style={ styles.AppHeader }>
     { 
       tooltips.map(n =>
         <Tooltip
@@ -112,6 +114,6 @@ export default function Graph (props: GraphProps) {
         />
       )
     }
-    <Form notebook={selected || props.notebook}/>
+    <Form notebook={selected || props.notebook} showGo={ selected !== null }/>
   </header>;
 }

@@ -59,6 +59,9 @@
   border-bottom: 0.1px solid white;
   font-size: calc(10px + 2vmin);
 }
+.note-form a {
+  border-bottom: none !important;
+}
 .note-form button {
   cursor: pointer;
   transition: none all;

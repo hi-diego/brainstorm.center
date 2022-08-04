@@ -10,6 +10,7 @@ import Note from 'brainstorm/Note';
 */
 interface FormProps {
   notebook: string,
+  showGo: boolean,
   onCreate?: (note: Note) => void
 }
 
@@ -82,7 +83,7 @@ export default function Form (props: FormProps) {
   // Render the form.
   return (
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
-      <h1>{ props.notebook }</h1>
+      {/*<h1>{ props.notebook }</h1>*/}
       <label className="placeholder">{ null }</label>
       <input
         autoFocus
@@ -98,7 +99,7 @@ export default function Form (props: FormProps) {
         onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
         onChange={ e => updateContent(e, setContent) }
       ></textarea>
-      <Link to={ '' }>GO</Link>
+      {   props.showGo ? <Link to={ '' }>GO</Link> : null }
     </form>
   );
 }
