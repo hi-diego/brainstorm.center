@@ -3,10 +3,8 @@ import Notebook from 'brainstorm/Notebook';
 import { Directory } from 'brainstorm/Directory';
 import Note from 'brainstorm/Note';
 import * as ThreeScene from 'three/index';
-import * as Three from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
-import createNode from 'three/createNode';
 import { useHistory } from 'react-router-dom';
 
 
@@ -48,26 +46,32 @@ interface Node {
 */
 type Setter = React.Dispatch<React.SetStateAction<string[]>>;
 
+
 /*
 * The entire three.js graph view and the html form controls.
 */
-function initGraph (notebookName: string, setTooltips: Setter) {
+type NotesSetter = React.Dispatch<React.SetStateAction<Note[]>>;
+
+/*
+* The entire three.js graph view and the html form controls.
+*/
+function initGraph (notebookName: string, setTooltips: NotesSetter) {
   console.log(notebookName);
   // Initialize the three canvas and scene.
   ThreeScene.init();
   var loaded = false;
   // var { gun, user } = Auth();
   // Recalculate mentions and reDraw Mentions on each new Note.
-  Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
-    // console.log(note.title);
-    createNode(note, loaded);
-    setTooltips(notes.keySeq().toArray());
+  Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory, oldTitle?: string) => {
+    // console.log(note);
+    ThreeScene.drawNode(note, loaded);
+    setTooltips(notes.valueSeq().toArray());
     // user.get('notes').put(JSON.stringify(notes));
   };
   Notebook.afterLoad = (notes: Immutable.Map<string, Note>, directory: Directory) => {
     loaded = true;
     notes.valueSeq().forEach((note: Note) => {
-      ThreeScene.drawLines(note);
+      ThreeScene.drawConections(note);
     });
   };
   // // Recalculate mentions and reDraw Mentions on each new Note.
@@ -81,7 +85,7 @@ function initGraph (notebookName: string, setTooltips: Setter) {
   // Load the notebook from local storage.
   Notebook.load(notebookName);
   // Draw dots for each node
-  const tooltips = Notebook.notes.keySeq().toArray();
+  const tooltips = Notebook.notes.valueSeq().toArray();
   setTooltips(tooltips);
   // Notebook.nodes.forEach(node => drawLines(node.props.note, node.mesh));
 }
@@ -97,7 +101,7 @@ const styles: { [key: string]: React.CSSProperties } = {
 */
 export default function Graph (props: GraphProps) {
   // Initialize title reactive value.
-  const [tooltips, setTooltips] = useState<string[]>([]);
+  const [tooltips, setTooltips] = useState<Note[]>([]);
   // Initialize selected values.
   const [selected, setSelected] = useState<string|null>(null);
   // Call initGraph once.
@@ -112,21 +116,23 @@ export default function Graph (props: GraphProps) {
       initGraph(location.pathname, setTooltips);
     });
  },[history]);
+  // on select select a note from the repo 
+  // useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected); }, [selected]);
   // Call initGraph once.
-  useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected); }, [selected]);
+  useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(Notebook.notes.get(selected || '')?.uuid); }, [selected]);
   const canvas = document.getElementById('three-canvas');
   if (canvas) canvas.onclick = () => setSelected(null);
   // Render the form and controls.
-  return <header onClick={ () => { setSelected(null); console.log('selecting null') } } className="App-header" style={ styles.AppHeader }>
+  return <header onClick={ () => setSelected(null) } className="App-header" style={ styles.AppHeader }>
     { 
-      tooltips.map(n =>
+      tooltips.map(n => n.title !== '' ?
         <Tooltip
-          selected={ selected === n }
+          selected={ selected === n.title }
           onSelect={ t => setSelected(t) }
-          key={ n }
+          key={ n.title }
           note={ n }
-        />
-      )
+        /> : null
+      ) 
     }
     <Form onCreate={ (note: Note) => setSelected(note.title) } notebook={selected || props.notebook} showGo={ selected !== null }/>
   </header>;

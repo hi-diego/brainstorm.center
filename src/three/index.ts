@@ -1,10 +1,12 @@
 import Mention from 'brainstorm/Mention';
+import Note from 'brainstorm/Note';
 import random from 'common/random';
 import scene from 'three/scene'
 import * as THREE from 'three';
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import groups from 'three/groups';
 import Materials from 'three/materials';
+import geometries from 'three/geometries';
 import { useHistory } from 'react-router-dom';
  
 const lineMaterial = new THREE.LineBasicMaterial({ color: 0xbbbbbb });
@@ -71,95 +73,134 @@ export function animate () {
   renderer.render( scene, camera );
 }
 
-export function drawLines(note: any, _dot: any = null, ref = false) {
-  const dot = _dot || scene.getObjectByName(note.title);
-  const groupName = `${note.title}-mentions`;
-  if (!dot) return;
-  const oldGroup = scene.getObjectByName(groupName);
-  groups.links.remove(oldGroup);
-  if (oldGroup) scene.remove(oldGroup);
+
+
+
+/*
+* It creates a sphere mesh and adds it to the scene
+* it also adds the titte of the note as the Id on the tree scene
+*/
+export function createNode(note: Note): any {
+  const x = Math.random() * 2;
+  const y = Math.random() * 2;
+  const z = Math.random() * 2;
+  const wireframe = new THREE.WireframeGeometry(geometries.node.default);
+  const line = new THREE.LineSegments(wireframe);
+  line.material.depthTest = false;
+  line.material.opacity = 0.25;
+  line.material.transparent = true;
+  line.translateX(x);
+  line.translateY(y);
+  line.translateZ(z);
+  line.name = note.uuid;
+  line.userData = { note };
+  return line;
+}
+/*
+* It creates a sphere mesh and adds it to the scene
+* it also adds the titte of the note as the Id on the tree scene
+*/
+export function getNode(note: Note, lines: boolean = false): any {
+  // Get the Mesh Object if already exists.
+  const currentNode = scene.getObjectByName(note.uuid);
+  // return the object if already exists
+  return currentNode ?? createNode(note);
+}
+/*
+* It creates a sphere mesh and adds it to the scene
+* it also adds the titte of the note as the Id on the tree scene
+*/
+export function drawNode(note: Note, shouldDrawConections: boolean = true): any {
+  // Get the Mesh Object or create it if doesnt exist.
+  const node = getNode(note);
+  groups.nodes.add(node);
+  if (shouldDrawConections) drawConections(note, node);
+  return node;
+}
+
+export function getLines(mentions: Immutable.Set<Mention>, node: any) {
+  return mentions.map(mention => {
+    const to = mention.to;
+    const toNode = scene.getObjectByName(to.uuid);
+    if (!to || !toNode) return;
+    // Create a geometry that conects the 2 dots
+    const lineGeometry = new THREE.BufferGeometry().setFromPoints([node.position, toNode.position]);
+    const line = new THREE.Line(lineGeometry, lineMaterial);
+    const linename = `${mention.from.uuid}-${to.uuid}`;
+    line.name = linename;
+    return line;
+  });
+}
+
+function getTubes(mentions: Immutable.Set<Mention>, node: any) {
+  return mentions.map(mention => {
+    const to = mention.to;
+    const toNode = scene.getObjectByName(to.uuid);
+    const tubeGeometry = new THREE.TubeGeometry(
+    new THREE.CatmullRomCurve3([node.position, toNode.position]),
+      512,// path segments
+      0.003,// THICKNESS
+      8, //Roundness of Tube
+      false //closed
+    );
+    let tube = new THREE.Line(tubeGeometry, transparentLineMaterial);
+    tube.name = `${mention.from.uuid}-${to.uuid}-tube`;
+    return tube;
+  });
+}
+
+export function drawConections(note: Note, node?: any) {
+  node = node ?? getNode(note);
+  drawLines(note, node);
+  drawLines(note, node, 'references');
+}
+
+export function drawLines(note: Note, node: any, name: string = 'mentions') {
+  // the group that contains all the lines that connect the nodes
+  const groupName = `${note.uuid}-${name}`;
+  // For highlight purpuses we create another group tha
+  // is just a Thick line with the same position
+  // so wen the user selects the node we change the opacity to 1 and show the tick lines
+  const tubeGroupName = `${note.uuid}-${name}-tubes`;
+  const currentGroup = scene.getObjectByName(groupName);
+  const currentTubesGroup = scene.getObjectByName(tubeGroupName);
+  // redraw the tubes: remove it and then create it again.
+  groups.links.remove(currentGroup);
+  groups.links.remove(currentTubesGroup);
+  // create the new groups
   const group = new THREE.Group();
   const tubeGroup = new THREE.Group();
-  tubeGroup.name = `${note.title}-mentions-tubes`;
   group.name = groupName
-  note.mentions().forEach((mention: Mention) => {
-    const to = mention.to;
-    const toDot = scene.getObjectByName(to.title);
-    // console.log('mentions', mention, dot, toDot);
-    if (!to || !toDot) return;
-    const lineGeometry = new THREE.BufferGeometry().setFromPoints([dot.position, toDot.position]);
-    const line = new THREE.Line(lineGeometry, lineMaterial);
-    line.name = `${note.title}-${to.title}`
-
-    // Create Tube Geometry
-    const tubeGeometry = new THREE.TubeGeometry(
-      new THREE.CatmullRomCurve3([dot.position, toDot.position]),
-      512,// path segments
-      0.003,// THICKNESS
-      8, //Roundness of Tube
-      false //closed
-    );
-    const curve = getCubicBezierCurve3(dot, toDot);
-    const curvePoints = curve.getPoints(50);
-    const curveGeometry = new THREE.BufferGeometry().setFromPoints(curvePoints);
-    const curveLine = new THREE.Line(curveGeometry, lineMaterial);
-    curveLine.name = `${note.title}-${to.title}`
-
-    // Create Tube Geometry
-    const tubeCurvedGeometry = new THREE.TubeGeometry(
-      curve,
-      512,// path segments
-      0.003,// THICKNESS
-      8, //Roundness of Tube
-      false //closed
-    );
-
-    let tube = new THREE.Line(( mention.createdByUser || mention.to.title === mention.from.title ? tubeCurvedGeometry : tubeGeometry), transparentLineMaterial);
-    tube.name = `${note.title}-${to.title}-tube`;
-
-
-    tubeGroup.add(tube);
-
-    if (mention.createdByUser || mention.to.title === mention.from.title) group.add(curveLine);
-    else group.add(line);
-
-  });
+  tubeGroup.name = tubeGroupName
+  // for each mention we create a line and a tube
+  // and add it to the new group
+  const mentions = name === 'mentions' ? note.mentions() : note.refs();
+  const lines = getLines(mentions, node);
+  lines.map(m => group.add(m));
+  // tubes 
+  const tubes = getTubes(mentions, node);
+  tubes.map(m => tubeGroup.add(m));
+  // groups
   groups.links.add(group);
   groups.links.add(tubeGroup);
-  // scene.add(group);
-  // scene.add(tubeGroup);
-  // console.log('note.references()', note.references())
-  if (ref) note.references().forEach((from: any) => drawLines(from));
 }
 
-export function drawDot(note: any, drawMentions: boolean = true) {
-  const oldDot = scene.getObjectByName(note.title);
-  if (oldDot) return drawLines(note, oldDot, true);
-  const dot = new THREE.Mesh(sphereGeometry, meshMaterial);
-  dot.translateX(Math.random() * 2);
-  dot.translateY(Math.random() * 2);
-  dot.translateZ(Math.random() * 2);
-  dot.name = note.title;
-  groups.nodes.add(dot);
-  return drawMentions ? drawLines(note, dot, true) : null;
-}
-
-export function getCubicBezierCurve3(dot: any, toDot: any) {
-  if (dot.position.equals(toDot.position)) return new THREE.CubicBezierCurve3(dot.position, dot.position.clone().setY(dot.position.y+1).setZ(dot.position.z + random(-1, 1)), dot.position.clone().setX(dot.position.x+1).setZ(dot.position.z + random(-1, 1)), dot.position);
+export function getCubicBezierCurve3(dot: any, toNode: any) {
+  if (dot.position.equals(toNode.position)) return new THREE.CubicBezierCurve3(dot.position, dot.position.clone().setY(dot.position.y+1).setZ(dot.position.z + random(-1, 1)), dot.position.clone().setX(dot.position.x+1).setZ(dot.position.z + random(-1, 1)), dot.position);
   const smallCurvature = random(-0.25, 0.25);
   return new THREE.CubicBezierCurve3(
     dot.position,
     new THREE.Vector3(
-      ((dot.position.x + toDot.position.x)/2) + smallCurvature,
-      (dot.position.y + toDot.position.y)/2 + smallCurvature,
-      (dot.position.z + toDot.position.z)/2 + smallCurvature
+      ((dot.position.x + toNode.position.x)/2) + smallCurvature,
+      (dot.position.y + toNode.position.y)/2 + smallCurvature,
+      (dot.position.z + toNode.position.z)/2 + smallCurvature
     ),
     new THREE.Vector3(
-      ((dot.position.x + toDot.position.x)/2) + smallCurvature,
-      (dot.position.y + toDot.position.y)/2 + smallCurvature,
-      (dot.position.z + toDot.position.z)/2 + smallCurvature
+      ((dot.position.x + toNode.position.x)/2) + smallCurvature,
+      (dot.position.y + toNode.position.y)/2 + smallCurvature,
+      (dot.position.z + toNode.position.z)/2 + smallCurvature
     ),
-    toDot.position
+    toNode.position
   );
 }
 

@@ -10,6 +10,7 @@ import Note from 'brainstorm/Note';
 */
 interface FormProps {
   notebook: string,
+  note?: Note | null,
   showGo: boolean,
   onCreate?: (note: Note) => void
 }
@@ -54,8 +55,23 @@ function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent
 /*
 * 
 */
-function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter) {
-  setTitle(event.target.value);
+function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string) {
+  const note: Note|undefined = Notebook.notes.get(title);
+  console.log(note);
+  const newTitle: string = toCamelCase(event.target.value);
+  if (note !== undefined) note.update(newTitle);
+  setTitle(newTitle);
+}
+
+/*
+* 
+*/
+function toCamelCase (str: string): string {
+  return str.replace(/\W+(.)/g, (match, chr) => chr.toUpperCase());
+}
+
+function ucfirst(str: string) {
+  return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 /*
@@ -63,7 +79,8 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
 */
 function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void) {
   // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
-  if (key === 'Enter') return save(title, content, onCreate);
+  const camecasifiedTitle: string  = toCamelCase(title);
+  if (key === 'Enter') return save(camecasifiedTitle, content, onCreate);
   // if (event.key === 'ArrowRight' && state.placeholder) {
   //   const note = Notebook.notes.get(state.placeholder); 
   //   if (note) select(note);
@@ -75,9 +92,13 @@ function onTitleKeyDown(key: string, title: string, content: string, onCreate?: 
 */
 export default function Form (props: FormProps) {
   // Initialize title reactive value.
+  // const [note, setNote] = useState<Note|null>(null);
+  // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
   const [content, setContent] = useState<string>('');
+  // Initialize the form with the url selected notebook.
+  // useEffect(() => selectNote(), [title]);
   // Initialize the form with the url selected notebook.
   useEffect(() => initForm(props.notebook, setTitle, setContent), [props.notebook]);
   // Render the form.
@@ -94,7 +115,7 @@ export default function Form (props: FormProps) {
         placeholder="Title"
         value={ title }
         onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
-        onChange={ e => updateTitle(e, setTitle) }
+        onChange={ e => updateTitle(e, setTitle, title) }
       />
       <textarea
         placeholder="Content"

@@ -1,13 +1,11 @@
 import { useEffect, useState } from 'react';
-import * as Three from 'three/index';
 import Note from 'brainstorm/Note';
-import createNode from 'three/createNode';
 
 /*
 * 
 */
 interface TooltipProps {
-  note: string,
+  note: Note,
   selected: boolean,
   onSelect: (t: string) => void
 }
@@ -26,15 +24,15 @@ function initTooltip (note: string) {
 */
 export default function Tooltip (props: TooltipProps) {
   const [mesh, setMesh] = useState<any>();
-  useEffect(() => setMesh(initTooltip(props.note)), []);
+  useEffect(() => setMesh(initTooltip(props.note.title)), []);
   return (
     <label
       className={ ['node', props.selected ? 'selected' : '' ].join(' ') }
-      onClick={ event => { event.stopPropagation(); props.onSelect(props.note)} }
-      key={ props.note }
-      id={ props.note }
+      onClick={ event => { event.stopPropagation(); props.onSelect(props.note.title)} }
+      key={ props.note.title }
+      id={ props.note.uuid }
     >
-      { props.note }
+      { props.note.title }
       {/*<input onFocus={ event => this.props.onSelect(this, event) } className="ghosty"/>*/}
     </label>
   );

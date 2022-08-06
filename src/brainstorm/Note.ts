@@ -23,6 +23,7 @@ class Note extends NotebookItem {
     this.title = title;
     this.content = content;
     this.updateNotebook = updateNotebook;
+    console.log(this);
   }
 
   public get content(): string {
@@ -37,7 +38,15 @@ class Note extends NotebookItem {
   }
 
   public update(title?: string|null, content?: string|null): Note {
-    if (title) this.title = title;
+    if (title === '') {
+      Notebook.remove(this);
+      return this;
+    }
+    if (title && title !== this.title) {
+      const oldTitle = this.title;
+      this.title = title;
+      Notebook.update(this, oldTitle);
+    }
     if (content) this.content = content;
     return this;
   }
@@ -73,6 +82,14 @@ class Note extends NotebookItem {
    */
   public references () : Immutable.Set<Note|undefined> {
     const ref = Directory.dir.get(this.title, Immutable.Set<string>()).map(title => Notebook.notes.get(title));
+    return ref;
+  }
+
+  /**
+   * Return all the notes that reference this note by the title.
+   */
+   public refs () : Immutable.Set<Mention> {
+    const ref = Directory.dir.get(this.title, Immutable.Set<string>()).map(title => new Mention(Notebook.notes.get(title) || this, this, title));
     return ref;
   }
 }

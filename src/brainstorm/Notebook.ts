@@ -15,7 +15,9 @@ class Notebook {
   //
   public notes: Immutable.Map<string, Note>;
   //
-  public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
+  public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
+  public onAdded: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
+  public onEdited: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
   //
   public afterLoad: (notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
   //
@@ -25,6 +27,8 @@ class Notebook {
     // for testing
     // this.notes = Immutable.Map<string, Note>([ new Note('foo', 'bar'), new Note('bar', 'goo') ]);
     this.onUpdate = () => null;
+    this.onAdded = () => null;
+    this.onEdited = () => null;
     this.afterLoad = () => null;
   }
 
@@ -32,12 +36,26 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  public update(note: Note) {
+  public update(note: Note, oldTitle?: string) {
+    console.log(note, oldTitle);
+    if (oldTitle) this.notes = this.notes = this.notes.delete(oldTitle);
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);
     window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
-    this.onUpdate(note, this.notes, Directory);
+    if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
+    else this.onAdded(note, this.notes, Directory, oldTitle);
+    this.onUpdate(note, this.notes, Directory, oldTitle);
   }
+
+    /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+     public remove(note: Note) {
+      this.notes = this.notes.delete(note.title);
+      // Directory.remove(note);
+      window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+    }
 
   /**
    * Add or Update the given note to the notebook:
