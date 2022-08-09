@@ -36,7 +36,10 @@ function initForm(notebook: string, setTitle: Setter, setContent: Setter) {
 * 
 */
 function save(title: string, content: string, onCreate?: (note: Note) => void) {
+  if (!title || title === '') return;
   // Create new Note.
+  const currentNote = Notebook.notes.get(title);
+  if (currentNote) return currentNote.update(title, content);
   const note = new Note(title, content);
   // console.log(note);
   // createNode(note);
@@ -55,12 +58,10 @@ function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent
 /*
 * 
 */
-function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string) {
-  const note: Note|undefined = Notebook.notes.get(title);
-  console.log(note);
+function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string, note: Note | null) {
   const newTitle: string = toCamelCase(event.target.value);
-  if (note !== undefined) note.update(newTitle);
   setTitle(newTitle);
+  if (note) note.update(newTitle);
 }
 
 /*
@@ -77,7 +78,7 @@ function ucfirst(str: string) {
 /*
 * 
 */
-function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void) {
+function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void, note: Note | null) {
   // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
   const camecasifiedTitle: string  = toCamelCase(title);
   if (key === 'Enter') return save(camecasifiedTitle, content, onCreate);
@@ -91,8 +92,6 @@ function onTitleKeyDown(key: string, title: string, content: string, onCreate?: 
 * 
 */
 export default function Form (props: FormProps) {
-  // Initialize title reactive value.
-  // const [note, setNote] = useState<Note|null>(null);
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -114,8 +113,7 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
-        onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
-        onChange={ e => updateTitle(e, setTitle, title) }
+        onChange={ e => updateTitle(e, setTitle, title, props.note) }
       />
       <textarea
         placeholder="Content"

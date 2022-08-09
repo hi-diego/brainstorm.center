@@ -23,7 +23,7 @@ class Note extends NotebookItem {
     this.title = title;
     this.content = content;
     this.updateNotebook = updateNotebook;
-    console.log(this);
+    // console.log(this);
   }
 
   public get content(): string {
@@ -34,7 +34,7 @@ class Note extends NotebookItem {
     this.prevContent = this._content;
     this._content = content;
     // TODO: make this automatic Notebook update Optional 
-    if (this.updateNotebook) Notebook.update(this);
+    if (this.updateNotebook && this.title.length > 0) Notebook.update(this);
   }
 
   public update(title?: string|null, content?: string|null): Note {

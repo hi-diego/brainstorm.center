@@ -7,7 +7,7 @@ import Note from 'brainstorm/Note';
 interface TooltipProps {
   note: Note,
   selected: boolean,
-  onSelect: (t: string) => void
+  onSelect: (t: Note) => void
 }
 
 /*
@@ -28,7 +28,7 @@ export default function Tooltip (props: TooltipProps) {
   return (
     <label
       className={ ['node', props.selected ? 'selected' : '' ].join(' ') }
-      onClick={ event => { event.stopPropagation(); props.onSelect(props.note.title)} }
+      onClick={ event => { event.stopPropagation(); props.onSelect(props.note) } }
       key={ props.note.title }
       id={ props.note.uuid }
     >

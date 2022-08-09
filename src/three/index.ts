@@ -1,4 +1,5 @@
 import Mention from 'brainstorm/Mention';
+import Notebook from 'brainstorm/Notebook';
 import Note from 'brainstorm/Note';
 import random from 'common/random';
 import scene from 'three/scene'
@@ -114,7 +115,9 @@ export function drawNode(note: Note, shouldDrawConections: boolean = true): any 
   // Get the Mesh Object or create it if doesnt exist.
   const node = getNode(note);
   groups.nodes.add(node);
-  if (shouldDrawConections) drawConections(note, node);
+  if (shouldDrawConections) {
+    Notebook.notes.valueSeq().toArray().map((n: Note) => drawConections(n, getNode(n)));
+  }
   return node;
 }
 
@@ -152,7 +155,7 @@ function getTubes(mentions: Immutable.Set<Mention>, node: any) {
 export function drawConections(note: Note, node?: any) {
   node = node ?? getNode(note);
   drawLines(note, node);
-  drawLines(note, node, 'references');
+  // drawLines(note, node, 'references');
 }
 
 export function drawLines(note: Note, node: any, name: string = 'mentions') {

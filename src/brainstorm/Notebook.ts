@@ -37,7 +37,6 @@ class Notebook {
    * this will recalculate all the mentionses as well.
    */
   public update(note: Note, oldTitle?: string) {
-    console.log(note, oldTitle);
     if (oldTitle) this.notes = this.notes = this.notes.delete(oldTitle);
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);

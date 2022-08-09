@@ -103,7 +103,7 @@ export default function Graph (props: GraphProps) {
   // Initialize title reactive value.
   const [tooltips, setTooltips] = useState<Note[]>([]);
   // Initialize selected values.
-  const [selected, setSelected] = useState<string|null>(null);
+  const [selected, setSelected] = useState<Note|null>(null);
   // Call initGraph once.
   useEffect(() => initGraph(props.notebook, setTooltips), []);
   // On Url change update the scene
@@ -119,7 +119,7 @@ export default function Graph (props: GraphProps) {
   // on select select a note from the repo 
   // useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected); }, [selected]);
   // Call initGraph once.
-  useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(Notebook.notes.get(selected || '')?.uuid); }, [selected]);
+  useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected?.uuid); }, [selected]);
   const canvas = document.getElementById('three-canvas');
   if (canvas) canvas.onclick = () => setSelected(null);
   // Render the form and controls.
@@ -127,13 +127,18 @@ export default function Graph (props: GraphProps) {
     { 
       tooltips.map(n => n.title !== '' ?
         <Tooltip
-          selected={ selected === n.title }
-          onSelect={ t => setSelected(t) }
+          selected={ selected?.title === n.title }
+          onSelect={ s => setSelected(s) }
           key={ n.title }
           note={ n }
         /> : null
       ) 
     }
-    <Form onCreate={ (note: Note) => setSelected(note.title) } notebook={selected || props.notebook} showGo={ selected !== null }/>
+    <Form
+      note={ selected }
+      onCreate={ (note: Note) => setSelected(note) }
+      notebook={ selected?.title || props.notebook }
+      showGo={ selected !== null }
+    />
   </header>;
 }
