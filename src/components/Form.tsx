@@ -51,8 +51,10 @@ function save(title: string, content: string, onCreate?: (note: Note) => void) {
 /*
 * 
 */
-function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent: Setter) {
+function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent: Setter, title: string) {
   setContent(event.target.value);
+  const camecasifiedTitle: string  = toCamelCase(title);
+  save(camecasifiedTitle, event.target.value);
 }
 
 /*
@@ -120,7 +122,7 @@ export default function Form (props: FormProps) {
         rows={ 10 }
         value={ content }
         onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
-        onChange={ e => updateContent(e, setContent) }
+        onChange={ e => updateContent(e, setContent, title) }
       ></textarea>
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
     </form>
