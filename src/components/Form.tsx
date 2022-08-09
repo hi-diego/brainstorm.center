@@ -10,7 +10,7 @@ import Note from 'brainstorm/Note';
 */
 interface FormProps {
   notebook: string,
-  note?: Note | null,
+  note: Note | null,
   showGo: boolean,
   onCreate?: (note: Note) => void
 }
@@ -78,7 +78,7 @@ function ucfirst(str: string) {
 /*
 * 
 */
-function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void, note: Note | null) {
+function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void, note: Note | null = null) {
   // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
   const camecasifiedTitle: string  = toCamelCase(title);
   if (key === 'Enter') return save(camecasifiedTitle, content, onCreate);
