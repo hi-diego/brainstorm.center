@@ -70,7 +70,7 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
 * 
 */
 function toCamelCase (str: string): string {
-  return str.replace(/\W+(.)/g, (match, chr) => chr.toUpperCase());
+  return str.replace(/\s+(.)/g, (match, chr) => chr.toUpperCase());
 }
 
 function ucfirst(str: string) {
