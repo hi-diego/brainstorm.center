@@ -84,23 +84,25 @@ async function createNotebook() {
   }
 }
 
-async function lock (setLock: SetterBool) {
-
+async function lockCurrentNotebook (locked: boolean|null, setLock: SetterBool) {
+  setLock((await lockNotebook(locked)));
 }
 
 /*
 * 
 */
-async function lockNotebook() {
+async function lockNotebook(locked: boolean|null) {
   try {
-    var response = http.put(Notebook.getUri(), {
+    var response = await http.put(Notebook.getUri(), {
       password: "12345678",
-      access: true,
+      access: locked,
       uri: Notebook.getUri(),
       content: Notebook.stringContent()
     });
+    return response.data.access;
   } catch (err) {
     console.log(err);
+    return false;
   }
 }
 
@@ -170,12 +172,14 @@ export default function Form (props: FormProps) {
       {/* <h1>{ props.notebook }</h1> */}
       <label className="placeholder">{ null }</label>
       <input
+        disabled={ lock }
         autoFocus
         placeholder="Title"
         value={ title }
         onChange={ e => updateTitle(e, setTitle, title, props.note) }
       />
       <textarea
+        disabled={ lock }
         placeholder="Content"
         rows={ 10 }
         value={ content }
@@ -183,7 +187,7 @@ export default function Form (props: FormProps) {
         onChange={ e => updateContent(e, setContent, title) }
       ></textarea>
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      <button className="lock-button" onClick={ async () => await lock(setLock) }>{ block ? 'UNLOCK' : 'LOCK'  }</button>
+      <button className="lock-button" onClick={ async () => await lockCurrentNotebook(lock, setLock) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
     </form>
   );
 }
