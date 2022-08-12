@@ -130,7 +130,7 @@ export default function Form (props: FormProps) {
         onChange={ e => updateContent(e, setContent, title) }
       ></textarea>
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      <button className="lock-button" onClick={ async () => await lockCurrentNotebook(lock, setLock) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
+      <button className="lock-button" onClick={ async () => await lockCurrentNotebook(!lock, setLock) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
     </form>
   );
 }
