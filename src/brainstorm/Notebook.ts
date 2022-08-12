@@ -49,7 +49,7 @@ class Notebook {
         password: "12345678",
         access: null,
         uri: this.getUri(),
-        content: JSON.stringify(this.notes.toJSON())
+        content: this.stringContent()
       }).then(console.log).catch(console.log);
     }, 1500);
     if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
@@ -65,6 +65,10 @@ class Notebook {
     this.notes = this.notes.delete(note.title);
     // Directory.remove(note);
     window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+  }
+
+  public stringContent (): string {
+    return JSON.stringify(this.notes.toJSON());
   }
 
   /**

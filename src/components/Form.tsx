@@ -20,6 +20,7 @@ interface FormProps {
 *
 */
 type Setter = React.Dispatch<React.SetStateAction<string>>;
+type SetterBool = React.Dispatch<React.SetStateAction<boolean>>;
 
 /*
 * 
@@ -83,6 +84,26 @@ async function createNotebook() {
   }
 }
 
+async function lock (setLock: SetterBool) {
+
+}
+
+/*
+* 
+*/
+async function lockNotebook() {
+  try {
+    var response = http.put(Notebook.getUri(), {
+      password: "12345678",
+      access: true,
+      uri: Notebook.getUri(),
+      content: Notebook.stringContent()
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
 /*
 * 
 */
@@ -130,7 +151,7 @@ function onTitleKeyDown(key: string, title: string, content: string, onCreate?: 
 */
 export default function Form (props: FormProps) {
   // Initialize title reactive value.
-  const [block, setBlock] = useState<boolean>(false);
+  const [lock, setLock] = useState<boolean>(false);
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -162,7 +183,7 @@ export default function Form (props: FormProps) {
         onChange={ e => updateContent(e, setContent, title) }
       ></textarea>
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      <button className="lock-button" onClick={ () => setBlock(!block) }>{ block ? 'UNLOCK' : 'LOCK'  }</button>
+      <button className="lock-button" onClick={ async () => await lock(setLock) }>{ block ? 'UNLOCK' : 'LOCK'  }</button>
     </form>
   );
 }
