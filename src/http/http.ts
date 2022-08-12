@@ -11,10 +11,8 @@ export interface RemoteNotebook {
   uri: string,
   access: boolean|null
 }
-
-axios.defaults.baseURL = process.env.NODE_ENV === 'development'
-  ? 'http://localhost:8080/' 
-  : 'https://seal-app-fjzi4.ondigitalocean.app/';
+console.log(process.env.NODE_ENV)
+axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export function setBasicAuth (password: string, user: string|null = null) {
