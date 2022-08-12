@@ -53,11 +53,11 @@ function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent
 /*
 * 
 */
-function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string, note: Note|null, onCreate?: (note: Note) => void) {
-  const newTitle: string = toCamelCase(event.target.value);
-  setTitle(newTitle);
-  if (note === null && onCreate) onCreate(createNote(newTitle));
-  if (note) note.update(newTitle);
+function updateTitle(key: string, title: string, note: Note|null, onCreate?: (note: Note) => void) {
+  if (key !== 'Enter') return;
+  const newTitle: string = toCamelCase(title);
+  if (note !== null) return note.update(newTitle);
+  else if (onCreate) onCreate(createNote('').update(newTitle));
 }
 
 /*
@@ -65,6 +65,18 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
 */
 function toCamelCase (str: string): string {
   return str.replace(/\s+(.)/g, (match, chr) => chr.toUpperCase());
+}
+
+/*
+* 
+*/
+function search(title: string, setTitle: Setter, note: Note|null = null, onCreate?: (note: Note) => void) {
+  // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
+  const newTitle: string = toCamelCase(title);
+  setTitle(newTitle);
+  if (note !== null) return updateTitle('Enter', newTitle, note);
+  const noteFound: Note|undefined = Notebook.notes.get(newTitle);
+  if (onCreate && noteFound !== undefined) onCreate(noteFound);
 }
 
 /*
@@ -99,7 +111,8 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
-        onChange={ e => updateTitle(e, setTitle, title, props.note, props.onCreate) }
+        onKeyDown={ e => updateTitle(e.key, title, props.note, props.onCreate) }
+        onChange={ e => search(e.target.value, setTitle, props.note, props.onCreate) }
       />
       {
         props.note !== null
