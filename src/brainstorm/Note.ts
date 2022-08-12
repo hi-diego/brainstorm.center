@@ -17,13 +17,12 @@ class Note extends NotebookItem {
   public updateNotebook: boolean = true;
   public userMentions: Immutable.Set<Mention>;
 
-  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, createdAt?: Date, modifiedAt?: Date, updateNotebook: boolean = true) {
-    super(uuid, createdAt, modifiedAt);
+  constructor (title: string, content: string, uuid?: string, userMentions?: Immutable.Set<Mention>, updateNotebook: boolean = true) {
+    super(uuid);
     this.userMentions = userMentions || Immutable.Set<Mention>();
-    this.title = title;
     this.content = content;
+    this.title = title;
     this.updateNotebook = updateNotebook;
-    // console.log(this);
   }
 
   public get content(): string {
@@ -34,20 +33,20 @@ class Note extends NotebookItem {
     this.prevContent = this._content;
     this._content = content;
     // TODO: make this automatic Notebook update Optional 
-    if (this.updateNotebook && this.title.length > 0) Notebook.update(this);
+    if (this.updateNotebook && this.title && this.title.length > 0) Notebook.update(this);
   }
 
-  public update(title?: string|null, content?: string|null): Note {
-    if (title === '') {
+  public update(newTitle?: string|null, newContent?: string|null, remoteUpdate: boolean = true): Note {
+    if (newTitle === '') {
       Notebook.remove(this);
       return this;
     }
-    if (title && title !== this.title) {
-      const oldTitle = this.title;
-      this.title = title;
-      Notebook.update(this, oldTitle);
-    }
-    if (content) this.content = content;
+    var oldTitle = this.title;
+    this.title = newTitle ?? this.title;
+    this.content = newContent ?? this.content;
+    if (!this.updateNotebook) return this;
+    var toRemove = oldTitle !== newTitle ? oldTitle : null;
+    Notebook.update(this, remoteUpdate, true, toRemove);
     return this;
   }
 
@@ -63,7 +62,7 @@ class Note extends NotebookItem {
    * Return all the words in the content.
    */
   public clone () : Note {
-    return new Note(this.title, this.content, this.uuid, Immutable.Set(this.userMentions), new Date(this.createdAt), new Date(this.modifiedAt));
+    return new Note(this.title, this.content, this.uuid, Immutable.Set(this.userMentions));
   }
 
   /**

@@ -17,9 +17,9 @@ class Notebook {
   //
   public notes: Immutable.Map<string, Note>;
   //
-  public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
-  public onAdded: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
-  public onEdited: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass, oldTitle?: string) => void;
+  public onUpdate: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
+  public onAdded: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
+  public onEdited: (note: Note, notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
   //
   public afterLoad: (notes: Immutable.Map<string, Note>, directory: DirectoryClass) => void;
   //
@@ -38,26 +38,34 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  public update(note: Note, oldTitle?: string) {
-    if (oldTitle) this.notes = this.notes = this.notes.delete(oldTitle);
-    Directory.update(note);
+  public update(note: Note, remoteUpdate: boolean = true, onEdited: boolean = true, toRemove: string|null = null) {
+    if (toRemove) this.remove(toRemove);
     this.notes = this.notes.set(note.title, note);
-    // window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
-    window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(updateNotebook, 1500);
-    if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
-    else this.onAdded(note, this.notes, Directory, oldTitle);
-    this.onUpdate(note, this.notes, Directory, oldTitle);
+    Directory.update(note);
+    if (remoteUpdate) {
+      window.clearTimeout(this.timer);
+      this.timer = window.setTimeout(updateNotebook, 1500);
+    }
+    if (onEdited) this.onEdited(note, this.notes, Directory);
+    this.onUpdate(note, this.notes, Directory);
   }
 
     /**
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-  public remove(note: Note) {
-    this.notes = this.notes.delete(note.title);
-    // Directory.remove(note);
-    window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+  public add(note: Note, remoteUpdate: boolean = true) {
+    this.update(note, remoteUpdate, false);
+    this.onAdded(note, this.notes, Directory);
+  }
+
+    /**
+   * Add or Update the given note to the notebook:
+   * this will recalculate all the mentionses as well.
+   */
+  public remove(note: Note|string): Note|string {
+    this.notes = this.notes.delete(note instanceof Note ? note.title : note);
+    return note;
   }
 
   public stringContent (): string {
@@ -101,7 +109,8 @@ class Notebook {
   public loadFrom(notes: any) {
     for (const title in notes) {
       const n = notes[title];
-      const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
+      const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions));
+      this.add(note, false);
     }
     if (this.afterLoad) this.afterLoad(this.notes, Directory);
   }

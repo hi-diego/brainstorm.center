@@ -33,37 +33,30 @@ function initForm(notebook: string, setTitle: Setter, setContent: Setter) {
   setContent(note?.content || '');
 } 
 
+
 /*
 * 
 */
-function save(title: string, content: string, onCreate?: (note: Note) => void) {
-  if (!title || title === '') return;
-  // Create new Note.
-  const currentNote = Notebook.notes.get(title);
-  if (currentNote) return currentNote.update(title, content);
+function createNote(title: string, content: string = ''): Note {
   const note = new Note(title, content);
-  // console.log(note);
-  // createNode(note);
-  if (onCreate) onCreate(note);
-  // Update the Notebook.
-  // Notebook.update(note);
+  return note;
 }
 
 /*
 * 
 */
-function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent: Setter, title: string) {
+function updateContent(event: React.ChangeEvent<HTMLTextAreaElement>, setContent: Setter, title: string, note: Note, onCreate?: (note: Note) => void) {
   setContent(event.target.value);
-  const camecasifiedTitle: string  = toCamelCase(title);
-  save(camecasifiedTitle, event.target.value);
+  note.update(note.title, event.target.value);
 }
 
 /*
 * 
 */
-function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string, note: Note | null) {
+function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Setter, title: string, note: Note|null, onCreate?: (note: Note) => void) {
   const newTitle: string = toCamelCase(event.target.value);
   setTitle(newTitle);
+  if (note === null && onCreate) onCreate(createNote(newTitle));
   if (note) note.update(newTitle);
 }
 
@@ -74,29 +67,16 @@ function toCamelCase (str: string): string {
   return str.replace(/\s+(.)/g, (match, chr) => chr.toUpperCase());
 }
 
-function ucfirst(str: string) {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-}
-
-/*
-* 
-*/
-function onTitleKeyDown(key: string, title: string, content: string, onCreate?: (note: Note) => void, note: Note | null = null) {
-  // TODO: if the tittle didnt change and the user keydown enter , navigate to that route note.title
-  const camecasifiedTitle: string  = toCamelCase(title);
-  if (key === 'Enter') return save(camecasifiedTitle, content, onCreate);
-  // if (event.key === 'ArrowRight' && state.placeholder) {
-  //   const note = Notebook.notes.get(state.placeholder); 
-  //   if (note) select(note);
-  // }
-}
-
 /*
 * 
 */
 export default function Form (props: FormProps) {
   // Initialize title reactive value.
   const [lock, setLock] = useState<boolean>(false);
+  // Initialize title reactive value.
+  const [locking, setLocking] = useState<boolean>(false);
+  // Initialize title reactive value.
+  const [password, setPassword] = useState<string>('');
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -119,18 +99,24 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
-        onChange={ e => updateTitle(e, setTitle, title, props.note) }
+        onChange={ e => updateTitle(e, setTitle, title, props.note, props.onCreate) }
       />
-      <textarea
-        disabled={ lock }
-        placeholder="Content"
-        rows={ 10 }
-        value={ content }
-        onKeyDown={ e => onTitleKeyDown(e.key, title, content, props.onCreate) }
-        onChange={ e => updateContent(e, setContent, title) }
-      ></textarea>
+      {
+        props.note !== null
+          ? (<textarea
+              disabled={ lock }
+              placeholder="Content"
+              rows={ 10 }
+              value={ content }
+              onChange={ e => props.note && updateContent(e, setContent, title, props.note) }>
+            </textarea>)
+          : null
+      }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      <button className="lock-button" onClick={ async () => await lockCurrentNotebook(!lock, setLock) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
+      {  locking 
+         ? <input type="password" onChange={ event => setPassword(event.target.value) } value={ password } />
+         : <button className="lock-button" onClick={ () => setLock(true) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
+      }
     </form>
   );
 }

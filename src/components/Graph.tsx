@@ -6,7 +6,7 @@ import * as ThreeScene from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
 import { useHistory } from 'react-router-dom';
-import http, { fetchNotebook } from 'http/http';
+import http, { fetchNotebook, RemoteNotebook } from 'http/http';
 
 /*
  If title change: must repaint all nodes that mentions old title
@@ -33,20 +33,25 @@ interface Node {
 */
 type NotesSetter = React.Dispatch<React.SetStateAction<Note[]>>;
 
+
 /*
 * The entire three.js graph view and the html form controls.
 */
-function initGraph (notebookName: string, setTooltips: NotesSetter) {
-  console.log(notebookName);
+type RemoteNotebookSetter = React.Dispatch<React.SetStateAction<RemoteNotebook|null>>;
+
+
+/*
+* The entire three.js graph view and the html form controls.
+*/
+function initGraph (notebookName: string, setTooltips: NotesSetter, setRemoteNotebook: RemoteNotebookSetter) {
+  // console.log(notebookName);
   // Initialize the three canvas and scene.
   ThreeScene.init();
   var loaded = false;
   // Recalculate mentions and reDraw Mentions on each new Note.
-  Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory, oldTitle?: string) => {
-    // console.log(note);
+  Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
     ThreeScene.drawNode(note, loaded);
     setTooltips(notes.valueSeq().toArray());
-    // user.get('notes').put(JSON.stringify(notes));
   };
   Notebook.afterLoad = (notes: Immutable.Map<string, Note>, directory: Directory) => {
     loaded = true;
@@ -54,8 +59,11 @@ function initGraph (notebookName: string, setTooltips: NotesSetter) {
       ThreeScene.drawConections(note);
     });
   };
-  // Load the notebook from local storage.
-  fetchNotebook();
+  // Load the notebook from remote source.
+  fetchNotebook().then((remoteNotebook: RemoteNotebook) => {
+    setRemoteNotebook(remoteNotebook);
+    Notebook.loadFrom(JSON.parse(remoteNotebook.content));
+  });
   // Draw dots for each node
   const tooltips = Notebook.notes.valueSeq().toArray();
   setTooltips(tooltips);
@@ -73,11 +81,13 @@ const styles: { [key: string]: React.CSSProperties } = {
 */
 export default function Graph (props: GraphProps) {
   // Initialize title reactive value.
+  const [remoteNotebook, setRemoteNotebook] = useState<RemoteNotebook|null>(null);
+  // Initialize title reactive value.
   const [tooltips, setTooltips] = useState<Note[]>([]);
   // Initialize selected values.
   const [selected, setSelected] = useState<Note|null>(null);
   // Call initGraph once.
-  useEffect(() => initGraph(props.notebook, setTooltips), []);
+  useEffect(() => initGraph(props.notebook, setTooltips, setRemoteNotebook), []);
   // On Url change update the scene
   const history = useHistory();
   useEffect(() => {
@@ -85,7 +95,7 @@ export default function Graph (props: GraphProps) {
       ThreeScene.clear();
       setSelected(null);
       Notebook.reload(location.pathname);
-      initGraph(location.pathname, setTooltips);
+      initGraph(location.pathname, setTooltips, setRemoteNotebook);
     });
  },[history]);
   // on select select a note from the repo 

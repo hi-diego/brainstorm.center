@@ -1,5 +1,16 @@
 import axios from 'axios';
 import Notebook from 'brainstorm/Notebook';
+/*
+* The entire three.js graph view and the html form controls.
+*/
+export interface RemoteNotebook {
+  id: number,
+  title: string,
+  content: string,
+  password: string,
+  uri: string,
+  access: boolean|null
+}
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development'
   ? 'http://localhost:8080/' 
@@ -79,8 +90,8 @@ export async function fetchNotebook() {
   try {
     var response = await http.get(Notebook.getUri());
     notebook = response.data;
-    const notes = JSON.parse(response.data.content);
-    Notebook.loadFrom(notes);
+    // const notes = JSON.parse(response.data.content);
+    // Notebook.loadFrom(notes);
   } catch (error: any) {
     if (error.response.status === 404) notebook = await createNotebook();
   } finally {
