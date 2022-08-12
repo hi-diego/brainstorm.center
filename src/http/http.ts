@@ -2,7 +2,7 @@ import axios from 'axios';
 import Notebook from 'brainstorm/Notebook';
 
 axios.defaults.baseURL = process.env.NODE_ENV === 'development'
-  ? 'https://localhost:8081/' 
+  ? 'http://localhost:8080/' 
   : 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
@@ -61,6 +61,15 @@ export async function lockNotebook(locked: boolean|null) {
     return false;
   }
 }
+
+export async function updateNotebook() {
+  return await http.put(Notebook.getUri(), {
+    password: "12345678",
+    access: null,
+    uri: Notebook.getUri(),
+    content: Notebook.stringContent()
+  });
+}
   
 /*
 * 
@@ -69,14 +78,14 @@ export async function fetchNotebook() {
   var notebook = null;
   try {
     var response = await http.get(Notebook.getUri());
-    console.log(response);
     notebook = response.data;
     const notes = JSON.parse(response.data.content);
     Notebook.loadFrom(notes);
   } catch (error: any) {
     if (error.response.status === 404) notebook = await createNotebook();
   } finally {
-    
+    console.log('fetchNotebook', notebook);
+    return notebook;
   }
 }
 

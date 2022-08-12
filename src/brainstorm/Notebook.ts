@@ -4,7 +4,7 @@ import Mention from 'brainstorm/Mention';
 import Directory from 'brainstorm/Directory';
 import { Directory as DirectoryClass } from 'brainstorm/Directory';
 import Immutable from 'immutable';
-import axios from 'axios';
+import http, { updateNotebook } from 'http/http';
 
 /**
  * Notebook.
@@ -44,14 +44,7 @@ class Notebook {
     this.notes = this.notes.set(note.title, note);
     // window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
     window.clearTimeout(this.timer);
-    this.timer = window.setTimeout(() => {
-      axios.put(`https://seal-app-fjzi4.ondigitalocean.app/${this.getUri()}`, {
-        password: "12345678",
-        access: null,
-        uri: this.getUri(),
-        content: this.stringContent()
-      }).then(console.log).catch(console.log);
-    }, 1500);
+    this.timer = window.setTimeout(updateNotebook, 1500);
     if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
     else this.onAdded(note, this.notes, Directory, oldTitle);
     this.onUpdate(note, this.notes, Directory, oldTitle);
@@ -117,31 +110,10 @@ class Notebook {
    * Load data from the local storage to the noptebook instance:
    *
    */
-  public load(notebookName: string = 'root') {
-    this.name = notebookName;
+  public load () {
+    this.name = this.getUri();
     var notes = {}
     var uri = this.getUri();
-    axios.get(`https://seal-app-fjzi4.ondigitalocean.app/${uri}`).then(res => {
-      console.log(res);
-      const notes = JSON.parse(res.data.content);
-      // const notes = JSON.parse(window.localStorage.getItem(this.getLocalStorageName()) || '{}')
-      for (const title in notes) {
-        const n = notes[title];
-        const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
-      }
-    }).catch(err => {
-      console.log(err);
-      if (err.response.status === 404) {
-        axios.post(`https://seal-app-fjzi4.ondigitalocean.app/`, {
-          password: "12345678",
-          access: null,
-          uri: this.getUri(),
-          content: "{}"
-        }).then(console.log).catch(console.log);
-      }
-    }).finally(() => {
-      if (this.afterLoad) this.afterLoad(this.notes, Directory);
-    });
   }
 
   /**
@@ -152,7 +124,7 @@ class Notebook {
     Directory.clear();
     this.name = notebookName;
     this.notes = Immutable.Map<string, Note>();
-    this.load(notebookName);
+    this.load();
   }
 }
 

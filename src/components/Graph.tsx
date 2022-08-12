@@ -6,7 +6,7 @@ import * as ThreeScene from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
 import { useHistory } from 'react-router-dom';
-
+import http, { fetchNotebook } from 'http/http';
 
 /*
  If title change: must repaint all nodes that mentions old title
@@ -55,7 +55,7 @@ function initGraph (notebookName: string, setTooltips: NotesSetter) {
     });
   };
   // Load the notebook from local storage.
-  Notebook.load(notebookName);
+  fetchNotebook();
   // Draw dots for each node
   const tooltips = Notebook.notes.valueSeq().toArray();
   setTooltips(tooltips);
