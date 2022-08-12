@@ -50,6 +50,7 @@ function initGraph (notebookName: string, setTooltips: NotesSetter, setRemoteNot
   var loaded = false;
   // Recalculate mentions and reDraw Mentions on each new Note.
   Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory) => {
+    console.log('Notebook.onUpdate');
     ThreeScene.drawNode(note, loaded);
     setTooltips(notes.valueSeq().toArray());
   };

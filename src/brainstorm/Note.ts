@@ -39,6 +39,7 @@ class Note extends NotebookItem {
   public update(newTitle?: string|null, newContent?: string|null, remoteUpdate: boolean = true): Note {
     if (newTitle === '') {
       Notebook.remove(this);
+      this.title = '';
       Notebook.onUpdate(this, Notebook.notes, Directory);
       return this;
     }

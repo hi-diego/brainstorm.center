@@ -114,7 +114,12 @@ export function getNode(note: Note, lines: boolean = false): any {
 export function drawNode(note: Note, shouldDrawConections: boolean = true): any {
   // Get the Mesh Object or create it if doesnt exist.
   const node = getNode(note);
-  groups.nodes.add(node);
+  if (!note.title) {
+    console.log('REMOOOOOVE');
+    groups.nodes.remove(node);
+    scene.remove(node);
+  }
+  else groups.nodes.add(node);
   if (shouldDrawConections) {
     Notebook.notes.valueSeq().toArray().map((n: Note) => drawConections(n, getNode(n)));
   }
