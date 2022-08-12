@@ -1,0 +1,26 @@
+domains:
+- domain: brainstorm.center
+  type: PRIMARY
+  wildcard: true
+  zone: brainstorm.center
+envs:
+- key: NODE_ENV
+  scope: RUN_AND_BUILD_TIME
+  value: production
+name: plankton-app
+region: tor
+services:
+- build_command: yarn && yarn build
+  environment_slug: node-js
+  github:
+    branch: master
+    deploy_on_push: true
+    repo: hi-diego/brainstorm.center
+  http_port: 8080
+  instance_count: 2
+  instance_size_slug: professional-xs
+  name: brainstorm-center
+  routes:
+  - path: /
+  run_command: yarn start
+  source_dir: /
