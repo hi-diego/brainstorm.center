@@ -84,9 +84,7 @@ function search(title: string, setTitle: Setter, note: Note|null = null, onCreat
 */
 export default function Form (props: FormProps) {
   // Initialize title reactive value.
-  const [lock, setLock] = useState<boolean>(false);
-  // Initialize title reactive value.
-  const [locking, setLocking] = useState<boolean>(false);
+  const [locked, setLocked] = useState<boolean>(false);
   // Initialize title reactive value.
   const [password, setPassword] = useState<string>('');
   // Initialize title reactive value.
@@ -107,7 +105,7 @@ export default function Form (props: FormProps) {
       {/* <h1>{ props.notebook }</h1> */}
       <label className="placeholder">{ null }</label>
       <input
-        disabled={ lock }
+        disabled={ locked }
         autoFocus
         placeholder="Title"
         value={ title }
@@ -117,7 +115,7 @@ export default function Form (props: FormProps) {
       {
         props.note !== null
           ? (<textarea
-              disabled={ lock }
+              disabled={ locked }
               placeholder="Content"
               rows={ 10 }
               value={ content }
@@ -126,9 +124,9 @@ export default function Form (props: FormProps) {
           : null
       }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      {  locking 
+      {  false
          ? <input type="password" onChange={ event => setPassword(event.target.value) } value={ password } />
-         : <button className="lock-button" onClick={ () => setLock(true) }>{ lock ? 'UNLOCK' : 'LOCK' }</button>
+         : <button className="lock-button" onClick={ async () => lockCurrentNotebook(!locked, setLocked) }>{ locked ? 'UNLOCK' : 'LOCK' }</button>
       }
     </form>
   );
