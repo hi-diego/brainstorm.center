@@ -4,7 +4,7 @@ import Notebook from 'brainstorm/Notebook';
 // import * as Three from 'three/index';
 // import createNode from 'three/createNode  ';
 import Note from 'brainstorm/Note';
-import http from 'http/http';
+import { lockCurrentNotebook } from 'http/http';
 
 /*
 * The entire three.js graph view and the html form controls.
@@ -20,7 +20,6 @@ interface FormProps {
 *
 */
 type Setter = React.Dispatch<React.SetStateAction<string>>;
-type SetterBool = React.Dispatch<React.SetStateAction<boolean>>;
 
 /*
 * 
@@ -66,62 +65,6 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
   const newTitle: string = toCamelCase(event.target.value);
   setTitle(newTitle);
   if (note) note.update(newTitle);
-}
-
-/*
-* 
-*/
-async function createNotebook() {
-  try {
-    var response = http.post('', {
-      password: "12345678",
-      access: null,
-      uri: Notebook.getUri(),
-      content: "{}"
-    });
-  } catch (err) {
-    console.log(err);
-  }
-}
-
-async function lockCurrentNotebook (locked: boolean|null, setLock: SetterBool) {
-  setLock((await lockNotebook(locked)));
-}
-
-/*
-* 
-*/
-async function lockNotebook(locked: boolean|null) {
-  try {
-    var response = await http.put(Notebook.getUri(), {
-      password: "12345678",
-      access: locked,
-      uri: Notebook.getUri(),
-      content: Notebook.stringContent()
-    });
-    return response.data.access;
-  } catch (err) {
-    console.log(err);
-    return false;
-  }
-}
-
-/*
-* 
-*/
-async function fetchNotebook() {
-  var notebook = null;
-  try {
-    var response = await http.get(Notebook.getUri());
-    console.log(response);
-    notebook = response.data;
-    const notes = JSON.parse(response.data.content);
-    Notebook.loadFrom(notes);
-  } catch (error: any) {
-    if (error.response.status === 404) notebook = await createNotebook();
-  } finally {
-    
-  }
 }
 
 /*

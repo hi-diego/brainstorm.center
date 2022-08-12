@@ -28,25 +28,6 @@ interface Node {
   mesh: any
 }
 
-// public getNodes(): JSX.Element[] {
-//   this.nodes = Notebook.notes.toSet().map((note: Note) => (
-//     <Node
-//       key={ note.uuid }
-//       note={ note }
-//       drawLines={ this.state.componentDidMount }
-//       selected={ note === this.state.note }
-//       onSelect={ event => this.select.bind(this)(note, event) }
-//     />
-//   )).toArray();
-//   return this.nodes;
-// }
-
-/*
-* The entire three.js graph view and the html form controls.
-*/
-type Setter = React.Dispatch<React.SetStateAction<string[]>>;
-
-
 /*
 * The entire three.js graph view and the html form controls.
 */
@@ -60,7 +41,6 @@ function initGraph (notebookName: string, setTooltips: NotesSetter) {
   // Initialize the three canvas and scene.
   ThreeScene.init();
   var loaded = false;
-  // var { gun, user } = Auth();
   // Recalculate mentions and reDraw Mentions on each new Note.
   Notebook.onUpdate = (note: Note, notes: Immutable.Map<string, Note>, directory: Directory, oldTitle?: string) => {
     // console.log(note);
@@ -74,14 +54,6 @@ function initGraph (notebookName: string, setTooltips: NotesSetter) {
       ThreeScene.drawConections(note);
     });
   };
-  // // Recalculate mentions and reDraw Mentions on each new Note.
-  // Notebook.onNoteUpdateContent = (note: Note, notes: Immutable.Set<Note>, directory: Directory) => {
-  //   console.log(note);
-  // };
-  // // Recalculate mentions and reDraw Mentions on each new Note.
-  // Notebook.onNoteUpdateTitle = (note: Note, notes: Immutable.Set<Note>, directory: Directory) => {
-  //   console.log(note);
-  // };
   // Load the notebook from local storage.
   Notebook.load(notebookName);
   // Draw dots for each node
