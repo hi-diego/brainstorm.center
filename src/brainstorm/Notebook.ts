@@ -78,10 +78,14 @@ class Notebook {
     return `brainstorm.center/${path}`;
   }
 
-  public getUri (): string {
+  public static URI (): string {
     var uri = `${window.location.host}/${window.location.pathname}`;
-    uri = uri.endsWith('/') ? uri.substr(0, uri.length - 1) : uri;
+    uri = uri.endsWith('/') ? uri.substring(0, uri.length - 1) : uri;
     return uri;
+  }
+
+  public getUri (): string {
+    return Notebook.URI();
   }
 
   /**
@@ -91,6 +95,19 @@ class Notebook {
   // public Note(title: string, content: string, uuid?: string) {
 
   // }
+
+
+  /**
+   * Load data from the local storage to the noptebook instance:
+   *
+   */
+  public loadFrom(notes: any) {
+    for (const title in notes) {
+      const n = notes[title];
+      const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
+    }
+    if (this.afterLoad) this.afterLoad(this.notes, Directory);
+  }
 
   /**
    * Load data from the local storage to the noptebook instance:
@@ -136,3 +153,6 @@ class Notebook {
 }
 
 export default new Notebook(Immutable.Map<string, Note>());
+
+
+export { Notebook };

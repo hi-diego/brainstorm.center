@@ -4,6 +4,7 @@ import Notebook from 'brainstorm/Notebook';
 // import * as Three from 'three/index';
 // import createNode from 'three/createNode  ';
 import Note from 'brainstorm/Note';
+import http from 'http/http';
 
 /*
 * The entire three.js graph view and the html form controls.
@@ -69,6 +70,40 @@ function updateTitle(event: React.ChangeEvent<HTMLInputElement>, setTitle: Sette
 /*
 * 
 */
+async function createNotebook() {
+  try {
+    var response = http.post('', {
+      password: "12345678",
+      access: null,
+      uri: Notebook.getUri(),
+      content: "{}"
+    });
+  } catch (err) {
+    console.log(err);
+  }
+}
+
+/*
+* 
+*/
+async function fetchNotebook() {
+  var notebook = null;
+  try {
+    var response = await http.get(Notebook.getUri());
+    console.log(response);
+    notebook = response.data;
+    const notes = JSON.parse(response.data.content);
+    Notebook.loadFrom(notes);
+  } catch (error: any) {
+    if (error.response.status === 404) notebook = await createNotebook();
+  } finally {
+    
+  }
+}
+
+/*
+* 
+*/
 function toCamelCase (str: string): string {
   return str.replace(/\s+(.)/g, (match, chr) => chr.toUpperCase());
 }
@@ -94,6 +129,8 @@ function onTitleKeyDown(key: string, title: string, content: string, onCreate?: 
 * 
 */
 export default function Form (props: FormProps) {
+  // Initialize title reactive value.
+  const [block, setBlock] = useState<boolean>(false);
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -125,6 +162,7 @@ export default function Form (props: FormProps) {
         onChange={ e => updateContent(e, setContent, title) }
       ></textarea>
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
+      <button className="lock-button" onClick={ () => setBlock(!block) }>{ block ? 'UNLOCK' : 'LOCK'  }</button>
     </form>
   );
 }

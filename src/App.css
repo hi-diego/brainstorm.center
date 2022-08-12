@@ -13,6 +13,19 @@
   }
 }
 
+.lock-button {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+  font-size: 0.5rem !important;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .App-header {
   /*position: fixed;*/
   background-color: #282c34;
