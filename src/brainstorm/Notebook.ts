@@ -4,6 +4,7 @@ import Mention from 'brainstorm/Mention';
 import Directory from 'brainstorm/Directory';
 import { Directory as DirectoryClass } from 'brainstorm/Directory';
 import Immutable from 'immutable';
+import axios from 'axios';
 
 /**
  * Notebook.
@@ -12,6 +13,7 @@ import Immutable from 'immutable';
 class Notebook {
   //
   public name: string;
+  public timer: any;
   //
   public notes: Immutable.Map<string, Note>;
   //
@@ -40,7 +42,16 @@ class Notebook {
     if (oldTitle) this.notes = this.notes = this.notes.delete(oldTitle);
     Directory.update(note);
     this.notes = this.notes.set(note.title, note);
-    window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+    // window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+    window.clearTimeout(this.timer);
+    this.timer = window.setTimeout(() => {
+      axios.put(`https://seal-app-fjzi4.ondigitalocean.app/${this.getUri()}`, {
+        password: "12345678",
+        access: null,
+        uri: this.getUri(),
+        content: JSON.stringify(this.notes.toJSON())
+      }).then(console.log).catch(console.log);
+    }, 1500);
     if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
     else this.onAdded(note, this.notes, Directory, oldTitle);
     this.onUpdate(note, this.notes, Directory, oldTitle);
@@ -50,11 +61,11 @@ class Notebook {
    * Add or Update the given note to the notebook:
    * this will recalculate all the mentionses as well.
    */
-     public remove(note: Note) {
-      this.notes = this.notes.delete(note.title);
-      // Directory.remove(note);
-      window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
-    }
+  public remove(note: Note) {
+    this.notes = this.notes.delete(note.title);
+    // Directory.remove(note);
+    window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
+  }
 
   /**
    * Add or Update the given note to the notebook:
@@ -65,6 +76,12 @@ class Notebook {
       ? (window.location.pathname + '/')
       : '';
     return `brainstorm.center/${path}`;
+  }
+
+  public getUri (): string {
+    var uri = `${window.location.host}/${window.location.pathname}`;
+    uri = uri.endsWith('/') ? uri.substr(0, uri.length - 1) : uri;
+    return uri;
   }
 
   /**
@@ -81,13 +98,29 @@ class Notebook {
    */
   public load(notebookName: string = 'root') {
     this.name = notebookName;
-    const notes = JSON.parse(window.localStorage.getItem(this.getLocalStorageName()) || '{}')
-    for (const title in notes) {
-      const n = notes[title];
-      const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
-      // console.log('Notebook.load', note);
-    }
-    if (this.afterLoad) this.afterLoad(this.notes, Directory);
+    var notes = {}
+    var uri = this.getUri();
+    axios.get(`https://seal-app-fjzi4.ondigitalocean.app/${uri}`).then(res => {
+      console.log(res);
+      const notes = JSON.parse(res.data.content);
+      // const notes = JSON.parse(window.localStorage.getItem(this.getLocalStorageName()) || '{}')
+      for (const title in notes) {
+        const n = notes[title];
+        const note = new Note(n.title, n._content, n.uuid, Immutable.Set<Mention>(n.userMentions), n.createdAt);
+      }
+    }).catch(err => {
+      console.log(err);
+      if (err.response.status === 404) {
+        axios.post(`https://seal-app-fjzi4.ondigitalocean.app/`, {
+          password: "12345678",
+          access: null,
+          uri: this.getUri(),
+          content: "{}"
+        }).then(console.log).catch(console.log);
+      }
+    }).finally(() => {
+      if (this.afterLoad) this.afterLoad(this.notes, Directory);
+    });
   }
 
   /**
@@ -101,6 +134,5 @@ class Notebook {
     this.load(notebookName);
   }
 }
-
 
 export default new Notebook(Immutable.Map<string, Note>());
