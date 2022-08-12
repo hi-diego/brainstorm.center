@@ -44,7 +44,7 @@ class Notebook {
     this.notes = this.notes.set(note.title, note);
     // window.localStorage.setItem(this.getLocalStorageName(), JSON.stringify(this.notes.toJSON()));
     window.clearTimeout(this.timer);
-    if (oldTitle) this.timer = window.setTimeout(updateNotebook, 1500);
+    this.timer = window.setTimeout(updateNotebook, 1500);
     if (oldTitle) this.onEdited(note, this.notes, Directory, oldTitle);
     else this.onAdded(note, this.notes, Directory, oldTitle);
     this.onUpdate(note, this.notes, Directory, oldTitle);
