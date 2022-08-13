@@ -117,6 +117,7 @@ export default function Graph (props: GraphProps) {
     }
     <Form
       onPassword={ (password: string) => { setBasicAuth(password); initGraph(props.notebook, setTooltips, setRemoteNotebook); } }
+      locked={ true }
       remoteNotebook={ remoteNotebook }
       note={ selected }
       onCreate={ (note: Note) => setSelected(note) }

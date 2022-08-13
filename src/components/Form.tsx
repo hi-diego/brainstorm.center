@@ -11,6 +11,7 @@ import { lockNotebook, RemoteNotebook, setBasicAuth } from 'http/http';
 */
 interface FormProps {
   notebook: string,
+  locked: boolean,
   remoteNotebook: RemoteNotebook|null,
   note: Note | null,
   showGo: boolean,
@@ -22,6 +23,11 @@ interface FormProps {
 *
 */
 type Setter = React.Dispatch<React.SetStateAction<string>>;
+
+/*
+*
+*/
+type SetterBoolean = React.Dispatch<React.SetStateAction<boolean>>;
 
 /*
 * 
@@ -83,10 +89,12 @@ function search(title: string, setTitle: Setter, note: Note|null = null, onCreat
 
 var timer = 0;
 
-function updatePassword (password: string|null) {
+function updatePassword (password: string|null, setLocked: SetterBoolean) {
   window.clearTimeout(timer);
   timer = window.setTimeout(() => {
-    lockNotebook((password === null || password === '') ? null : true, password);
+    lockNotebook((password === null || password === '') ? null : true, password).then(r => {
+      setLocked(false);
+    });
     setBasicAuth(password);
   }, 500);
 }
@@ -109,6 +117,7 @@ export default function Form (props: FormProps) {
   // useEffect(() => selectNote(), [title]);
   // Initialize the form with the url selected notebook.
   useEffect(() => initForm(props.notebook, setTitle, setContent), [props.notebook]);
+  useEffect(() => setLocked(props.remoteNotebook?.access === true), [props.remoteNotebook]);
   // Render the form.
   const path = window.location.pathname && window.location.pathname !== '/'
       ? (window.location.pathname + '/')
@@ -120,7 +129,7 @@ export default function Form (props: FormProps) {
         props.remoteNotebook === null
           ? null
           : <input
-            disabled={ !!locked }
+            disabled={ locked }
             autoFocus
             placeholder="Title"
             value={ title }
@@ -131,7 +140,7 @@ export default function Form (props: FormProps) {
       {
         <textarea
           className={ props.note === null ? 'hidden-transparent':  '' }
-          disabled={ !!locked }
+          disabled={ locked }
           placeholder="Content"
           rows={ 10 }
           value={ content }
@@ -144,7 +153,7 @@ export default function Form (props: FormProps) {
         className="lock-password"
         value={ password || '' }
         type="password"
-        onChange={ event => { updatePassword(event.target.value); setPassword(event.target.value); } }
+        onChange={ event => { updatePassword(event.target.value, setLocked); setPassword(event.target.value); } }
       />
     </form>
   );
