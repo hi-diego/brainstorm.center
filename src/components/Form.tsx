@@ -108,7 +108,7 @@ export default function Form (props: FormProps) {
   // Initialize title reactive value.
   const [locked, setLocked] = useState<boolean>(props.remoteNotebook?.access === true);
   // Initialize title reactive value.
-  const [password, setPassword] = useState<string|null>(window.localStorage.getItem(Notebook.getUri() + '.password'));
+  const [password, setPassword] = useState<string|null>(null);
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -153,6 +153,7 @@ export default function Form (props: FormProps) {
         className="lock-password"
         value={ password || '' }
         type="password"
+        onClick={ event => { updatePassword(window.localStorage.getItem(Notebook.getUri() + '.password'), setLocked); setPassword(window.localStorage.getItem(Notebook.getUri() + '.password')); } }
         onChange={ event => { updatePassword(event.target.value, setLocked); setPassword(event.target.value); } }
       />
     </form>

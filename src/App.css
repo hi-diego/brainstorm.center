@@ -56,12 +56,12 @@
 
 
 .note-form {
+  position: absolute;
   display: flex;
   flex-direction: column;
   z-index: 20;
   background: transparent;
   color: white;
-  position: fixed;
   left: 0px;
   padding: 50px;
   /*box-shadow: 2px 2px 20px #fff;*/
