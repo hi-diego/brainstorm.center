@@ -91,7 +91,7 @@ export default function Graph (props: GraphProps) {
   // On Url change update the scene
   const history = useHistory();
   useEffect(() => {
-    return history.listen((location) => {
+    return history.listen((location: any) => {
       ThreeScene.clear();
       setSelected(null);
       Notebook.reload(location.pathname);

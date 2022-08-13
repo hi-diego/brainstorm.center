@@ -11,7 +11,7 @@ export interface RemoteNotebook {
   uri: string,
   access: boolean|null
 }
-console.log(process.env.NODE_ENV)
+
 axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
