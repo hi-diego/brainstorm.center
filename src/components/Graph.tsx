@@ -6,7 +6,7 @@ import * as ThreeScene from 'three/index';
 import Tooltip from './Tooltip';
 import Form from './Form';
 import { useHistory } from 'react-router-dom';
-import http, { fetchNotebook, RemoteNotebook } from 'http/http';
+import http, { fetchNotebook, RemoteNotebook, setBasicAuth } from 'http/http';
 
 /*
  If title change: must repaint all nodes that mentions old title
@@ -100,8 +100,6 @@ export default function Graph (props: GraphProps) {
     });
  },[history]);
   // on select select a note from the repo 
-  // useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected); }, [selected]);
-  // Call initGraph once.
   useEffect(() => { ThreeScene.highlight(null); ThreeScene.highlight(selected?.uuid); }, [selected]);
   const canvas = document.getElementById('three-canvas');
   if (canvas) canvas.onclick = () => setSelected(null);
@@ -118,6 +116,7 @@ export default function Graph (props: GraphProps) {
       ) 
     }
     <Form
+      onPassword={ (password: string) => { setBasicAuth(password); initGraph(props.notebook, setTooltips, setRemoteNotebook); } }
       remoteNotebook={ remoteNotebook }
       note={ selected }
       onCreate={ (note: Note) => setSelected(note) }

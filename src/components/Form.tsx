@@ -14,7 +14,8 @@ interface FormProps {
   remoteNotebook: RemoteNotebook|null,
   note: Note | null,
   showGo: boolean,
-  onCreate?: (note: Note) => void
+  onCreate?: (note: Note) => void,
+  onPassword?: (password: string) => void,
 }
 
 /*
@@ -82,7 +83,10 @@ function search(title: string, setTitle: Setter, note: Note|null = null, onCreat
 
 var timer = 0;
 
-function setPass (password: string, pass: boolean|null = true) {
+function setPass (password: string, pass: boolean|null = true, remoteNotebook: RemoteNotebook|null = null, onPassword?: (password: string) => void) {
+  if (remoteNotebook === null && onPassword) {
+    return onPassword(password);
+  }
   // on Password change bounce the server notebook update call
   window.clearTimeout(timer);
   timer = window.setTimeout(() => {
@@ -94,7 +98,6 @@ function setPass (password: string, pass: boolean|null = true) {
 * 
 */
 export default function Form (props: FormProps) {
-  console.log(props.remoteNotebook && props.remoteNotebook.access);
   // Initialize title reactive value.
   const [askingForPassword, setAskingForPassword] = useState<boolean>(props.remoteNotebook === null);
   // Initialize title reactive value.
@@ -141,7 +144,7 @@ export default function Form (props: FormProps) {
       }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
       {  askingForPassword
-         ? <input placeholder="Password" className="lock-password" value={ password } type="password" onChange={ event => setPassword(event.target.value) } onKeyDown={ e => { if(e.key !== 'Enter') return; setPass(password); setAskingForPassword(false); setLocked(true); } }/>
+         ? <input placeholder="Password" className="lock-password" value={ password } type="password" onChange={ event => setPassword(event.target.value) } onKeyDown={ e => { if(e.key !== 'Enter') return; setPass(password, null, props.remoteNotebook, props.onPassword); setAskingForPassword(false); setLocked(true); } }/>
          : <button className="lock-button" onClick={ () => { if(!locked) return setAskingForPassword(true);  setPass('12345678', null); setLocked(false); } }>{ locked ? 'UNLOCK' : 'LOCK' }</button>
       }
     </form>

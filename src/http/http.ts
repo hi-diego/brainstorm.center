@@ -15,8 +15,12 @@ export interface RemoteNotebook {
 axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
-export function setBasicAuth (password: string, user: string|null = null) {
-  // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
+/*
+* 
+*/
+export function setBasicAuth (password: string) {
+  window.localStorage.setItem(Notebook.getUri() + '.password', password || '12345678');
+  return getBasicAuth();
 }
 
 /*
