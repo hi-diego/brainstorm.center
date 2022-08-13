@@ -59,7 +59,7 @@
   position: absolute;
   display: flex;
   flex-direction: column;
-  z-index: 20;
+  z-index: 2;
   background: transparent;
   color: white;
   left: 0px;
