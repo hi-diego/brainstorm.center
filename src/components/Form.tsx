@@ -4,7 +4,7 @@ import Notebook from 'brainstorm/Notebook';
 // import * as Three from 'three/index';
 // import createNode from 'three/createNode  ';
 import Note from 'brainstorm/Note';
-import { lockNotebook, RemoteNotebook } from 'http/http';
+import { lockNotebook, RemoteNotebook, setBasicAuth } from 'http/http';
 
 /*
 * The entire three.js graph view and the html form controls.
@@ -83,14 +83,11 @@ function search(title: string, setTitle: Setter, note: Note|null = null, onCreat
 
 var timer = 0;
 
-function setPass (password: string, pass: boolean|null = true, remoteNotebook: RemoteNotebook|null = null, onPassword?: (password: string) => void) {
-  if (remoteNotebook === null && onPassword) {
-    return onPassword(password);
-  }
-  // on Password change bounce the server notebook update call
+function updatePassword (password: string|null) {
   window.clearTimeout(timer);
   timer = window.setTimeout(() => {
-    lockNotebook(pass, password);
+    lockNotebook((password === null || password === '') ? null : true, password);
+    setBasicAuth(password);
   }, 500);
 }
 
@@ -101,9 +98,9 @@ export default function Form (props: FormProps) {
   // Initialize title reactive value.
   const [askingForPassword, setAskingForPassword] = useState<boolean>(props.remoteNotebook === null);
   // Initialize title reactive value.
-  const [locked, setLocked] = useState<boolean|null>(props.remoteNotebook === null || props.remoteNotebook.access);
+  const [locked, setLocked] = useState<boolean>(props.remoteNotebook?.access === true);
   // Initialize title reactive value.
-  const [password, setPassword] = useState<string>('');
+  const [password, setPassword] = useState<string|null>(window.localStorage.getItem(Notebook.getUri() + '.password'));
   // Initialize title reactive value.
   const [title, setTitle] = useState<string>('');
   // Initialize content reactive value.
@@ -143,10 +140,13 @@ export default function Form (props: FormProps) {
           : null
       }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      {  askingForPassword
-         ? <input placeholder="Password" className="lock-password" value={ password } type="password" onChange={ event => setPassword(event.target.value) } onKeyDown={ e => { if(e.key !== 'Enter') return; setPass(password, null, props.remoteNotebook, props.onPassword); setAskingForPassword(false); setLocked(true); } }/>
-         : <button className="lock-button" onClick={ () => { if(!locked) return setAskingForPassword(true);  setPass('12345678', null); setLocked(false); } }>{ locked ? 'UNLOCK' : 'LOCK' }</button>
-      }
+      <input 
+        placeholder="Password"
+        className="lock-password"
+        value={ password || '' }
+        type="password"
+        onChange={ event => { updatePassword(event.target.value); setPassword(event.target.value); } }
+      />
     </form>
   );
 }

@@ -18,7 +18,7 @@ axios.defaults.headers.post['Content-Type'] = 'application/json';
 /*
 * 
 */
-export function setBasicAuth (password: string) {
+export function setBasicAuth (password: string|null) {
   window.localStorage.setItem(Notebook.getUri() + '.password', password || '12345678');
   return getBasicAuth();
 }
@@ -26,9 +26,9 @@ export function setBasicAuth (password: string) {
 /*
 * 
 */
-export function getBasicAuth () {
+export function getBasicAuth (password: string|null = null) {
   return {
-    password: window.localStorage.getItem(Notebook.getUri() + '.password') || '12345678',
+    password: password || (window.localStorage.getItem(Notebook.getUri() + '.password') || '12345678'),
     username: Notebook.getUri()
   }
 }
@@ -60,7 +60,7 @@ export async function lockCurrentNotebook (locked: boolean|null, setLock: Setter
 /*
 * 
 */
-export async function lockNotebook(locked: boolean|null, pass: string = '12345678') {
+export async function lockNotebook(locked: boolean|null, pass: string|null = '12345678') {
   try {
     var response = await http.put(Notebook.getUri(), {
       password: pass,
@@ -81,7 +81,7 @@ export async function updateNotebook() {
     access: null,
     uri: Notebook.getUri(),
     content: Notebook.stringContent()
-  });
+  }, { auth: getBasicAuth() });
 }
   
 /*
@@ -90,7 +90,7 @@ export async function updateNotebook() {
 export async function fetchNotebook() {
   var notebook = null;
   try {
-    var response = await http.get(Notebook.getUri());
+    var response = await http.get(Notebook.getUri(), { auth: getBasicAuth() });
     notebook = response.data;
     // const notes = JSON.parse(response.data.content);
     // Notebook.loadFrom(notes);
