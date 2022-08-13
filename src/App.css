@@ -58,7 +58,7 @@
 .note-form {
   display: flex;
   flex-direction: column;
-  z-index: 1;
+  z-index: 20;
   background: transparent;
   color: white;
   position: fixed;
@@ -150,5 +150,5 @@ label.placeholder {
 
 .hidden-transparent {
   opacity: 0 !important;
-  dislay: none !important;
+  display: none !important;
 }
