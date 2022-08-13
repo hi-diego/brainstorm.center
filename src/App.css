@@ -150,4 +150,5 @@ label.placeholder {
 
 .hidden-transparent {
   opacity: 0 !important;
+  dislay: none !important;
 }
