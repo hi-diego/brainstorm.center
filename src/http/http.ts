@@ -31,7 +31,7 @@ export function getBasicAuth () {
 
 const http = axios;
 
-type SetterBool = React.Dispatch<React.SetStateAction<boolean>>;
+type SetterBool = React.Dispatch<React.SetStateAction<boolean|null>>;
 
 /*
 * 
@@ -56,17 +56,17 @@ export async function lockCurrentNotebook (locked: boolean|null, setLock: Setter
 /*
 * 
 */
-export async function lockNotebook(locked: boolean|null) {
+export async function lockNotebook(locked: boolean|null, pass: string = '12345678') {
   try {
     var response = await http.put(Notebook.getUri(), {
-      password: "12345678",
+      password: pass,
       access: locked,
       uri: Notebook.getUri(),
       content: Notebook.stringContent()
     }, { auth: getBasicAuth() });
     return response.data.access;
   } catch (err) {
-    console.log(err);
+   // console.log(err);
     return false;
   }
 }
@@ -93,7 +93,7 @@ export async function fetchNotebook() {
   } catch (error: any) {
     if (error.response.status === 404) notebook = await createNotebook();
   } finally {
-    console.log('fetchNotebook', notebook);
+    // console.log('fetchNotebook', notebook);
     return notebook;
   }
 }

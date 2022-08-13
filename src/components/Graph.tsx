@@ -116,11 +116,16 @@ export default function Graph (props: GraphProps) {
         /> : null
       ) 
     }
-    <Form
-      note={ selected }
-      onCreate={ (note: Note) => setSelected(note) }
-      notebook={ selected?.title || props.notebook }
-      showGo={ selected !== null }
-    />
+    {
+      remoteNotebook !== null
+      ? <Form
+          remoteNotebook={ remoteNotebook }
+          note={ selected }
+          onCreate={ (note: Note) => setSelected(note) }
+          notebook={ selected?.title || props.notebook }
+          showGo={ selected !== null }
+        />
+      : null
+    }
   </header>;
 }

@@ -4,13 +4,14 @@ import Notebook from 'brainstorm/Notebook';
 // import * as Three from 'three/index';
 // import createNode from 'three/createNode  ';
 import Note from 'brainstorm/Note';
-import { lockCurrentNotebook } from 'http/http';
+import { lockNotebook, RemoteNotebook } from 'http/http';
 
 /*
 * The entire three.js graph view and the html form controls.
 */
 interface FormProps {
   notebook: string,
+  remoteNotebook: RemoteNotebook|null,
   note: Note | null,
   showGo: boolean,
   onCreate?: (note: Note) => void
@@ -79,12 +80,25 @@ function search(title: string, setTitle: Setter, note: Note|null = null, onCreat
   if (onCreate && noteFound !== undefined) onCreate(noteFound);
 }
 
+var timer = 0;
+
+function setPass (password: string, pass: boolean|null = true) {
+  // on Password change bounce the server notebook update call
+  window.clearTimeout(timer);
+  timer = window.setTimeout(() => {
+    lockNotebook(pass, password);
+  }, 500);
+}
+
 /*
 * 
 */
 export default function Form (props: FormProps) {
+  console.log(props.remoteNotebook && props.remoteNotebook.access);
   // Initialize title reactive value.
-  const [locked, setLocked] = useState<boolean>(false);
+  const [askingForPassword, setAskingForPassword] = useState<boolean>(false);
+  // Initialize title reactive value.
+  const [locked, setLocked] = useState<boolean|null>(props.remoteNotebook && props.remoteNotebook.access);
   // Initialize title reactive value.
   const [password, setPassword] = useState<string>('');
   // Initialize title reactive value.
@@ -105,7 +119,7 @@ export default function Form (props: FormProps) {
       {/* <h1>{ props.notebook }</h1> */}
       <label className="placeholder">{ null }</label>
       <input
-        disabled={ locked }
+        disabled={ !!locked }
         autoFocus
         placeholder="Title"
         value={ title }
@@ -115,7 +129,7 @@ export default function Form (props: FormProps) {
       {
         props.note !== null
           ? (<textarea
-              disabled={ locked }
+              disabled={ !!locked }
               placeholder="Content"
               rows={ 10 }
               value={ content }
@@ -124,9 +138,9 @@ export default function Form (props: FormProps) {
           : null
       }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
-      {  false
-         ? <input type="password" onChange={ event => setPassword(event.target.value) } value={ password } />
-         : <button className="lock-button" onClick={ async () => lockCurrentNotebook(!locked, setLocked) }>{ locked ? 'UNLOCK' : 'LOCK' }</button>
+      {  askingForPassword
+         ? <input placeholder="Password" className="lock-password" value={ password } type="password" onChange={ event => setPassword(event.target.value) } onKeyDown={ e => { if(e.key !== 'Enter') return; setPass(password); setAskingForPassword(false); setLocked(true); } }/>
+         : <button className="lock-button" onClick={ () => { if(!locked) return setAskingForPassword(true);  setPass('12345678', null); setLocked(false); } }>{ locked ? 'UNLOCK' : 'LOCK' }</button>
       }
     </form>
   );

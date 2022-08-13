@@ -13,17 +13,19 @@
   }
 }
 
-.lock-button {
+.lock-button, .lock-password {
   position: fixed;
   bottom: 0px;
   left: 0px;
-  height: 3rem;
-  width: 3rem;
-  border-radius: 50%;
-  font-size: 0.5rem !important;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+.lock-button {
+  font-size: 0.5rem !important;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
 }
 
 .App-header {
