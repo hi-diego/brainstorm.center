@@ -61,6 +61,7 @@ function initGraph (notebookName: string, setTooltips: NotesSetter, setRemoteNot
   };
   // Load the notebook from remote source.
   fetchNotebook().then((remoteNotebook: RemoteNotebook) => {
+    if (!remoteNotebook) return;
     setRemoteNotebook(remoteNotebook);
     Notebook.loadFrom(JSON.parse(remoteNotebook.content));
   });
@@ -116,16 +117,12 @@ export default function Graph (props: GraphProps) {
         /> : null
       ) 
     }
-    {
-      remoteNotebook !== null
-      ? <Form
-          remoteNotebook={ remoteNotebook }
-          note={ selected }
-          onCreate={ (note: Note) => setSelected(note) }
-          notebook={ selected?.title || props.notebook }
-          showGo={ selected !== null }
-        />
-      : null
-    }
+    <Form
+      remoteNotebook={ remoteNotebook }
+      note={ selected }
+      onCreate={ (note: Note) => setSelected(note) }
+      notebook={ selected?.title || props.notebook }
+      showGo={ selected !== null }
+    />
   </header>;
 }

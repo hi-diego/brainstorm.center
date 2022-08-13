@@ -96,9 +96,9 @@ function setPass (password: string, pass: boolean|null = true) {
 export default function Form (props: FormProps) {
   console.log(props.remoteNotebook && props.remoteNotebook.access);
   // Initialize title reactive value.
-  const [askingForPassword, setAskingForPassword] = useState<boolean>(false);
+  const [askingForPassword, setAskingForPassword] = useState<boolean>(props.remoteNotebook === null);
   // Initialize title reactive value.
-  const [locked, setLocked] = useState<boolean|null>(props.remoteNotebook && props.remoteNotebook.access);
+  const [locked, setLocked] = useState<boolean|null>(props.remoteNotebook === null || props.remoteNotebook.access);
   // Initialize title reactive value.
   const [password, setPassword] = useState<string>('');
   // Initialize title reactive value.
@@ -116,16 +116,18 @@ export default function Form (props: FormProps) {
   return (
     
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
-      {/* <h1>{ props.notebook }</h1> */}
-      <label className="placeholder">{ null }</label>
-      <input
-        disabled={ !!locked }
-        autoFocus
-        placeholder="Title"
-        value={ title }
-        onKeyDown={ e => updateTitle(e.key, title, props.note, props.onCreate) }
-        onChange={ e => search(e.target.value, setTitle, props.note, props.onCreate) }
-      />
+      {
+        props.remoteNotebook === null
+          ? null
+          : <input
+            disabled={ !!locked }
+            autoFocus
+            placeholder="Title"
+            value={ title }
+            onKeyDown={ e => updateTitle(e.key, title, props.note, props.onCreate) }
+            onChange={ e => search(e.target.value, setTitle, props.note, props.onCreate) }
+            />
+      }
       {
         props.note !== null
           ? (<textarea
