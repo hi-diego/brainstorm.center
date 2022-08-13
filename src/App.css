@@ -102,7 +102,7 @@ label.node {
   transition: box-shadow 0.1s;
   position: fixed;
   color: #fff;
-  z-index: 2;
+  z-index: 3;
   background: #000;
   padding: 5px 15px;
   border-radius: 20px;
