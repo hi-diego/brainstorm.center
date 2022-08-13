@@ -1,16 +1,5 @@
 import axios from 'axios';
-import Notebook from 'brainstorm/Notebook';
-/*
-* The entire three.js graph view and the html form controls.
-*/
-export interface RemoteNotebook {
-  id: number,
-  title: string,
-  content: string,
-  password: string,
-  uri: string,
-  access: boolean|null
-}
+import type { Notebook, Note } from '../types/Brainstorm';
 
 axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
