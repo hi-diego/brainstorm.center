@@ -129,15 +129,14 @@ export default function Form (props: FormProps) {
             />
       }
       {
-        props.note !== null
-          ? (<textarea
-              disabled={ !!locked }
-              placeholder="Content"
-              rows={ 10 }
-              value={ content }
-              onChange={ e => props.note && updateContent(e, setContent, title, props.note) }>
-            </textarea>)
-          : null
+        <textarea
+          className={ props.note === null ? 'hidden-transparent':  '' }
+          disabled={ !!locked }
+          placeholder="Content"
+          rows={ 10 }
+          value={ content }
+          onChange={ e => props.note && updateContent(e, setContent, title, props.note) }>
+        </textarea>
       }
       {   props.showGo ? <Link to={ path + props.notebook }>GO</Link> : null }
       <input 
