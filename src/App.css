@@ -1,23 +1,55 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+html, body {
+  background-color: black;
+}
+
+.App {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
 }
 
-@keyframes logo-spin {
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.lock-button, .lock-password {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem !important;
+}
+.lock-button {
+  font-size: 0.5rem !important;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+}
+
+.App-header {
+  /*position: fixed;*/
+  background-color: #282c34;
+  /*min-height: 100vh;*/
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
   }
@@ -26,16 +58,100 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+
+.note-form {
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  background: transparent;
+  color: white;
+  position: fixed;
+  left: 0px;
+  padding: 50px;
+  /*box-shadow: 2px 2px 20px #fff;*/
+}
+.note-form * {
+  margin: 20px;
+  background: transparent;
+  outline: none;
+  color: white;
+  border: none;
+  border-bottom: 0.1px solid white;
+  font-size: calc(10px + 2vmin);
+}
+.note-form a {
+  border-bottom: none !important;
+}
+.note-form button {
+  cursor: pointer;
+  transition: none all;
+  transition: box-shadow 0.1s;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: 1px solid white;
 }
 
-.card {
-  padding: 2em;
+label:hover, label.selected, button:hover {
+  box-shadow: 2px 2px 20px #fff;
 }
 
-.read-the-docs {
-  color: #888;
+canvas {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+}
+
+label.node {
+  transition: none all;
+  transition: box-shadow 0.1s;
+  position: fixed;
+  color: #fff;
+  z-index: 2;
+  background: #000;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+
+label.node:hover, label.node.selected {
+  box-shadow: 2px 2px 20px #fff;
+}
+
+.hub {
+  position: fixed;
+  top: 0;
+  color: #fff;
+  z-index: 2;
+}
+
+label.placeholder {
+  transition: none all;
+  transition: box-shadow 0.1s;
+  position: fixed;
+  color: #fff;
+  z-index: 2;
+  background: #000;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+
+  background: none;
+  padding: 0;
+  color: #777;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  margin-top: 16px;
+}
+
+.ghosty {
+  height: 0px !important;
+  width: 0px !important;
+  opacity: 0 !important;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+
+.hidden-transparent {
+  opacity: 0 !important;
 }

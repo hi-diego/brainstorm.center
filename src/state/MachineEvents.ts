@@ -1,0 +1,9 @@
+export const SELECT = 'SELECT';
+export const SEARCH = 'SEARCH';
+export const FOUND = 'FOUND';
+export const SAVE = 'SAVE';
+export const FETCH = 'FETCH';
+export const LOAD = 'LOAD';
+export const SAVE_ERROR = 'SAVE_ERROR';
+export const UNSELECT = 'UNSELECT';
+export const NOT_FOUND = 'NOT_FOUND';
