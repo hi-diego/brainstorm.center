@@ -116,7 +116,7 @@ export function createNode(note: Note): any {
   line.translateY(y);
   line.translateZ(z);
   line.name = note.uuid;
-  line.userData = { note };
+  line.userData = { note, ...note };
   return line;
 }
 /*
@@ -219,18 +219,11 @@ export function drawLines(note: Note, node: any = null, name: string = 'mentions
 
 
 export function highlight(note: Note) {
-  // console.log(groups.links);
   var nodes = groups.nodes.children
-  if (nodes) nodes.forEach((mesh: any) => disparageNode(mesh, mesh.name));
-  const node = scene.getObjectByName(note.uuid);
-  console.log(node);
+  if (nodes) nodes.forEach((node: any) => disparageNode(node));
+  const node = getNode(note);
   if (!node) return;
-  node.material = meshSelectedMaterial;
-  // selectedMesh = mesh;
-  // const groupName = `${title}-mentions-tubes`;
-  // const tubes = scene.getObjectByName(groupName);
-  // if (!tubes) return;
-  // tubes.children.forEach((t: any) => (t.material = lineSelectedMaterial))
+  highlightNode(node);
 }
 
 
@@ -238,9 +231,11 @@ export function highlight(note: Note) {
  * Highlight the three.js node mesh by changing the material on the mesh.
  * Materials.line.selected color is pure white.
  */
-export function highlightNode(mesh: any, title: string) {
-  mesh.material = Materials.mesh.selected;
-  const groupName = `${title}-mentions-tubes`;
+export function highlightNode(node: any) {
+  node.material = Materials.mesh.selected;
+  node.material = meshSelectedMaterial;
+  const name = 'mentions';
+  const groupName = `${node.userData.uuid}-${name}-tubes`;
   const tubes = scene.getObjectByName(groupName);
   if (!tubes) return;
   tubes.children.forEach((t: any) => (t.material = Materials.line.selected));
@@ -250,13 +245,14 @@ export function highlightNode(mesh: any, title: string) {
  * Disparage the three.js node mesh by changing the material on the mesh.
  * Materials.line.default color is off white.
  */
-export function disparageNode(mesh: any, title: string) {
-  mesh.material = Materials.mesh.default;
-  mesh.material.depthTest = false;
-  mesh.material.opacity = 0.25;
-  mesh.material.transparent = true;
-  const groupName = `${title}-mentions-tubes`;
+export function disparageNode(node: any) {
+  node.material = Materials.mesh.default;
+  node.material.depthTest = false;
+  node.material.opacity = 0.25;
+  node.material.transparent = true;
+  const name = 'mentions';
+  const groupName = `${node.userData.uuid}-${name}-tubes`;
   const tubes = scene.getObjectByName(groupName);
   if (!tubes) return;
-  tubes.children.forEach((t: any) => (t.material = Materials.transparent));
+  tubes.children.forEach((t: any) => (t.material = transparentLineMaterial));
 }
