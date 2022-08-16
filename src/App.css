@@ -144,3 +144,11 @@ label.placeholder {
   bottom: 0px;
   left: 0px;
 }
+
+.note-form .note-form-title-input, .note-form .note-form-title-input * {
+  font-weight: bold !important;
+}
+
+textarea {
+  font-weight: lighter !important;
+}

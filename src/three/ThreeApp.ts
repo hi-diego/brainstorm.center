@@ -226,6 +226,13 @@ export function highlight(note: Note) {
   highlightNode(node);
 }
 
+export function disparage(note: Note|null) {
+  if (!note) return;
+  const node = getNode(note);
+  if (!node) return;
+  disparageNode(node);
+}
+
 
 /**
  * Highlight the three.js node mesh by changing the material on the mesh.

@@ -23,21 +23,22 @@ export default function Form (props: FormProps) {
   return (
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
       <input
+        className="note-form-title-input"
         disabled={ false }
         autoFocus
         placeholder="Title"
         value={ title }
-        onKeyUp={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, title }) : null }
+        onKeyUp={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, content, title }) : null }
         onChange={ e => { setTitle(e.target.value); FormState.send({ type: EVENT.SEARCH, title: e.target.value }) } }/>
       <textarea
         disabled={ false }
         placeholder="Content"
         rows={ 10 }
         value={ content }
-        onKeyDown={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, content }) : null }
+        onKeyDown={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, content, title }) : null }
         onChange={ e => setContent(e.target.value) }>
       </textarea>
-      <button>GO</button>
+      { props.note ? <button>GO</button> : null }
     </form>
   );
 }
