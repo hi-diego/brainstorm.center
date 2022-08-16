@@ -17,7 +17,6 @@ const FormStateMachine = createMachine({
     [STATE.INITIAL]: {
       on: {
         [EVENT.FETCH]: {
-          actions: [ACTIONS.FETCH],  
           target: [STATE.WAITING_SERVER],
         }
       }

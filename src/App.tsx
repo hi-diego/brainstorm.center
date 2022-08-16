@@ -1,4 +1,5 @@
 import { createMachine, interpret } from 'xstate';
+import { Suspense } from 'react';
 import FormStateMachine from './state/FormStateMachine';
 import * as EVENT from './state/MachineEvents';
 import Graph from './components/Graph';
@@ -11,7 +12,9 @@ window.setTimeout(() => machineService.send({ type: EVENT.FETCH }), 1);
 function App() {
   return (
     <div className="App">
-      <Graph name={ window.location.toString() } />
+      <Suspense fallback={ <h1>loading...</h1> }>
+        <Graph name={ window.location.toString() } />
+      </Suspense>
     </div>
   );  
 }
