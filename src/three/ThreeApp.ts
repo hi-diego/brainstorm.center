@@ -32,7 +32,7 @@ export function init () {
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.domElement.setAttribute('id', 'three-canvas');
-  renderer.domElement.onclick =  () => console.log(Notebook.send('UNSELECT'));
+  renderer.domElement.onclick =  () => Notebook.send('UNSELECT');
   document.body.appendChild( renderer.domElement );
   camera.position.z = 5;
   animate();
@@ -108,6 +108,7 @@ export function createNode(note: Note): any {
   const z = Math.random() * 2;
   const wireframe = new THREE.WireframeGeometry(geometries.node.default);
   const line = new THREE.LineSegments(wireframe);
+  line.material = Materials.mesh.default;
   line.material.depthTest = false;
   line.material.opacity = 0.25;
   line.material.transparent = true;
@@ -213,4 +214,49 @@ export function drawLines(note: Note, node: any = null, name: string = 'mentions
   // groups
   groups.links.add(group);
   groups.links.add(tubeGroup);
+}
+
+
+
+export function highlight(note: Note) {
+  // console.log(groups.links);
+  var nodes = groups.nodes.children
+  if (nodes) nodes.forEach((mesh: any) => disparageNode(mesh, mesh.name));
+  const node = scene.getObjectByName(note.uuid);
+  console.log(node);
+  if (!node) return;
+  node.material = meshSelectedMaterial;
+  // selectedMesh = mesh;
+  // const groupName = `${title}-mentions-tubes`;
+  // const tubes = scene.getObjectByName(groupName);
+  // if (!tubes) return;
+  // tubes.children.forEach((t: any) => (t.material = lineSelectedMaterial))
+}
+
+
+/**
+ * Highlight the three.js node mesh by changing the material on the mesh.
+ * Materials.line.selected color is pure white.
+ */
+export function highlightNode(mesh: any, title: string) {
+  mesh.material = Materials.mesh.selected;
+  const groupName = `${title}-mentions-tubes`;
+  const tubes = scene.getObjectByName(groupName);
+  if (!tubes) return;
+  tubes.children.forEach((t: any) => (t.material = Materials.line.selected));
+}
+
+/**
+ * Disparage the three.js node mesh by changing the material on the mesh.
+ * Materials.line.default color is off white.
+ */
+export function disparageNode(mesh: any, title: string) {
+  mesh.material = Materials.mesh.default;
+  mesh.material.depthTest = false;
+  mesh.material.opacity = 0.25;
+  mesh.material.transparent = true;
+  const groupName = `${title}-mentions-tubes`;
+  const tubes = scene.getObjectByName(groupName);
+  if (!tubes) return;
+  tubes.children.forEach((t: any) => (t.material = Materials.transparent));
 }
