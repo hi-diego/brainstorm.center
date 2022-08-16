@@ -1,5 +1,8 @@
+import actions, { ACTIONS } from '../state/MachineActions';
+import * as STATE from '../state/MachineStates';
 import Form from './Form';
 import { useMachine } from '@xstate/react';
+import { useEffect, useRef } from 'react';
 import FormStateMachine from '../state/FormStateMachine';
 import * as EVENT from '../state/MachineEvents';
 
@@ -13,9 +16,24 @@ const styles: { [key: string]: React.CSSProperties } = {
   }
 };
 
+// const timer = 0;
+
 export default function Graph(props: GraphProps) {
-  const [current, send] = useMachine(FormStateMachine);
-  return <header onClick={ () => null } className="App-header" style={ styles.AppHeader }>
-    <Form note={ null } />
-  </header>;
+  // const init = useRef(false);
+  const [machine, send] = useMachine(FormStateMachine);
+  // if (timer === 0) window.setTimeout();
+  // window.clearTimeout(timer);
+  // useEffect(() => { 
+  //   if (init.current) return;
+  //   send(EVENT.FETCH);
+  //   init.current = true;
+  //   console.log(machine.value)
+  // }, []);
+      // <Form note={ null } />
+  return (
+    <header onClick={ () => null } className="App-header" style={ styles.AppHeader }>
+      <button onClick={ e => send(EVENT.FETCH) }>SEND</button>
+      {<h1> { machine.value } </h1>}
+    </header>
+  );
 }

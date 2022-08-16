@@ -1,7 +1,7 @@
-import Directory from 'brainstorm/Directory';
-import Mention from 'brainstorm/Mention';
-import Notebook from 'brainstorm/Notebook';
-import NotebookItem from 'brainstorm/NotebookItem';
+import Directory from './Directory';
+import Mention from './Mention';
+import Notebook from './Notebook';
+import NotebookItem from './NotebookItem';
 import Immutable from 'immutable';
 // import { drawLines } from 'three/index';
 

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import type { Notebook, Note } from '../types/Brainstorm';
+import Notebook from '../brainstorm/Notebook';
 
 axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
@@ -81,12 +81,9 @@ export async function fetchNotebook() {
   try {
     var response = await http.get(Notebook.getUri(), { auth: getBasicAuth() });
     notebook = response.data;
-    // const notes = JSON.parse(response.data.content);
-    // Notebook.loadFrom(notes);
   } catch (error: any) {
     if (error.response.status === 404) notebook = await createNotebook();
   } finally {
-    // console.log('fetchNotebook', notebook);
     return notebook;
   }
 }

@@ -1,10 +1,10 @@
 // import { drawDot } from "three/index";
-import Note from 'brainstorm/Note';
-import Mention from 'brainstorm/Mention';
-import Directory from 'brainstorm/Directory';
-import { Directory as DirectoryClass } from 'brainstorm/Directory';
+import Note from './Note';
+import Mention from './Mention';
+import Directory from './Directory';
+import { Directory as DirectoryClass } from './Directory';
 import Immutable from 'immutable';
-import http, { updateNotebook } from 'http/http';
+import http, { updateNotebook } from '../http/http';
 
 /**
  * Notebook.

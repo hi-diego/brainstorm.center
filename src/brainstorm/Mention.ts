@@ -1,5 +1,5 @@
-import Note from 'brainstorm/Note';
-import NotebookItem from 'brainstorm/NotebookItem';
+import Note from './Note';
+import NotebookItem from './NotebookItem';
 
 /**
  * Mention.
@@ -10,14 +10,12 @@ class Mention extends NotebookItem {
   public from: Note;
   public to: Note;
   public key: string;
-  public createdByUser: boolean;
 
-  constructor (from: Note, to: Note, key: string, createdByUser: boolean = false, uuid?: string, createdAt?: Date, modifiedAt?: Date) {
-    super(uuid, createdAt, modifiedAt);
+  constructor (from: Note, to: Note, key: string, uuid?: string) {
+    super(uuid);
     this.from = from;
     this.to = to;
     this.key = key;
-    this.createdByUser = createdByUser;
   }
 }
 

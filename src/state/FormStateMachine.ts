@@ -1,4 +1,5 @@
 import { createMachine } from 'xstate';
+import actions, { ACTIONS } from './MachineActions';
 import * as STATE from './MachineStates';
 import * as EVENT from './MachineEvents';
 
@@ -7,10 +8,18 @@ export const FORM_STATE_MACHINE = 'FORM_STATE_MACHINE';
 const FormStateMachine = createMachine({
   id: FORM_STATE_MACHINE,
   initial: STATE.INITIAL,
+  context: {
+    locked: 0,
+    password: '',
+    notebook: null
+  },
   states: {
     [STATE.INITIAL]: {
       on: {
-        [EVENT.FETCH]: { target: [STATE.WAITING_SERVER] }
+        [EVENT.FETCH]: {
+          actions: [ACTIONS.FETCH],  
+          target: [STATE.WAITING_SERVER],
+        }
       }
     },
     [STATE.WAITING_SERVER]: {
@@ -49,6 +58,6 @@ const FormStateMachine = createMachine({
       }
     }
   }
-});
+}, { actions });
 
 export default FormStateMachine;
