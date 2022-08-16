@@ -11,6 +11,8 @@ import http, { updateNotebook } from '../http/http';
  * @class
  */
 class Notebook {
+  public FormStateMachine: any;
+  public send: any;
   //
   public name: string;
   public timer: any;
@@ -147,6 +149,6 @@ class Notebook {
 }
 
 export default new Notebook(Immutable.Map<string, Note>());
+const NotebookClass = Notebook;
 
-
-export { Notebook };
+export { Notebook, NotebookClass };

@@ -17,7 +17,7 @@ const meshMaterial = new THREE.MeshBasicMaterial({ color: 0xbbbbbb });
 const meshSelectedMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
 const camera = new THREE.PerspectiveCamera( 45, window.innerWidth / window.innerHeight, 0.1, 1000 );
 const renderer = new THREE.WebGLRenderer() // ({ alpha: true });
-const axesHelper = new THREE.AxesHelper( 5 );
+const axesHelper = new THREE.AxesHelper( 1 );
 scene.add( axesHelper );
 const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
@@ -32,6 +32,7 @@ export function init () {
   camera.zoom = 1;
   renderer.setSize( window.innerWidth, window.innerHeight );
   renderer.domElement.setAttribute('id', 'three-canvas');
+  renderer.domElement.onclick =  () => console.log(Notebook.send('UNSELECT'));
   document.body.appendChild( renderer.domElement );
   camera.position.z = 5;
   animate();
@@ -184,6 +185,7 @@ export function drawConections(note: Note, node?: any) {
 }
 
 export function drawLines(note: Note, node: any = null, name: string = 'mentions') {
+  node = node ?? getNode(note);
   // the group that contains all the lines that connect the nodes
   const groupName = `${note.uuid}-${name}`;
   // For highlight purpuses we create another group tha

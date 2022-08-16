@@ -73,7 +73,8 @@ canvas {
   top: 0;
 }
 label.node {
-  transition: box-shadow 0.1s;
+  transition: all 0.1s;
+  /*transition: box-shadow 0.1s;*/
   position: fixed;
   color: #fff;
   z-index: 3;
@@ -125,6 +126,7 @@ label.placeholder {
   bottom: 0px;
   left: 0px;
   z-index: 3;
+  position: absolute;
 }
 
 .tooltips {
@@ -136,4 +138,9 @@ label.placeholder {
   display: flex;
   width: 100vw;
   height: 100vh;
+}
+.password-container {
+  position: relative;
+  bottom: 0px;
+  left: 0px;
 }
