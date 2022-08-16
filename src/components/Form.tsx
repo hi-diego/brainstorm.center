@@ -13,9 +13,10 @@ interface FormProps {
 * 
 */
 export default function Form (props: FormProps) {
-  const title = '';
-  const content = '';
-  const password = '';
+  const [title, setTitle] =  useState(props.note?.title ?? '');
+  const [content, setContent] =  useState(props.note?.content ?? '');
+  useEffect(() => setTitle(props.note?.title ?? ''), [props.note]);
+  useEffect(() => setContent(props.note?.content ?? ''), [props.note]);
   return (
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
       <input
