@@ -115,6 +115,15 @@ class Notebook {
     if (this.afterLoad) this.afterLoad(this.notes, Directory);
   }
 
+
+  /**
+   * Load data from the local storage to the noptebook instance:
+   *
+   */
+  public parse(notenookData: any) {
+    return JSON.parse(notenookData);
+  }
+
   /**
    * Load data from the local storage to the noptebook instance:
    *

@@ -34,13 +34,6 @@ export default function Form (props: FormProps) {
         onChange={ e => null}>
       </textarea>
       <button>GO</button>
-      <input 
-        placeholder="Password"
-        className="lock-password"
-        value={ password || '' }
-        type="password"
-        onChange={ event => null }
-      />
     </form>
   );
 }

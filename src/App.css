@@ -1,22 +1,16 @@
+.loading-text {
+  text-align: center;
+  width: 100vw;
+  font-weight: 100;
+}
 html, body {
   background-color: black;
 }
 
 .App {
   text-align: center;
+  width: 100vw;
 }
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
 .lock-button, .lock-password {
   position: fixed;
   bottom: 0px;
@@ -32,11 +26,7 @@ html, body {
   width: 3rem;
   border-radius: 50%;
 }
-
 .App-header {
-  /*position: fixed;*/
-  background-color: #282c34;
-  /*min-height: 100vh;*/
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -44,33 +34,17 @@ html, body {
   font-size: calc(10px + 2vmin);
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-
 .note-form {
+  position: absolute;
   display: flex;
   flex-direction: column;
   z-index: 1;
   background: transparent;
   color: white;
-  position: fixed;
   left: 0px;
   padding: 50px;
-  /*box-shadow: 2px 2px 20px #fff;*/
 }
-.note-form * {
+.note-form *, .lock-password{
   margin: 20px;
   background: transparent;
   outline: none;
@@ -90,40 +64,33 @@ html, body {
   padding: 5px 15px;
   border: 1px solid white;
 }
-
 label:hover, label.selected, button:hover {
   box-shadow: 2px 2px 20px #fff;
 }
-
 canvas {
   position: fixed;
   z-index: 0;
   top: 0;
 }
-
 label.node {
-  transition: none all;
   transition: box-shadow 0.1s;
   position: fixed;
   color: #fff;
-  z-index: 2;
+  z-index: 3;
   background: #000;
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;
 }
-
 label.node:hover, label.node.selected {
   box-shadow: 2px 2px 20px #fff;
 }
-
 .hub {
   position: fixed;
   top: 0;
   color: #fff;
   z-index: 2;
 }
-
 label.placeholder {
   transition: none all;
   transition: box-shadow 0.1s;
@@ -134,7 +101,6 @@ label.placeholder {
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;
-
   background: none;
   padding: 0;
   color: #777;
@@ -143,7 +109,6 @@ label.placeholder {
   border-radius: 0;
   margin-top: 16px;
 }
-
 .ghosty {
   height: 0px !important;
   width: 0px !important;
@@ -151,7 +116,24 @@ label.placeholder {
   margin: 0px !important;
   padding: 0px !important;
 }
-
 .hidden-transparent {
   opacity: 0 !important;
+}
+.lock-password {
+  display: flex;
+  position: absolute !important;
+  bottom: 0px;
+  left: 0px;
+  z-index: 3;
+}
+
+.tooltips {
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
 }
