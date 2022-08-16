@@ -23,16 +23,15 @@ const controls = new OrbitControls( camera, renderer.domElement );
 var selectedMesh: any = null;
 var INITIALIZED: boolean = false;
 
-export function init () {
+export function init (): HTMLCanvasElement {
   if (INITIALIZED) return;
   INITIALIZED = true;
   renderer.setClearColor(0xffffff, 0);
   scene.add(groups.nodes)
   scene.add(groups.links)
   camera.zoom = 1;
-  renderer.setSize( window.innerWidth, window.innerHeight );
+  renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.domElement.setAttribute('id', 'three-canvas');
-  renderer.domElement.onclick =  () => Notebook.send('UNSELECT');
   document.body.appendChild( renderer.domElement );
   camera.position.z = 5;
   animate();
@@ -41,6 +40,7 @@ export function init () {
   //   camera.updateProjectionMatrix();
   //   renderer.setSize(window.innerWidth, window.innerHeight);
   // }, false);
+  return renderer.domElement;
 }
 
 export function animate () {

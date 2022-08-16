@@ -38,7 +38,7 @@ const FormStateMachine = createMachine({
     },
     [STATE.WAITING_SERVER]: {
       on: {
-        [EVENT.LOAD]: { target: [STATE.LOADED] },
+        [EVENT.SELECT]: { target: [STATE.SELECTED] },
         [EVENT.SAVE_ERROR]: { target: [STATE.SAVE_ERROR] },
         [EVENT.NOT_FOUND]: { target: [STATE.NOT_FOUND] },
       }
@@ -56,6 +56,7 @@ const FormStateMachine = createMachine({
       }
     },
     [STATE.SEARCHING]: {
+      entry: [ACTIONS.SEARCH],
       on: {
         [EVENT.SAVE]: { target: [STATE.WAITING_SERVER] },
         [EVENT.SELECT]: { target: [STATE.SELECTED] },
@@ -66,7 +67,7 @@ const FormStateMachine = createMachine({
     [STATE.SELECTED]: {
       entry: [ACTIONS.SELECT],
       on: {
-        [EVENT.SAVE]: { target: [STATE.WAITING_SERVER] },
+        [EVENT.SAVE]: { target: [STATE.WAITING_SERVER], actions: [ACTIONS.SAVE] },
         [EVENT.UNSELECT]: { target: [STATE.LOADED] },
         [EVENT.SELECT]: { target: [STATE.SELECTED] }
       }

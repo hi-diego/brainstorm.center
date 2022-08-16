@@ -2,8 +2,9 @@ import actions, { ACTIONS } from '../state/MachineActions';
 import * as STATE from '../state/MachineStates';
 import Form from './Form';
 import { useMachine } from '@xstate/react';
-import { useEffect, useRef, useState } from 'react';
 import FormStateMachine from '../state/FormStateMachine';
+import FormState from '../state/FormState';
+import { useEffect, useRef, useState } from 'react';
 import Notebook from '../brainstorm/Notebook';
 import Note from '../brainstorm/Note';
 import * as EVENT from '../state/MachineEvents';
@@ -31,7 +32,7 @@ export default function Graph(props: GraphProps) {
   );
   return (
     <header onClick={ () => console.log('Click On AppHEader') } className="App-header" style={ styles.AppHeader }>
-      <h1 style={ ({ zIndex: 3, opacity: 0.1 }) }>{ machine.context.selected?.title }</h1>
+      <h1 style={ ({ zIndex: 3, opacity: 0.1 }) }>{ machine.context.selected?.title },  { machine.value }</h1>
       { tooltips } 
       <Form note={ machine.context.selected } />
     </header>
