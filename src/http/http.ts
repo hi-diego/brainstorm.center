@@ -34,16 +34,17 @@ type SetterBool = React.Dispatch<React.SetStateAction<boolean|null>>;
 /*
 * 
 */
-export async function createNotebook() {
+export async function createNotebook(): Promise<any> {
   try {
-    var response = http.post('', {
+    var response: any = http.post('', {
       password: getPassword(),
-      access: getPassword() !== '',
+      access: null,
       uri: Notebook.getUri(),
       content: "{}"
     }, { auth: getBasicAuth() });
+    return response;
   } catch (err) {
-    console.log(err);
+    return { content: '{}' };
   }
 }
   
@@ -80,16 +81,17 @@ export async function updateNotebook() {
 /*
 * 
 */
-export async function fetchNotebook() {
-  var notebook = null;
-  try {
-    var response = await http.get(Notebook.getUri(), { auth: getBasicAuth() });
-    notebook = response.data;
-  } catch (error: any) {
-    if (error.response.status === 404) notebook = await createNotebook();
-  } finally {
-    return notebook;
-  }
+export function fetchNotebook(): Promise<any> {
+  return new Promise(async (res, rej) => {
+    var notebook = null;
+    try {
+      const notebook = await http.get(Notebook.getUri(), { auth: getBasicAuth() });
+      res(notebook.data);
+    } catch (error: any) {
+      const notebook = await createNotebook();
+      res(notebook.data);
+    }
+  });
 }
 
 export function wrapPromise(promise: any) {

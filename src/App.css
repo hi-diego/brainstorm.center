@@ -53,10 +53,7 @@ html, body {
   border-bottom: 0.1px solid white;
   font-size: calc(10px + 2vmin);
 }
-.note-form a {
-  border-bottom: none !important;
-}
-.note-form button {
+.note-form button, .note-form a {
   cursor: pointer;
   transition: none all;
   transition: box-shadow 0.1s;
@@ -64,7 +61,7 @@ html, body {
   padding: 5px 15px;
   border: 1px solid white;
 }
-label:hover, label.selected, button:hover {
+label:hover, label.selected, button:hover, a:hover {
   box-shadow: 2px 2px 20px #fff;
 }
 canvas {

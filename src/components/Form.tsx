@@ -58,7 +58,7 @@ export default function Form (props: FormProps) {
           : null
         )
       }
-      { props.note ? <button>GO</button> : null }
+      { props.note ? <a href={ (window.location.pathname + '/' + props.note.title).replaceAll(/(\/+)/g, '/') }>GO</a>: null }
     </form>
   );
 }
