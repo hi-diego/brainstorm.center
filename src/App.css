@@ -1,0 +1,151 @@
+.loading-text {
+  text-align: center;
+  width: 100vw;
+  font-weight: 100;
+}
+html, body {
+  background-color: black;
+}
+
+.App {
+  text-align: center;
+  width: 100vw;
+}
+.lock-button, .lock-password {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1rem !important;
+}
+.lock-button {
+  font-size: 0.5rem !important;
+  height: 3rem;
+  width: 3rem;
+  border-radius: 50%;
+}
+.App-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+.note-form {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  z-index: 1;
+  background: transparent;
+  color: white;
+  left: 0px;
+  padding: 50px;
+}
+.note-form *, .lock-password{
+  margin: 20px;
+  background: transparent;
+  outline: none;
+  color: white;
+  border: none;
+  border-bottom: 0.1px solid white;
+  font-size: calc(10px + 2vmin);
+}
+.note-form button, .note-form a {
+  cursor: pointer;
+  transition: none all;
+  transition: box-shadow 0.1s;
+  border-radius: 20px;
+  padding: 5px 15px;
+  border: 1px solid white;
+}
+label:hover, label.selected, button:hover, a:hover {
+  box-shadow: 2px 2px 20px #fff;
+}
+canvas {
+  position: fixed;
+  z-index: 0;
+  top: 0;
+}
+label.node {
+  transition: all 0.1s;
+  /*transition: box-shadow 0.1s;*/
+  position: fixed;
+  color: #fff;
+  z-index: 3;
+  background: #000;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+}
+label.node:hover, label.node.selected {
+  box-shadow: 2px 2px 20px #fff;
+}
+.hub {
+  position: fixed;
+  top: 0;
+  color: #fff;
+  z-index: 2;
+}
+label.placeholder {
+  transition: none all;
+  transition: box-shadow 0.1s;
+  position: fixed;
+  color: #fff;
+  z-index: 2;
+  background: #000;
+  padding: 5px 15px;
+  border-radius: 20px;
+  cursor: pointer;
+  background: none;
+  padding: 0;
+  color: #777;
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+  margin-top: 16px;
+}
+.ghosty {
+  height: 0px !important;
+  width: 0px !important;
+  opacity: 0 !important;
+  margin: 0px !important;
+  padding: 0px !important;
+}
+.hidden-transparent {
+  opacity: 0 !important;
+}
+.lock-password {
+  display: flex;
+  position: absolute !important;
+  bottom: 0px;
+  left: 0px;
+  z-index: 3;
+  position: absolute;
+}
+
+.tooltips {
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  position: absolute;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+.password-container {
+  position: relative;
+  bottom: 0px;
+  left: 0px;
+}
+
+.note-form .note-form-title-input, .note-form .note-form-title-input * {
+  font-weight: bold !important;
+}
+
+textarea {
+  font-weight: lighter !important;
+}
