@@ -62,7 +62,7 @@ const actions = {
     window.clearTimeout(timer);
     timer = window.setTimeout(async () => {
       await updateNotebook();
-    }, 500)
+    }, 2500)
   },
   lock: async (context: any, event: any) => {
     try { 
