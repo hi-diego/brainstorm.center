@@ -19,19 +19,22 @@ export default function Form (props: FormProps) {
   const [title, setTitle] =  useState(props.note?.title ?? '');
   const [content, setContent] =  useState(props.note?.content ?? '');
   const contentRef = createRef<HTMLTextAreaElement>();
+  const titleRef = createRef<HTMLInputElement>();
   useEffect(() => {
     props.note
     setTitle(props.note?.title ?? '');
     setContent(props.note?.content ?? '');
     if (props.note) {
-      contentRef.current?.focus();
+      contentRef.current?.blur();
+      titleRef.current?.blur();
     }
   }, [props.note]);
   return (
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
       <input
         className="note-form-title-input"
-        disabled={ false }
+        ref={ titleRef }
+        disabled={ props.note === null ? false : FormState.machine?.context.locked }
         autoFocus
         placeholder="Title"
         value={ title }
@@ -48,7 +51,7 @@ export default function Form (props: FormProps) {
         (!!props.note
           ? <textarea
               ref={ contentRef }
-              disabled={ false }
+              disabled={ FormState.machine?.context.locked }
               placeholder="Content"
               rows={ 10 }
               value={ content }

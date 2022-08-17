@@ -17,7 +17,7 @@ interface FormStateMachineContext {
 
 const context: FormStateMachineContext = 
 {
-  locked: false,
+  locked: true,
   password: '',
   selected: null,
   notebook: Notebook,

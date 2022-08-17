@@ -32,6 +32,7 @@ export default function Graph(props: GraphProps) {
   );
   return (
     <header onClick={ () => console.log('Click On AppHEader') } className="App-header" style={ styles.AppHeader }>
+      <h1>{ machine.context.locked }</h1>
       { tooltips }
       <Form note={ machine.context.selected } />
     </header>

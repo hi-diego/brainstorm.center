@@ -56,7 +56,6 @@ export async function lockCurrentNotebook (locked: boolean|null, setLock: Setter
 * 
 */
 export async function lockNotebook(locked: boolean|null, pass: string = '') {
-  console.log(pass, getBasicAuth());
   try {
     var response = await http.put(Notebook.getUri(), {
       password: pass,
@@ -64,7 +63,7 @@ export async function lockNotebook(locked: boolean|null, pass: string = '') {
       uri: Notebook.getUri(),
       content: Notebook.stringContent()
     }, { auth: getBasicAuth() });
-    return response.data.access;
+    return true;
   } catch (err) {
    // console.log(err);
     return false;
@@ -73,6 +72,8 @@ export async function lockNotebook(locked: boolean|null, pass: string = '') {
 
 export async function updateNotebook() {
   return await http.put(Notebook.getUri(), {
+    password: getPassword(),
+    access: getPassword() === '' ? null : true,
     uri: Notebook.getUri(),
     content: Notebook.stringContent()
   }, { auth: getBasicAuth() });

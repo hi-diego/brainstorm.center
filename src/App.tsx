@@ -19,6 +19,7 @@ function App() {
           className="lock-password"
           value={ password }
           type="password"
+          onClick={ e => { FormState.send({ type: EVENT.LOCK, password }); } }
           onChange={ e => { setPassword(e.target.value); FormState.send({ type: EVENT.LOCK, password: e.target.value }); }}
         />
       </div>
