@@ -29,11 +29,11 @@ export function init (): HTMLCanvasElement {
   renderer.setClearColor(0xffffff, 0);
   scene.add(groups.nodes)
   scene.add(groups.links)
-  camera.zoom = 1;
+  camera.zoom = 1 // * (window.innerWidth < 768 ? 0.1 : 1);
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.domElement.setAttribute('id', 'three-canvas');
   document.body.appendChild( renderer.domElement );
-  camera.position.z = 5;
+  camera.position.z = (window.innerWidth < 768 ? 8 : 5);
   animate();
   // window.addEventListener('resize', () => {
   //   camera.aspect = window.innerWidth / window.innerHeight;

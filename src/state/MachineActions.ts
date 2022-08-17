@@ -22,6 +22,7 @@ var timer = 0;
 const actions = {
   init: (context: any, event: any) => {
     if (init) return;
+    window.scrollTo(0, 1);
     context.locked = !(event.notebook.access === null);
     FormState.send = event.send;
     FormState.machine = event.machine;
