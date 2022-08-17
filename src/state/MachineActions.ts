@@ -1,16 +1,17 @@
 import * as ThreeApp from '../three/ThreeApp';
 import { fetchNotebook } from '../http/http';
 import Notebook from '../brainstorm/Notebook';
+import Note from '../brainstorm/Note';
 import * as EVENT from './MachineEvents';
 import FormState from './FormState';
-import { updateNotebook } from '../http/http';
+import { updateNotebook, lockNotebook, setBasicAuth } from '../http/http';
 
 export const ACTIONS = {
   INIT: 'init',
+  LOCK: 'lock',
   FETCH: 'fetch',
   SEARCH: 'search',
   SELECT: 'select',
-  UPDATE: 'update',
   UNSELECT: 'unselect',
   SAVE: 'save'
 };
@@ -47,30 +48,30 @@ const actions = {
     context.selected = null;
   },
   save: async (context: any, event: any) => {
-    console.log('Save!', context, event);
-    if (!context.selected) return;
-    console.log(context.selected);
-    context.selected.update(event.title, event.content);
-    ThreeApp.drawNotes(Notebook.notes.valueSeq().toArray());
-    ThreeApp.drawLinks(Notebook.notes.valueSeq().toArray());
-    FormState.send({ type: EVENT.SELECT, note: context.selected });
+    console.log(event);
+    const note = context.selected ?? new Note(event.title, event.content);
+    note.update(event.title, event.content);
+    if (event.title === '') {
+      ThreeApp.removeNode(note);
+      FormState.send({ type: EVENT.UNSELECT });
+    } else {
+      ThreeApp.drawNotes(Notebook.notes.valueSeq().toArray());
+      ThreeApp.drawLinks(Notebook.notes.valueSeq().toArray());
+      FormState.send({ type: EVENT.SELECT, note: note });
+    }
     window.clearTimeout(timer);
     timer = window.setTimeout(async () => {
       await updateNotebook();
     }, 500)
   },
-  update: async (context: any, event: any) => {
-    console.log('Save!', context, event);
-    if (!context.selected) return;
-    console.log(context.selected);
-    context.selected.update(event.title, event.content);
-    ThreeApp.drawNotes(Notebook.notes.valueSeq().toArray());
-    ThreeApp.drawLinks(Notebook.notes.valueSeq().toArray());
-    FormState.send({ type: EVENT.SELECT, note: context.selected });
-    window.clearTimeout(timer);
-    timer = window.setTimeout(async () => {
-      await updateNotebook();
-    }, 500)
+  lock: async (context: any, event: any) => {
+    try { 
+      await lockNotebook(event.password === '' ? null : true, event.password);
+      setBasicAuth(event.password);
+      FormState.send('UNSELECT');
+    } catch (error: any) {
+      //
+    }
   },
   search: async (context: any, event: any) => {
     console.log('Search!', event.title);

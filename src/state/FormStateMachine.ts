@@ -39,6 +39,7 @@ const FormStateMachine = createMachine({
     [STATE.WAITING_SERVER]: {
       on: {
         [EVENT.SELECT]: { target: [STATE.SELECTED] },
+        [EVENT.UNSELECT]: { target: [STATE.LOADED] },
         [EVENT.SAVE_ERROR]: { target: [STATE.SAVE_ERROR] },
         [EVENT.NOT_FOUND]: { target: [STATE.NOT_FOUND] },
       }
@@ -52,16 +53,23 @@ const FormStateMachine = createMachine({
       entry: [ACTIONS.UNSELECT],
       on: {
         [EVENT.SEARCH]: { target: [STATE.SEARCHING] },
-        [EVENT.SELECT]: { target: [STATE.SELECTED]},
+        [EVENT.SELECT]: { target: [STATE.SELECTED] },
+        [EVENT.LOCK]: { target: [STATE.LOCKING] },
       }
     },
     [STATE.SEARCHING]: {
       entry: [ACTIONS.SEARCH],
       on: {
-        [EVENT.SAVE]: { target: [STATE.WAITING_SERVER] },
+        [EVENT.SAVE]: { target: [STATE.WAITING_SERVER], actions: [ACTIONS.SAVE] },
         [EVENT.SELECT]: { target: [STATE.SELECTED] },
         [EVENT.SEARCH]: { target: [STATE.SEARCHING] },
         [EVENT.FOUND]: { target: [STATE.SELECTED] }
+      }
+    },
+    [STATE.LOCKING]: {
+      entry: [ACTIONS.LOCK],
+      on: {
+        [EVENT.UNSELECT]: { target: [STATE.LOADED] } 
       }
     },
     [STATE.SELECTED]: {
@@ -69,7 +77,8 @@ const FormStateMachine = createMachine({
       on: {
         [EVENT.SAVE]: { target: [STATE.WAITING_SERVER], actions: [ACTIONS.SAVE] },
         [EVENT.UNSELECT]: { target: [STATE.LOADED] },
-        [EVENT.SELECT]: { target: [STATE.SELECTED] }
+        [EVENT.SELECT]: { target: [STATE.SELECTED] },
+        [EVENT.LOCK]: { target: [STATE.LOCKING] },
       }
     },
     [STATE.SAVE_ERROR]: {

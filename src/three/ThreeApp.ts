@@ -129,6 +129,29 @@ export function getNode(note: Note, lines: boolean = false): any {
   // return the object if already exists
   return currentNode ?? createNode(note);
 }
+export function removeNode(note: Note) {
+  const node = getNode(note);
+  const groupName = `${note.uuid}-${name}`;
+  // For highlight purpuses we create another group tha
+  // is just a Thick line with the same position
+  // so wen the user selects the node we change the opacity to 1 and show the tick lines
+  const tubeGroupName = `${note.uuid}-${name}-tubes`;
+  const currentGroup = scene.getObjectByName(groupName);
+  const currentTubesGroup = scene.getObjectByName(tubeGroupName);
+  if (node) {
+    scene.remove(node);
+    groups.nodes.remove(node);
+  }
+  if (currentGroup) {
+    scene.remove(currentGroup);
+    groups.links.remove(currentGroup);
+  }
+  if (currentTubesGroup) {
+    scene.remove(currentTubesGroup);
+    groups.links.remove(currentTubesGroup);
+  }
+}
+
 /*
 * It creates a sphere mesh and adds it to the scene
 * it also adds the titte of the note as the Id on the tree scene

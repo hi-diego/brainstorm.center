@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { createRef, useEffect, useState } from 'react';
 import Notebook from '../brainstorm/Notebook';
 import Note from '../brainstorm/Note';
 import { useMachine } from '@xstate/react';
@@ -18,8 +18,15 @@ interface FormProps {
 export default function Form (props: FormProps) {
   const [title, setTitle] =  useState(props.note?.title ?? '');
   const [content, setContent] =  useState(props.note?.content ?? '');
-  useEffect(() => setTitle(props.note?.title ?? ''), [props.note]);
-  useEffect(() => setContent(props.note?.content ?? ''), [props.note]);
+  const contentRef = createRef<HTMLTextAreaElement>();
+  useEffect(() => {
+    props.note
+    setTitle(props.note?.title ?? '');
+    setContent(props.note?.content ?? '');
+    if (props.note) {
+      contentRef.current?.focus();
+    }
+  }, [props.note]);
   return (
     <form className="note-form" onClick={ event => event.stopPropagation() } onSubmit={ event => event.preventDefault() }>
       <input
@@ -28,17 +35,19 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
+        onKeyUp={ e => (e.key === 'Enter' && props.note === null) ? FormState.send({ type: EVENT.SAVE, content, title }) : null }
         onChange={ e => {
           setTitle(e.target.value);
           if(!props.note) {
             FormState.send({ type: EVENT.SEARCH, title: e.target.value, content })
           } else {
-            FormState.send({ type: EVENT.SAVE, note: props.note, content, title: e.target.value })
+            FormState.send({ type: EVENT.SAVE, content, title: e.target.value })
           }
         }}/>
       {
         (!!props.note
           ? <textarea
+              ref={ contentRef }
               disabled={ false }
               placeholder="Content"
               rows={ 10 }

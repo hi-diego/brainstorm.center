@@ -4,20 +4,25 @@ import Notebook from '../brainstorm/Notebook';
 axios.defaults.baseURL = 'https://seal-app-fjzi4.ondigitalocean.app/';
 axios.defaults.headers.post['Content-Type'] = 'application/json';
 
+
+export function getPassword(): string {
+  return window.localStorage.getItem(Notebook.getUri() + '.password') || '';
+}
+
 /*
 * 
 */
-export function setBasicAuth (password: string|null) {
-  window.localStorage.setItem(Notebook.getUri() + '.password', password || '12345678');
+export function setBasicAuth (password: string = '') {
+  window.localStorage.setItem(Notebook.getUri() + '.password', password);
   return getBasicAuth();
 }
 
 /*
 * 
 */
-export function getBasicAuth (password: string|null = null) {
+export function getBasicAuth () {
   return {
-    password: password || (window.localStorage.getItem(Notebook.getUri() + '.password') || '12345678'),
+    password: getPassword(),
     username: Notebook.getUri()
   }
 }
@@ -32,8 +37,8 @@ type SetterBool = React.Dispatch<React.SetStateAction<boolean|null>>;
 export async function createNotebook() {
   try {
     var response = http.post('', {
-      password: "12345678",
-      access: null,
+      password: getPassword(),
+      access: getPassword() !== '',
       uri: Notebook.getUri(),
       content: "{}"
     }, { auth: getBasicAuth() });
@@ -49,7 +54,8 @@ export async function lockCurrentNotebook (locked: boolean|null, setLock: Setter
 /*
 * 
 */
-export async function lockNotebook(locked: boolean|null, pass: string|null = '12345678') {
+export async function lockNotebook(locked: boolean|null, pass: string = '') {
+  console.log(pass, getBasicAuth());
   try {
     var response = await http.put(Notebook.getUri(), {
       password: pass,
@@ -66,8 +72,6 @@ export async function lockNotebook(locked: boolean|null, pass: string|null = '12
 
 export async function updateNotebook() {
   return await http.put(Notebook.getUri(), {
-    password: "12345678",
-    access: null,
     uri: Notebook.getUri(),
     content: Notebook.stringContent()
   }, { auth: getBasicAuth() });

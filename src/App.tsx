@@ -1,11 +1,13 @@
-import { useMachine } from '@xstate/react';
 import { Suspense } from 'react';
-import * as EVENT from './state/MachineEvents';
 import Graph from './components/Graph';
 import './App.css';
+import FormState from './state/FormState';
+import * as EVENT from './state/MachineEvents';
+import { getPassword } from './http/http';
+import { useState } from 'react';
 
 function App() {
-  // const [machine, send] = useMachine('');
+  const [password, setPassword] = useState(getPassword());
   return (
     <div className="App">
       <Suspense fallback={ <h1 className="loading-text">loading...</h1> }>
@@ -15,9 +17,9 @@ function App() {
         <input
           placeholder="Password"
           className="lock-password"
-          value={ '' }
+          value={ password }
           type="password"
-          onChange={ event => null }
+          onChange={ e => { setPassword(e.target.value); FormState.send({ type: EVENT.LOCK, password: e.target.value }); }}
         />
       </div>
     </div>

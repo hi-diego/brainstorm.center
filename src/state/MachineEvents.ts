@@ -1,5 +1,6 @@
 export const SELECT = 'SELECT';
 export const SEARCH = 'SEARCH';
+export const LOCK = 'LOCK';
 export const FOUND = 'FOUND';
 export const SAVE = 'SAVE';
 export const FETCH = 'FETCH';

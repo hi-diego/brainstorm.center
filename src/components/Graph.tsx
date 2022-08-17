@@ -1,4 +1,4 @@
-import actions, { ACTIONS } from '../state/MachineActions';
+import { ACTIONS } from '../state/MachineActions';
 import * as STATE from '../state/MachineStates';
 import Form from './Form';
 import { useMachine } from '@xstate/react';
@@ -32,9 +32,12 @@ export default function Graph(props: GraphProps) {
   );
   return (
     <header onClick={ () => console.log('Click On AppHEader') } className="App-header" style={ styles.AppHeader }>
-      <h1 style={ ({ zIndex: 3, opacity: 0.1 }) }>{ machine.context.selected?.title },  { machine.value }</h1>
-      { tooltips } 
-      <Form note={ machine.context.selected } />
+      <h1 style={ ({ zIndex: 3, opacity: 0.1 }) }> { machine.value }</h1>
+      {
+        machine.matches('LOCKING')
+          ? (<h1 style={ ({ zIndex: 3, opacity: 0.1 }) }> { machine.value }</h1>)
+          : ([tooltips, <Form note={ machine.context.selected } />])
+      }
     </header>
   );
 }
