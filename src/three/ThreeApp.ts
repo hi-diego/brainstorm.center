@@ -262,6 +262,8 @@ export function disparage(note: Note|null) {
  * Materials.line.selected color is pure white.
  */
 export function highlightNode(node: any) {
+  controls.target = node.position.clone();
+  controls.update();
   node.material = Materials.mesh.selected;
   node.material = meshSelectedMaterial;
   const name = 'mentions';

@@ -121,9 +121,30 @@ label.placeholder {
   display: flex;
   position: absolute !important;
   bottom: 0px;
-  left: 0px;
+  right: 0px;
+  left: auto;
   z-index: 3;
   position: absolute;
+}
+.password-container {
+  position: relative;
+  bottom: 30px;
+  right: 0px;
+}
+
+@media only screen and (max-width: 768px) {
+  .password-container {
+    right: auto;
+  }
+  .lock-password {
+    display: flex;
+    position: absolute !important;
+    bottom: 0px;
+    right: auto;
+    left: 0px;
+    z-index: 3;
+    position: absolute;
+  }
 }
 
 .tooltips {
@@ -135,11 +156,6 @@ label.placeholder {
   display: flex;
   width: 100vw;
   height: 100vh;
-}
-.password-container {
-  position: relative;
-  bottom: 30px;
-  right: 0px;
 }
 
 .note-form .note-form-title-input, .note-form .note-form-title-input * {
