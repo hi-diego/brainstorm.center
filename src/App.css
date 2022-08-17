@@ -75,13 +75,14 @@ label.node {
   position: fixed;
   color: #fff;
   z-index: 3;
-  background: #000;
+  background: rgba(0, 0, 0, 0.6);
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;
 }
 label.node:hover, label.node.selected {
   box-shadow: 2px 2px 20px #fff;
+  background: black;
 }
 .hub {
   position: fixed;
@@ -95,7 +96,7 @@ label.placeholder {
   position: fixed;
   color: #fff;
   z-index: 2;
-  background: #000;
+  background: rgba(0, 0, 0, 0.5);
   padding: 5px 15px;
   border-radius: 20px;
   cursor: pointer;

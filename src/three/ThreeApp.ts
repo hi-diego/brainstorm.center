@@ -103,9 +103,9 @@ export function drawLinks (notes: Note[]) {
 * it also adds the titte of the note as the Id on the tree scene
 */
 export function createNode(note: Note): any {
-  const x = Math.random() * 2;
-  const y = Math.random() * 2;
-  const z = Math.random() * 2;
+  const x = Math.random() * 2.5;
+  const y = Math.random() * 2.5;
+  const z = Math.random() * 2.5;
   const wireframe = new THREE.WireframeGeometry(geometries.node.default);
   const line = new THREE.LineSegments(wireframe);
   line.material = Materials.mesh.default;
