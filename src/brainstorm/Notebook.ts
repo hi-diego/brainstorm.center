@@ -87,8 +87,7 @@ class Notebook {
 
   public static URI (): string {
     var uri = `${window.location.host}/${window.location.pathname}`;
-    uri = uri.endsWith('/') ? uri.substring(0, uri.length - 1) : uri;
-    return uri;
+    return uri.replaceAll(/(\/+)/g, '/');
   }
 
   public getUri (): string {
