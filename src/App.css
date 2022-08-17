@@ -41,8 +41,8 @@ html, body {
   z-index: 1;
   background: transparent;
   color: white;
-  left: 0px;
-  padding: 50px;
+  /*left: 0px;*/
+  /*padding: 50px;*/
 }
 .note-form *, .lock-password{
   margin: 20px;
@@ -148,4 +148,18 @@ label.placeholder {
 
 textarea {
   font-weight: lighter !important;
+}
+
+
+@media only screen and (min-width: 768px) {
+  .note-form {
+    left: 0px;
+    padding: 50px;
+  }
+}
+@media only screen and (max-width: 768px) {
+  .note-form {
+    /*left: 0px;*/
+    top: 0px;
+  }
 }
