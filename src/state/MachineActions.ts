@@ -10,11 +10,13 @@ export const ACTIONS = {
   FETCH: 'fetch',
   SEARCH: 'search',
   SELECT: 'select',
+  UPDATE: 'update',
   UNSELECT: 'unselect',
   SAVE: 'save'
 };
 
 var init = false;
+var timer = 0;
 
 const actions = {
   init: (context: any, event: any) => {
@@ -49,8 +51,26 @@ const actions = {
     if (!context.selected) return;
     console.log(context.selected);
     context.selected.update(event.title, event.content);
-    await updateNotebook();
+    ThreeApp.drawNotes(Notebook.notes.valueSeq().toArray());
+    ThreeApp.drawLinks(Notebook.notes.valueSeq().toArray());
     FormState.send({ type: EVENT.SELECT, note: context.selected });
+    window.clearTimeout(timer);
+    timer = window.setTimeout(async () => {
+      await updateNotebook();
+    }, 500)
+  },
+  update: async (context: any, event: any) => {
+    console.log('Save!', context, event);
+    if (!context.selected) return;
+    console.log(context.selected);
+    context.selected.update(event.title, event.content);
+    ThreeApp.drawNotes(Notebook.notes.valueSeq().toArray());
+    ThreeApp.drawLinks(Notebook.notes.valueSeq().toArray());
+    FormState.send({ type: EVENT.SELECT, note: context.selected });
+    window.clearTimeout(timer);
+    timer = window.setTimeout(async () => {
+      await updateNotebook();
+    }, 500)
   },
   search: async (context: any, event: any) => {
     console.log('Search!', event.title);

@@ -28,16 +28,27 @@ export default function Form (props: FormProps) {
         autoFocus
         placeholder="Title"
         value={ title }
-        onKeyUp={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, content, title }) : null }
-        onChange={ e => { setTitle(e.target.value); FormState.send({ type: EVENT.SEARCH, title: e.target.value }) } }/>
-      <textarea
-        disabled={ false }
-        placeholder="Content"
-        rows={ 10 }
-        value={ content }
-        onKeyDown={ e => e.key === 'Enter' ? FormState.send({ type: EVENT.SAVE, note: props.note, content, title }) : null }
-        onChange={ e => setContent(e.target.value) }>
-      </textarea>
+        onChange={ e => {
+          setTitle(e.target.value);
+          if(!props.note) {
+            FormState.send({ type: EVENT.SEARCH, title: e.target.value, content })
+          } else {
+            FormState.send({ type: EVENT.SAVE, note: props.note, content, title: e.target.value })
+          }
+        }}/>
+      {
+        (!!props.note
+          ? <textarea
+              disabled={ false }
+              placeholder="Content"
+              rows={ 10 }
+              value={ content }
+              onKeyUp={ e => FormState.send({ type: EVENT.SAVE, note: props.note, content, title }) }
+              onChange={ e => setContent(e.target.value) }>
+            </textarea>
+          : null
+        )
+      }
       { props.note ? <button>GO</button> : null }
     </form>
   );
